@@ -1,4 +1,5 @@
 var webpack = require('webpack');
+var debug = process.env.NODE_ENV !== 'production';
 
 module.exports = {
 
@@ -16,23 +17,26 @@ module.exports = {
   },
 
   module: {
-    loaders:[
+    rules:[
       {
         test: /\.jsx?$/,
-        loader: 'babel-loader',
-        //exclude: 'node_modules',
-        query: {
-          presets: ['react', 'es2015']
+        exclude: /node_modules/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            plugins: ['transform-decorators-legacy'],
+            presets: ['es2015', 'stage-0', 'react']
+          }
         }
       }
     ]
   },
 
-  externals: {
+  /*externals: {
     'react': 'React',
     'react-dom': 'ReactDOM',
     'mobx': 'MobX'
-  },
+  },//*/
 
   devServer: {
     contentBase: './public'
