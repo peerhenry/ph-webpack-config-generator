@@ -34,9 +34,11 @@
     "webpack-dev-server": "^2.4.2"
   },
   "dependencies": {
+    "connect": "^3.6.0",
     "mobx": "^3.1.9",
     "mobx-react": "^4.1.5",
     "react": "^15.5.3",
-    "react-dom": "^15.5.3"
+    "react-dom": "^15.5.3",
+    "serve-static": "^1.12.1"
   }
 }

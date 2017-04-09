@@ -1,0 +1,7 @@
+{
+  "name": "PH Webpack Config Generator",
+  "Description": "A website for conveniently generating webpack configurations.",
+  "repository": "https://github.com/peerhenry/ph-webpack-config-generator",
+  "keywords": ["webpack", "webpack config", "webpack.config", "webpack configuration", "webpack generator", "webpack config generator", "webpack.config generator", "generate webpack"],
+   "image": "heroku/nodejs"
+}

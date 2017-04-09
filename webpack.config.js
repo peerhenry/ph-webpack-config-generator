@@ -32,11 +32,10 @@ module.exports = {
     ]
   },
 
-  /*externals: {
+  externals: {
     'react': 'React',
-    'react-dom': 'ReactDOM',
-    'mobx': 'MobX'
-  },//*/
+    'react-dom': 'ReactDOM'
+  },
 
   devServer: {
     contentBase: './public'
