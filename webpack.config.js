@@ -18,6 +18,7 @@ module.exports = {
 
   module: {
     rules:[
+
       {
         test: /\.jsx?$/,
         exclude: /node_modules/,
@@ -28,6 +29,11 @@ module.exports = {
             presets: ['es2015', 'stage-0', 'react']
           }
         }
+      },
+
+      {
+        test: /\.css$/,
+        use: ['style-loader', 'css-loader']
       }
     ]
   },

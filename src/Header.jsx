@@ -1,10 +1,15 @@
 import React from 'react'
+import styled from 'styled-components'
+
+const StyledHeader = styled.header`
+  background: papayawhip;
+`
 
 const Header = ({}) => (
-  <header>
+  <StyledHeader>
     <h1>Hello says PH-Webpack-Config-Generator!</h1>
     <p>A website for conveniently generating webpack configurations.</p>
-  </header>
+  </StyledHeader>
 )
 
 export default Header

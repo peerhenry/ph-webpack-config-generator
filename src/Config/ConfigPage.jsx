@@ -8,7 +8,7 @@ const Form = inject("store")(observer(ConfigForm))
 const Result = inject("store")(observer(ConfigResult))
 
 const ConfigPage = ({}) => (
-  <section>
+  <section className="full-height">
     <Form/>
     <hr/>
     <Result/>
