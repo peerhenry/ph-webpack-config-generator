@@ -1,19 +1,13 @@
-body {
+body, #app, #wrapper {
   height: 100%;
   width: 100%;
 }
 
-#app{
-  height: 100%;
-}
-
-#main{
+#wrapper, #main{
   display: table;
-  height: 100%;
-  width: 100%;
 }
 
-footer {
+footer, header {
   display: table-row;
   height:1px;
 }

@@ -9,7 +9,7 @@ import ConfigPage from './Config/ConfigPage'
 import Footer from './Footer'
 
 const App = ({}) => (
-  <div id="main">
+  <div id="wrapper">
     <Header/>
     <Provider store={store}><ConfigPage/></Provider>
     <Footer/>

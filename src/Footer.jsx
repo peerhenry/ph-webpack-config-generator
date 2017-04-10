@@ -1,14 +1,12 @@
 import React from 'react'
-import styled from 'styled-components'
-
-const StyledFooter = styled.footer`
-  background: papayawhip;
-`
+import PaddedDiv from './Components/PaddedDiv'
 
 const Footer = ({}) => (
-  <StyledFooter>
-    <p>This is the footer</p>
-  </StyledFooter>
+  <footer>
+    <PaddedDiv>
+      <p>© PeerHenry 2017</p>
+    </PaddedDiv>
+  </footer>
 )
 
 export default Footer

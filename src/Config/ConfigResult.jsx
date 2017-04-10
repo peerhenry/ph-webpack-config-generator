@@ -1,4 +1,6 @@
 import React from 'react'
+import styled from 'styled-components'
+import PaddedDiv from '../Components/PaddedDiv'
 
 const getOutputPath = (store) => {
   return store.outputPath ? " + '" + store.outputPath + "'" : ""
@@ -19,14 +21,23 @@ const buildConfig = (store) => [
   "}"
 ]
 
+const StyledDiv = styled.div`
+  background-color: white;
+  color: black;
+  height: 100%;
+  width: 100%;
+`
+
 const ConfigResult = ({store}) => (
-  <div>
+  <StyledDiv><PaddedDiv>    
+    
     <pre><code>
       {
         buildConfig(store).map(line => line+"\n")
       }
     </code></pre>
-  </div>
+    
+  </PaddedDiv></StyledDiv>
 )
 
 export default ConfigResult
