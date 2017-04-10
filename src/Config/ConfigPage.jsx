@@ -21,6 +21,7 @@ const StyledArticle = styled.article`
   box-sizing: border-box;
   float: left;
   min-height: 1px;
+  display: table;
 `
 
 const ConfigPage = ({}) => (

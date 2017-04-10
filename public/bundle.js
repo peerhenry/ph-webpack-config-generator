@@ -11934,7 +11934,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 
 var _templateObject = _taggedTemplateLiteral(['\n  height: 100%;\n  width: 100%;\n  margin: 0 auto;\n  overflow: hidden;\n'], ['\n  height: 100%;\n  width: 100%;\n  margin: 0 auto;\n  overflow: hidden;\n']),
-    _templateObject2 = _taggedTemplateLiteral(['\n  height: 100%;\n  width: 50%;\n  box-sizing: border-box;\n  float: left;\n  min-height: 1px;\n'], ['\n  height: 100%;\n  width: 50%;\n  box-sizing: border-box;\n  float: left;\n  min-height: 1px;\n']);
+    _templateObject2 = _taggedTemplateLiteral(['\n  height: 100%;\n  width: 50%;\n  box-sizing: border-box;\n  float: left;\n  min-height: 1px;\n  display: table;\n'], ['\n  height: 100%;\n  width: 50%;\n  box-sizing: border-box;\n  float: left;\n  min-height: 1px;\n  display: table;\n']);
 
 var _react = __webpack_require__(0);
 
@@ -11999,7 +11999,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _templateObject = _taggedTemplateLiteral(['\n  background-color: white;\n  color: black;\n  height: 100%;\n  width: 100%;\n'], ['\n  background-color: white;\n  color: black;\n  height: 100%;\n  width: 100%;\n']);
+var _templateObject = _taggedTemplateLiteral(['\n  background-color: white;\n  color: black;\n  height: 100%;\n  width: 100%;\n  display: table-cell\n'], ['\n  background-color: white;\n  color: black;\n  height: 100%;\n  width: 100%;\n  display: table-cell\n']);
 
 var _react = __webpack_require__(0);
 

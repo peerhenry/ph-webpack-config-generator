@@ -26,6 +26,7 @@ const StyledDiv = styled.div`
   color: black;
   height: 100%;
   width: 100%;
+  display: table-cell
 `
 
 const ConfigResult = ({store}) => (
@@ -36,7 +37,7 @@ const ConfigResult = ({store}) => (
         buildConfig(store).map(line => line+"\n")
       }
     </code></pre>
-    
+
   </PaddedDiv></StyledDiv>
 )
 
