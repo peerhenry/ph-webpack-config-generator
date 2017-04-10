@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 16);
+/******/ 	return __webpack_require__(__webpack_require__.s = 17);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -7463,7 +7463,7 @@ function toComment(sourceMap) {
   return '/*# ' + data + ' */';
 }
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(19).Buffer))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(20).Buffer))
 
 /***/ }),
 /* 4 */
@@ -7503,7 +7503,7 @@ var stylesInDom = {},
 	singletonElement = null,
 	singletonCounter = 0,
 	styleElementsInsertedAtTop = [],
-	fixUrls = __webpack_require__(26);
+	fixUrls = __webpack_require__(27);
 
 module.exports = function(list, options) {
 	if(typeof DEBUG !== "undefined" && DEBUG) {
@@ -11769,19 +11769,19 @@ var _styledComponents = __webpack_require__(1);
 
 var _styledComponents2 = _interopRequireDefault(_styledComponents);
 
-var _ConfigStore = __webpack_require__(13);
+var _ConfigStore = __webpack_require__(14);
 
 var _ConfigStore2 = _interopRequireDefault(_ConfigStore);
 
-var _Header = __webpack_require__(15);
+var _Header = __webpack_require__(16);
 
 var _Header2 = _interopRequireDefault(_Header);
 
-var _ConfigPage = __webpack_require__(11);
+var _ConfigPage = __webpack_require__(12);
 
 var _ConfigPage2 = _interopRequireDefault(_ConfigPage);
 
-var _Footer = __webpack_require__(14);
+var _Footer = __webpack_require__(15);
 
 var _Footer2 = _interopRequireDefault(_Footer);
 
@@ -11789,7 +11789,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _objectDestructuringEmpty(obj) { if (obj == null) throw new TypeError("Cannot destructure undefined"); }
 
-__webpack_require__(17);
+__webpack_require__(18);
 
 
 var App = function App(_ref) {
@@ -11855,10 +11855,13 @@ var FreeField = function (_React$Component) {
 
     var _this = _possibleConstructorReturn(this, (FreeField.__proto__ || Object.getPrototypeOf(FreeField)).call(this, props));
 
-    var thisKey = props.storeKey || props.name.split('.').reduce(function (agr, next) {
+    var storeKey = props.storeKey || props.label.split('.').reduce(function (agr, next) {
       return agr += capitalizeFirstLetter(next);
     });
-    _this.state = { value: props.store[thisKey], key: thisKey };
+    _this.state = {
+      value: props.store[storeKey].value,
+      storeKey: storeKey
+    };
     _this.handleInput = _this.handleInput.bind(_this);
     return _this;
   }
@@ -11868,7 +11871,7 @@ var FreeField = function (_React$Component) {
     value: function handleInput(event) {
       var newValue = event.target.value;
       this.setState({ value: newValue });
-      store[this.state.key] = newValue;
+      store[this.state.storeKey].value = newValue;
     }
   }, {
     key: 'render',
@@ -11881,7 +11884,7 @@ var FreeField = function (_React$Component) {
         _react2.default.createElement(
           'td',
           null,
-          this.props.name,
+          this.props.label,
           ':'
         ),
         _react2.default.createElement(
@@ -11901,20 +11904,101 @@ var FreeField = function (_React$Component) {
   return FreeField;
 }(_react2.default.Component);
 
+var CheckBox = function (_React$Component2) {
+  _inherits(CheckBox, _React$Component2);
+
+  function CheckBox(props) {
+    _classCallCheck(this, CheckBox);
+
+    var _this3 = _possibleConstructorReturn(this, (CheckBox.__proto__ || Object.getPrototypeOf(CheckBox)).call(this, props));
+
+    _this3.state = {
+      value: props.store[props.storeKey]
+    };
+    _this3.handleChange = _this3.handleChange.bind(_this3);
+    return _this3;
+  }
+
+  _createClass(CheckBox, [{
+    key: 'getVal',
+    value: function getVal() {
+      return this.props.store[this.props.storeKey];
+    }
+  }, {
+    key: 'handleChange',
+    value: function handleChange(e) {
+      var newValue = !this.getVal();
+      this.setState({ value: newValue });
+      this.props.store[this.props.storeKey] = newValue;
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      return _react2.default.createElement(
+        'div',
+        null,
+        _react2.default.createElement('input', { type: 'checkbox', checked: this.state.value, onChange: this.handleChange }),
+        this.props.label,
+        _react2.default.createElement('br', null)
+      );
+    }
+  }]);
+
+  return CheckBox;
+}(_react2.default.Component);
+
 var ConfigForm = function ConfigForm(_ref) {
   var store = _ref.store;
   return _react2.default.createElement(
     _PaddedDiv2.default,
     null,
     _react2.default.createElement(
-      'table',
-      null,
+      'div',
+      { className: 'grid' },
       _react2.default.createElement(
-        'tbody',
-        null,
-        _react2.default.createElement(FreeField, { store: store, name: 'entry' }),
-        _react2.default.createElement(FreeField, { store: store, name: 'output.path' }),
-        _react2.default.createElement(FreeField, { store: store, name: 'output.filename' })
+        'div',
+        { className: 'col-1-3' },
+        _react2.default.createElement(
+          'h3',
+          null,
+          'Free fields'
+        ),
+        _react2.default.createElement(
+          'table',
+          null,
+          _react2.default.createElement(
+            'tbody',
+            null,
+            _react2.default.createElement(FreeField, { store: store, label: 'entry', storeKey: 'entry' }),
+            _react2.default.createElement(FreeField, { store: store, label: 'output.path', storeKey: 'outputPath' }),
+            _react2.default.createElement(FreeField, { store: store, label: 'output.filename', storeKey: 'outputFilename' })
+          )
+        )
+      ),
+      _react2.default.createElement(
+        'div',
+        { className: 'col-1-3' },
+        _react2.default.createElement(
+          'h3',
+          null,
+          'Loaders'
+        ),
+        _react2.default.createElement(
+          'ul',
+          null,
+          _react2.default.createElement(CheckBox, { store: store, storeKey: 'includeBabel', label: 'Babel' }),
+          _react2.default.createElement(CheckBox, { store: store, storeKey: 'includeCss', label: 'Css' }),
+          _react2.default.createElement(CheckBox, { store: store, storeKey: 'includeTypeScript', label: 'Typescript' })
+        )
+      ),
+      _react2.default.createElement(
+        'div',
+        { className: 'col-1-3' },
+        _react2.default.createElement(
+          'h3',
+          null,
+          'column 3'
+        )
       )
     )
   );
@@ -11924,6 +12008,170 @@ exports.default = ConfigForm;
 
 /***/ }),
 /* 11 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+if (!String.prototype.format) {
+  String.prototype.format = function () {
+    var args = arguments;
+    return this.replace(/{(\d+)}/g, function (match, number) {
+      return typeof args[number] != 'undefined' ? args[number] : match;
+    });
+  };
+}
+
+var ConfigBuffer = function () {
+  function ConfigBuffer(store, text) {
+    _classCallCheck(this, ConfigBuffer);
+
+    this.text = "";
+    this.tabNr = 0;
+    this.offset = "";
+
+    this.text = text;
+    this.store = store;
+  }
+
+  _createClass(ConfigBuffer, [{
+    key: "calculateOffset",
+    value: function calculateOffset() {
+      this.offset = "";
+      var counter = this.tabNr;
+      while (counter > 0) {
+        this.offset += this.store.tab;
+        counter--;
+      }
+    }
+  }, {
+    key: "dTab",
+    value: function dTab(number) {
+      this.tabNr += number;
+      this.calculateOffset();
+    }
+  }, {
+    key: "addLine",
+    value: function addLine(text) {
+      this.text += this.offset + text + "\n";
+    }
+  }, {
+    key: "addCsLine",
+    value: function addCsLine(text) {
+      this.text += this.offset + text + ",\n";
+    }
+  }, {
+    key: "emptyLine",
+    value: function emptyLine() {
+      this.text += "\n";
+    }
+  }, {
+    key: "add",
+    value: function add(text) {
+      this.text += text;
+    }
+  }, {
+    key: "openObject",
+    value: function openObject(name) {
+      this.addLine(name + ": {");
+      this.dTab(1);
+    }
+  }, {
+    key: "closeObject",
+    value: function closeObject() {
+      this.dTab(-1);
+      this.addCsLine("}");
+    }
+  }, {
+    key: "closeObjectNoComma",
+    value: function closeObjectNoComma() {
+      this.dTab(-1);
+      this.addLine("}");
+    }
+  }, {
+    key: "openArray",
+    value: function openArray(name) {
+      this.addLine(name + ": [");
+      this.dTab(1);
+    }
+  }, {
+    key: "closeArray",
+    value: function closeArray() {
+      this.dTab(-1);
+      this.addLine("]");
+    }
+  }, {
+    key: "addKvp",
+    value: function addKvp(storeKey) {
+      var key = store[storeKey].key.split('.').pop();
+      this.addCsLine(key + ": " + store[storeKey].value);
+    }
+  }, {
+    key: "addKvpS",
+    value: function addKvpS(storeKey) {
+      console.log('storeKey: ' + storeKey);
+      var key = store[storeKey].key.split('.').pop();
+      this.addCsLine(key + ": {0}" + store[storeKey].value + "{0}");
+    }
+  }, {
+    key: "toString",
+    value: function toString() {
+      return this.text;
+    }
+  }]);
+
+  return ConfigBuffer;
+}();
+
+generateConfig = window.generateConfig = function (store) {
+  var buffer = new ConfigBuffer(store, "var webpack = require({0}webpack{0});\n\nmodule.exports = {\n");
+  buffer.dTab(1);
+  buffer.addKvp('context');
+  buffer.addKvpS('entry');
+  buffer.emptyLine();
+
+  buffer.openObject("output");
+  buffer.addKvpS('outputPath');
+  buffer.addKvpS('outputFilename');
+  buffer.closeObject();
+
+  if (store.includeBabel) {
+    buffer.emptyLine();
+    buffer.openObject("module");
+    buffer.openArray("rules");
+
+    buffer.addLine('{');
+    buffer.dTab(1);
+    buffer.addCsLine('test: /\.jsx?$/');
+    buffer.addLine('exclude: /node_modules/');
+    buffer.openObject('use');
+    buffer.addCsLine('loader: {0}babel-loader{0}');
+    buffer.openObject('options');
+    buffer.closeObjectNoComma();
+    buffer.closeObjectNoComma();
+    buffer.dTab(-1);
+    buffer.addLine('}');
+
+    buffer.closeArray();
+    buffer.closeObjectNoComma();
+  }
+
+  buffer.add("}");
+  return buffer.toString().format(store.quote);
+};
+
+exports.default = generateConfig;
+
+/***/ }),
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11950,7 +12198,7 @@ var _ConfigForm = __webpack_require__(10);
 
 var _ConfigForm2 = _interopRequireDefault(_ConfigForm);
 
-var _ConfigResult = __webpack_require__(12);
+var _ConfigResult = __webpack_require__(13);
 
 var _ConfigResult2 = _interopRequireDefault(_ConfigResult);
 
@@ -11989,7 +12237,7 @@ var ConfigPage = function ConfigPage(_ref) {
 exports.default = ConfigPage;
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12013,17 +12261,13 @@ var _PaddedDiv = __webpack_require__(2);
 
 var _PaddedDiv2 = _interopRequireDefault(_PaddedDiv);
 
+var _ConfigGenerator = __webpack_require__(11);
+
+var _ConfigGenerator2 = _interopRequireDefault(_ConfigGenerator);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _taggedTemplateLiteral(strings, raw) { return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
-
-var getOutputPath = function getOutputPath(store) {
-  return store.outputPath ? " + '" + store.outputPath + "'" : "";
-};
-
-var buildConfig = function buildConfig(store) {
-  return ["var webpack = require('webpack');", "", "module.exports = {", "", "  context: " + store.context + ",", "  entry: '" + store.entry + "'", "", "  output:{", "    path: __dirname" + getOutputPath(store), "    filename: '" + store.outputFilename + "'", "  }", "}"];
-};
 
 var StyledDiv = _styledComponents2.default.div(_templateObject);
 
@@ -12041,9 +12285,7 @@ var ConfigResult = function ConfigResult(_ref) {
         _react2.default.createElement(
           'code',
           null,
-          buildConfig(store).map(function (line) {
-            return line + "\n";
-          })
+          (0, _ConfigGenerator2.default)(store)
         )
       )
     )
@@ -12053,7 +12295,7 @@ var ConfigResult = function ConfigResult(_ref) {
 exports.default = ConfigResult;
 
 /***/ }),
-/* 13 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12063,7 +12305,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _desc, _value, _class, _descriptor, _descriptor2, _descriptor3, _descriptor4;
+var _desc, _value, _class, _descriptor, _desc2, _value2, _class3, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _descriptor6;
 
 var _mobx = __webpack_require__(7);
 
@@ -12112,50 +12354,72 @@ function _initializerWarningHelper(descriptor, context) {
   throw new Error('Decorating class property failed. Please ensure that transform-class-properties is enabled.');
 }
 
-var ConfigStore = (_class = function ConfigStore() {
+var Kvp = (_class = function Kvp(key, value) {
+  _classCallCheck(this, Kvp);
+
+  _initDefineProp(this, 'value', _descriptor, this);
+
+  this.key = key;
+  this.value = value;
+}, (_descriptor = _applyDecoratedDescriptor(_class.prototype, 'value', [_mobx.observable], {
+  enumerable: true,
+  initializer: null
+})), _class);
+var ConfigStore = (_class3 = function ConfigStore() {
   _classCallCheck(this, ConfigStore);
 
-  _initDefineProp(this, "context", _descriptor, this);
+  this.context = new Kvp('context', '__dirname');
+  this.entry = new Kvp('entry', './src/main');
+  this.outputPath = new Kvp('path', 'public');
+  this.outputFilename = new Kvp('filename', 'bundle.js');
 
-  _initDefineProp(this, "entry", _descriptor2, this);
+  _initDefineProp(this, 'tab', _descriptor2, this);
 
-  _initDefineProp(this, "outputPath", _descriptor3, this);
+  _initDefineProp(this, 'quote', _descriptor3, this);
 
-  _initDefineProp(this, "outputFilename", _descriptor4, this);
-}, (_descriptor = _applyDecoratedDescriptor(_class.prototype, "context", [_mobx.observable], {
+  _initDefineProp(this, 'includeBabel', _descriptor4, this);
+
+  _initDefineProp(this, 'includeCss', _descriptor5, this);
+
+  _initDefineProp(this, 'includeTypeScript', _descriptor6, this);
+}, (_descriptor2 = _applyDecoratedDescriptor(_class3.prototype, 'tab', [_mobx.observable], {
   enumerable: true,
   initializer: function initializer() {
-    return "__dirname";
+    return "  ";
   }
-}), _descriptor2 = _applyDecoratedDescriptor(_class.prototype, "entry", [_mobx.observable], {
+}), _descriptor3 = _applyDecoratedDescriptor(_class3.prototype, 'quote', [_mobx.observable], {
   enumerable: true,
   initializer: function initializer() {
-    return "./src/main";
+    return "'";
   }
-}), _descriptor3 = _applyDecoratedDescriptor(_class.prototype, "outputPath", [_mobx.observable], {
+}), _descriptor4 = _applyDecoratedDescriptor(_class3.prototype, 'includeBabel', [_mobx.observable], {
   enumerable: true,
   initializer: function initializer() {
-    return "/public";
+    return true;
   }
-}), _descriptor4 = _applyDecoratedDescriptor(_class.prototype, "outputFilename", [_mobx.observable], {
+}), _descriptor5 = _applyDecoratedDescriptor(_class3.prototype, 'includeCss', [_mobx.observable], {
   enumerable: true,
   initializer: function initializer() {
-    return "bundle.js";
+    return false;
   }
-})), _class);
+}), _descriptor6 = _applyDecoratedDescriptor(_class3.prototype, 'includeTypeScript', [_mobx.observable], {
+  enumerable: true,
+  initializer: function initializer() {
+    return false;
+  }
+})), _class3);
 
 
 var store = window.store = new ConfigStore(); // setting window.store is purely for debugging
 
 exports.default = store;
 
-
-(0, _mobx.autorun)(function () {
-  console.log('config: ' + JSON.stringify(store.config));
-});
+/*autorun(() => {
+  console.log('store: ' + JSON.stringify(store))
+})//*/
 
 /***/ }),
-/* 14 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12198,7 +12462,7 @@ var Footer = function Footer(_ref) {
 exports.default = Footer;
 
 /***/ }),
-/* 15 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12256,7 +12520,7 @@ var Header = function Header(_ref) {
 exports.default = Header;
 
 /***/ }),
-/* 16 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12274,19 +12538,19 @@ var app = document.getElementById('app');
 (0, _reactDom.render)(React.createElement(_App2.default, null), app);
 
 /***/ }),
-/* 17 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-__webpack_require__(29);
 __webpack_require__(30);
+__webpack_require__(31);
+__webpack_require__(29);
 __webpack_require__(28);
-__webpack_require__(27);
 
 /***/ }),
-/* 18 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12407,7 +12671,7 @@ function fromByteArray (uint8) {
 
 
 /***/ }),
-/* 19 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12421,9 +12685,9 @@ function fromByteArray (uint8) {
 
 
 
-var base64 = __webpack_require__(18)
-var ieee754 = __webpack_require__(24)
-var isArray = __webpack_require__(25)
+var base64 = __webpack_require__(19)
+var ieee754 = __webpack_require__(25)
+var isArray = __webpack_require__(26)
 
 exports.Buffer = Buffer
 exports.SlowBuffer = SlowBuffer
@@ -14204,7 +14468,7 @@ function isnan (val) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8)))
 
 /***/ }),
-/* 20 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(3)(undefined);
@@ -14218,7 +14482,7 @@ exports.push([module.i, "html{\r\n  font-family: Arial, Helvetica, sans-serif;\r
 
 
 /***/ }),
-/* 21 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(3)(undefined);
@@ -14232,7 +14496,7 @@ exports.push([module.i, "body, #app, #wrapper {\r\n  height: 100%;\r\n  width: 1
 
 
 /***/ }),
-/* 22 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(3)(undefined);
@@ -14246,7 +14510,7 @@ exports.push([module.i, "/*! normalize.css v6.0.0 | MIT License | github.com/nec
 
 
 /***/ }),
-/* 23 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(3)(undefined);
@@ -14260,7 +14524,7 @@ exports.push([module.i, "/*\n  Simple Grid\n  Project Page - http://thisisdallas
 
 
 /***/ }),
-/* 24 */
+/* 25 */
 /***/ (function(module, exports) {
 
 exports.read = function (buffer, offset, isLE, mLen, nBytes) {
@@ -14350,7 +14614,7 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
 
 
 /***/ }),
-/* 25 */
+/* 26 */
 /***/ (function(module, exports) {
 
 var toString = {}.toString;
@@ -14361,7 +14625,7 @@ module.exports = Array.isArray || function (arr) {
 
 
 /***/ }),
-/* 26 */
+/* 27 */
 /***/ (function(module, exports) {
 
 
@@ -14456,32 +14720,6 @@ module.exports = function (css) {
 
 
 /***/ }),
-/* 27 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// style-loader: Adds some css to the DOM by adding a <style> tag
-
-// load the styles
-var content = __webpack_require__(20);
-if(typeof content === 'string') content = [[module.i, content, '']];
-// add the styles to the DOM
-var update = __webpack_require__(4)(content, {});
-if(content.locals) module.exports = content.locals;
-// Hot Module Replacement
-if(false) {
-	// When the styles change, update the <style> tags
-	if(!content.locals) {
-		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/postcss-loader/index.js!./general.css", function() {
-			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/postcss-loader/index.js!./general.css");
-			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-			update(newContent);
-		});
-	}
-	// When the module is disposed, remove the <style> tags
-	module.hot.dispose(function() { update(); });
-}
-
-/***/ }),
 /* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -14497,8 +14735,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/postcss-loader/index.js!./layout.css", function() {
-			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/postcss-loader/index.js!./layout.css");
+		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/postcss-loader/index.js!./general.css", function() {
+			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/postcss-loader/index.js!./general.css");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -14523,8 +14761,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/postcss-loader/index.js!./normalize.css", function() {
-			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/postcss-loader/index.js!./normalize.css");
+		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/postcss-loader/index.js!./layout.css", function() {
+			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/postcss-loader/index.js!./layout.css");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -14541,6 +14779,32 @@ if(false) {
 
 // load the styles
 var content = __webpack_require__(23);
+if(typeof content === 'string') content = [[module.i, content, '']];
+// add the styles to the DOM
+var update = __webpack_require__(4)(content, {});
+if(content.locals) module.exports = content.locals;
+// Hot Module Replacement
+if(false) {
+	// When the styles change, update the <style> tags
+	if(!content.locals) {
+		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/postcss-loader/index.js!./normalize.css", function() {
+			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/postcss-loader/index.js!./normalize.css");
+			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+			update(newContent);
+		});
+	}
+	// When the module is disposed, remove the <style> tags
+	module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 31 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(24);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(4)(content, {});

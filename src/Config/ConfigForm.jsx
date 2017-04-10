@@ -1,113 +1,55 @@
 import React from 'react'
+import styled from 'styled-components'
+
 import PaddedDiv from '../Components/PaddedDiv'
+import FreeField from '../Components/FreeField'
+import CheckBox from '../Components/CheckBox'
 
-const changeEntry = (entry, value) => {
-  entry = value;
-}
+const StyledH3 = styled.h3`
+  margin-bottom: 5px;
+  color: #d0dce1;
+`
 
-const capitalizeFirstLetter = (string) => string.charAt(0).toUpperCase() + string.slice(1)
-
-class FreeField extends React.Component{
-
-  constructor(props){
-    super(props)
-    let storeKey = props.storeKey || props.label.split('.').reduce( (agr, next) => agr += capitalizeFirstLetter(next) )
-    this.state = { 
-      value: props.store[storeKey].value, 
-      storeKey: storeKey 
-    }
-    this.handleInput = this.handleInput.bind(this)
-  }
-
-  handleInput(event){
-    let newValue = event.target.value
-    this.setState({value: newValue})
-    store[this.state.storeKey].value = newValue
-  }
-
-  render(){
-    return(
-      <tr>
-        <td>
-          {this.props.label}:
-        </td>
-        <td>
-          <input 
-            type="text" 
-            value={ this.state.value }
-            onChange={e => this.handleInput(e) }/>
-        </td>
-      </tr>
-    );
-  }
-}
-
-class CheckBox extends React.Component{
-
-  constructor(props){
-    super(props)
-    this.state = { 
-      value: props.store[props.storeKey]
-    }
-    this.handleChange = this.handleChange.bind(this)
-  }
-
-  getVal(){
-    return this.props.store[this.props.storeKey]
-  }
-
-  handleChange(e){
-    let newValue = !this.getVal()
-    this.setState({value: newValue})
-    this.props.store[this.props.storeKey] = newValue
-  }
-
-  render(){
-    return (
-      <div>
-        <input type="checkbox" checked={this.state.value} onChange={this.handleChange}/>
-        {this.props.label}
-        <br/>
-      </div>
-    )
-  }
-}
+const ThirdColumn = ({label, children}) => (
+  <div className="col-1-3">
+    <StyledH3>{label}</StyledH3>
+    { children }
+  </div>
+)
 
 const ConfigForm = ({store}) => (
-  <PaddedDiv>
+  <div>
 
-    <div className="grid">
+    <div className="grid grid-pad">
 
-      <div className="col-1-3">
-        <h3>Free fields</h3>
-        <table>
-          <tbody>
+      <ThirdColumn label={'Free Fields'}>
+        <div className="content">
+          <table>
+            <tbody>
+              <FreeField store={store} label={'entry'} storeKey={'entry'}/>
+              <FreeField store={store} label={'output.path'} storeKey={'outputPath'}/>
+              <FreeField store={store} label={'output.filename'} storeKey={'outputFilename'}/>
+            </tbody>
+          </table>
+        </div>
+      </ThirdColumn>
 
-            <FreeField store={store} label={'entry'} storeKey={'entry'}/>
+      <ThirdColumn label={'Loaders'}>
+        <div className="content">
+          <ul>
+            <CheckBox store={store} storeKey={'includeBabel'} label={'Babel'}/>
+            <CheckBox store={store} storeKey={'includeCss'} label={'Css'}/>
+            <CheckBox store={store} storeKey={'includeTypeScript'} label={'Typescript'}/>
+          </ul>
+        </div>
+      </ThirdColumn>
 
-            <FreeField store={store} label={'output.path'} storeKey={'outputPath'}/>
+      <ThirdColumn label={'Other'}>
 
-            <FreeField store={store} label={'output.filename'} storeKey={'outputFilename'}/>
-
-          </tbody>
-        </table>
-      </div>
-
-      <div className="col-1-3">
-        <h3>Loaders</h3>
-        <ul>
-          <CheckBox store={store} storeKey={'includeBabel'} label={'Babel'}/>
-          <CheckBox store={store} storeKey={'includeCss'} label={'Css'}/>
-          <CheckBox store={store} storeKey={'includeTypeScript'} label={'Typescript'}/>
-        </ul>
-      </div>
-
-      <div className="col-1-3">
-        <h3>column 3</h3>
-      </div>
+      </ThirdColumn>
     </div>
 
-  </PaddedDiv>
+  </div>
 )
 
 export default ConfigForm

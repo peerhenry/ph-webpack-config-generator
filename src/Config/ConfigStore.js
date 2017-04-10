@@ -16,12 +16,12 @@ class ConfigStore{
   outputPath = new Kvp('path', 'public')
   outputFilename = new Kvp('filename', 'bundle.js')
 
-  @observable tab = "  "
-  @observable quote = "'"
-
   @observable includeBabel = true;
   @observable includeCss = false;
   @observable includeTypeScript = false;
+
+  @observable tab = "  "
+  @observable quote = "'"
 }
 
 var store = window.store = new ConfigStore() // setting window.store is purely for debugging

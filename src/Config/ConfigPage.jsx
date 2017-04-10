@@ -15,25 +15,20 @@ const StyledSection = styled.section`
   overflow: hidden;
 `
 
-const StyledArticle = styled.article`
-  height: 100%;
-  width: 50%;
-  box-sizing: border-box;
-  float: left;
-  min-height: 1px;
-  display: table;
-`
-
 const ConfigPage = ({}) => (
   <StyledSection id="main" style={{maxWidth: "none"}}>
 
-    <StyledArticle>
-      <Form/>
-    </StyledArticle>
+    <article className="col-2-3">
+      <div className="content">
+        <Form/>
+      </div>
+    </article>
 
-    <StyledArticle>
-      <Result/>
-    </StyledArticle>
+    <article className="col-1-3" style={{display: 'table', height: '100%'}}>
+      <div className="content" style={{display: 'table', height: '100%', width: '100%'}}>
+        <Result/>
+      </div>
+    </article>
 
   </StyledSection>
 )

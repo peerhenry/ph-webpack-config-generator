@@ -1,3 +1,4 @@
+import ConfigBuffer from './ConfigBuffer'
 
 if (!String.prototype.format) {
   String.prototype.format = function() {
@@ -9,87 +10,6 @@ if (!String.prototype.format) {
       ;
     });
   };
-}
-
-class ConfigBuffer{
-  text = ""
-  tabNr = 0
-  offset = ""
-
-  constructor(store, text){
-    this.text = text
-    this.store = store
-  }
-
-  calculateOffset(){
-    this.offset = ""
-    let counter = this.tabNr
-    while(counter > 0){
-      this.offset += this.store.tab
-      counter--
-    }
-  }
-
-  dTab(number){
-    this.tabNr += number
-    this.calculateOffset()
-  }
-
-  addLine(text){
-    this.text += this.offset + text + "\n"
-  }
-
-  addCsLine(text){
-    this.text += this.offset + text + ",\n"
-  }
-
-  emptyLine(){
-    this.text += "\n"
-  }
-
-  add(text){
-    this.text += text
-  }
-
-  openObject(name){
-    this.addLine(name + ": {")
-    this.dTab(1)
-  }
-
-  closeObject(){
-    this.dTab(-1)
-    this.addCsLine("}")
-  }
-
-  closeObjectNoComma(){
-    this.dTab(-1)
-    this.addLine("}")
-  }
-
-  openArray(name){
-    this.addLine(name + ": [")
-    this.dTab(1)
-  }
-
-  closeArray(){
-    this.dTab(-1)
-    this.addLine("]")
-  }
-
-  addKvp(storeKey){
-    let key = store[storeKey].key.split('.').pop()
-    this.addCsLine(key + ": " + store[storeKey].value)
-  }
-
-  addKvpS(storeKey){
-    console.log('storeKey: ' + storeKey)
-    let key = store[storeKey].key.split('.').pop()
-    this.addCsLine(key + ": {0}" + store[storeKey].value + "{0}")
-  }
-
-  toString(){
-    return this.text
-  }
 }
 
 generateConfig = window.generateConfig = (store) => {
@@ -116,13 +36,27 @@ generateConfig = window.generateConfig = (store) => {
     buffer.openObject('use')
     buffer.addCsLine('loader: {0}babel-loader{0}')
     buffer.openObject('options')
+
     buffer.closeObjectNoComma()
     buffer.closeObjectNoComma()
     buffer.dTab(-1)
+
+    if(store.includeCss){
+      buffer.addCsLine('}')
+      buffer.addLine('{')
+      buffer.dTab(1)
+      buffer.addCsLine('test: /\.css?$/')
+      buffer.addLine('use: [{0}style-loader{0}, {0}css-loader{0}]')
+      buffer.dTab(-1)
+    }
+    
     buffer.addLine('}')
 
     buffer.closeArray()
     buffer.closeObjectNoComma()
+  }
+
+  if(store.includeCss){
   }
 
   buffer.add("}")
