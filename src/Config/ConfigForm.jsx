@@ -11,22 +11,25 @@ class FreeField extends React.Component{
 
   constructor(props){
     super(props)
-    let thisKey = props.storeKey || props.name.split('.').reduce( (agr, next) => agr += capitalizeFirstLetter(next) )
-    this.state = { value: props.store[thisKey], key: thisKey }
+    let storeKey = props.storeKey || props.label.split('.').reduce( (agr, next) => agr += capitalizeFirstLetter(next) )
+    this.state = { 
+      value: props.store[storeKey].value, 
+      storeKey: storeKey 
+    }
     this.handleInput = this.handleInput.bind(this)
   }
 
   handleInput(event){
     let newValue = event.target.value
     this.setState({value: newValue})
-    store[this.state.key] = newValue
+    store[this.state.storeKey].value = newValue
   }
 
   render(){
     return(
       <tr>
         <td>
-          {this.props.name}:
+          {this.props.label}:
         </td>
         <td>
           <input 
@@ -39,20 +42,70 @@ class FreeField extends React.Component{
   }
 }
 
+class CheckBox extends React.Component{
+
+  constructor(props){
+    super(props)
+    this.state = { 
+      value: props.store[props.storeKey]
+    }
+    this.handleChange = this.handleChange.bind(this)
+  }
+
+  getVal(){
+    return this.props.store[this.props.storeKey]
+  }
+
+  handleChange(e){
+    let newValue = !this.getVal()
+    this.setState({value: newValue})
+    this.props.store[this.props.storeKey] = newValue
+  }
+
+  render(){
+    return (
+      <div>
+        <input type="checkbox" checked={this.state.value} onChange={this.handleChange}/>
+        {this.props.label}
+        <br/>
+      </div>
+    )
+  }
+}
+
 const ConfigForm = ({store}) => (
   <PaddedDiv>
 
-    <table>
-      <tbody>
+    <div className="grid">
 
-        <FreeField store={store} name={'entry'} />
+      <div className="col-1-3">
+        <h3>Free fields</h3>
+        <table>
+          <tbody>
 
-        <FreeField store={store} name={'output.path'} />
+            <FreeField store={store} label={'entry'} storeKey={'entry'}/>
 
-        <FreeField store={store} name={'output.filename'} />
+            <FreeField store={store} label={'output.path'} storeKey={'outputPath'}/>
 
-      </tbody>
-    </table>
+            <FreeField store={store} label={'output.filename'} storeKey={'outputFilename'}/>
+
+          </tbody>
+        </table>
+      </div>
+
+      <div className="col-1-3">
+        <h3>Loaders</h3>
+        <ul>
+          <CheckBox store={store} storeKey={'includeBabel'} label={'Babel'}/>
+          <CheckBox store={store} storeKey={'includeCss'} label={'Css'}/>
+          <CheckBox store={store} storeKey={'includeTypeScript'} label={'Typescript'}/>
+        </ul>
+      </div>
+
+      <div className="col-1-3">
+        <h3>column 3</h3>
+      </div>
+    </div>
 
   </PaddedDiv>
 )

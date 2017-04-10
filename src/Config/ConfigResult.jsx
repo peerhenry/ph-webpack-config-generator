@@ -1,25 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import PaddedDiv from '../Components/PaddedDiv'
-
-const getOutputPath = (store) => {
-  return store.outputPath ? " + '" + store.outputPath + "'" : ""
-}
-
-const buildConfig = (store) => [
-  "var webpack = require('webpack');",
-  "",
-  "module.exports = {",
-  "",
-  "  context: " + store.context + ",",
-  "  entry: '" + store.entry + "'",
-  "",
-  "  output:{",
-  "    path: __dirname" + getOutputPath(store),
-  "    filename: '" + store.outputFilename + "'",
-  "  }",
-  "}"
-]
+import generateConfig from './ConfigGenerator'
 
 const StyledDiv = styled.div`
   background-color: white;
@@ -34,7 +16,7 @@ const ConfigResult = ({store}) => (
     
     <pre><code>
       {
-        buildConfig(store).map(line => line+"\n")
+        generateConfig(store)
       }
     </code></pre>
 
