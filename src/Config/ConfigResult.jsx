@@ -8,7 +8,7 @@ const StyledDiv = styled.div`
   color: black;
   height: 100%;
   width: 100%;
-  display: table-cell
+  display: table-cell;
 `
 
 const ConfigResult = ({store}) => (

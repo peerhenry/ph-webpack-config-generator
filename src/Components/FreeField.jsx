@@ -1,6 +1,14 @@
 import React from 'react'
+import styled from 'styled-components'
 
 const capitalizeFirstLetter = (string) => string.charAt(0).toUpperCase() + string.slice(1)
+
+const StyledInput = styled.input`
+  padding: 5px;
+  border-radius: 5px;
+  font-size: 22px;
+  font-weight: bold;
+`
 
 class FreeField extends React.Component{
 
@@ -22,19 +30,23 @@ class FreeField extends React.Component{
 
   render(){
     return(
-      <tr>
-        <td>
-          {this.props.label}:
-        </td>
-        <td>
-          <input 
-            type="text" 
-            value={ this.state.value }
-            onChange={e => this.handleInput(e) }
-            style={{width: '100%'}}
-            />
-        </td>
-      </tr>
+      <div style={{fontSize: '18px', display: 'table'}}>
+
+          <div className="col-1-3" style={{display: 'table-cell', verticalAlign: 'middle', float: 'none'}}>
+            <span style={{fontWeight: 'bold'}}>
+              {this.props.children}:
+            </span>
+          </div>
+
+          <div className="col-2-3">
+            <StyledInput 
+              type="text" 
+              value={ this.state.value }
+              onChange={e => this.handleInput(e) }
+              />
+          </div>
+
+      </div>
     );
   }
 }

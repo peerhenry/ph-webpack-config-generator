@@ -1,0 +1,41 @@
+
+
+/* ========= FONTS ========= */
+
+html{
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+@font-face {
+  font-family: Cantarell;
+  src: url(fonts/Cantarell-Bold.ttf); /* https://www.fontsquirrel.com/fonts/cantarell */
+}
+
+h1{
+  font-family: Cantarell;
+}
+
+span, input{
+  font-family: Courier, monospace;
+  font-size: 18px;
+}
+
+/* ========= COLORS ========= */
+
+html{
+  background-color: #2B3A42;  /* base color*/
+  color: white;
+  color: #d0dce1;
+}
+
+header, footer{
+  background-color: #1e292f;
+  color: #7493a4;
+  color: #b1c5cd;
+  color: #92aeb9;
+}
+
+.mini-panel{
+  background-color: #365363;
+  box-shadow: 5px 5px #1e292e;
+}

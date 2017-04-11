@@ -22,6 +22,14 @@ class ConfigBuffer{
     this.calculateOffset()
   }
 
+  add(text){
+    this.text += text
+  }
+
+  addWithOffset(text){
+    this.text += this.offset + text
+  }
+
   addLine(text){
     this.text += this.offset + text + "\n"
   }
@@ -30,12 +38,8 @@ class ConfigBuffer{
     this.text += this.offset + text + ",\n"
   }
 
-  emptyLine(){
+  nextLine(){
     this.text += "\n"
-  }
-
-  add(text){
-    this.text += text
   }
 
   openObject(name){
@@ -43,14 +47,28 @@ class ConfigBuffer{
     this.dTab(1)
   }
 
-  closeObject(){
-    this.dTab(-1)
-    this.addCsLine("}")
+  openAnonymousObject(name){
+    this.addLine("{")
+    this.dTab(1)
   }
 
-  closeObjectNoComma(){
+  closeObject(withComma){
+    this.dTab(-1)
+    this.addWithOffset("}")
+    if( withComma ) this.add(",")
+    this.add("\n")
+  }
+  
+  closeObjectNoComma(){ // obsolete
     this.dTab(-1)
     this.addLine("}")
+  }
+
+  closeObjectConditionalComma(predicate){ // obsolete
+    this.dTab(-1)
+    this.addWithOffset("}")
+    if( predicate ) this.add(",")
+    this.add("\n")
   }
 
   openArray(name){

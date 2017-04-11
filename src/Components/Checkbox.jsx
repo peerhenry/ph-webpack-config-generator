@@ -31,9 +31,9 @@ class CheckBox extends React.Component{
 
   render(){
     return (
-      <DivMargin>
-        <input type="checkbox" checked={this.state.value} onChange={this.handleChange}/>
-        { this.props.label }
+      <DivMargin onClick={this.handleChange}>
+        <input type="checkbox" checked={this.state.value} readOnly style={{marginRight: '5px', marginLeft: '5px'}}/>
+        <span>{ this.props.label }</span>
         <br/>
       </DivMargin>
     )
