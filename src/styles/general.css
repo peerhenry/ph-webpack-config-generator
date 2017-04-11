@@ -1,0 +1,9 @@
+li{
+  display: block;
+}
+
+button{
+  border: none;
+  cursor: pointer;
+  background: transparent;
+}

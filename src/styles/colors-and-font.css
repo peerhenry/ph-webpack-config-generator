@@ -4,6 +4,7 @@
 
 html{
   font-family: Arial, Helvetica, sans-serif;
+  font-size: 14px;
 }
 
 @font-face {
@@ -35,7 +36,20 @@ header, footer{
   color: #92aeb9;
 }
 
+button{
+  color: #d0dce1;
+}
+
 .mini-panel{
   background-color: #365363;
   box-shadow: 5px 5px #1e292e;
+}
+
+.mini-panel-header{
+  margin-bottom: 5px;
+  color: #d0dce1;
+}
+
+.clickable:hover{
+  background-color: #263036;
 }

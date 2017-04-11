@@ -3,6 +3,7 @@ import styled from 'styled-components'
 
 const DivMargin = styled.div`
   padding: 4px;
+  cursor: pointer;
 
   &:hover {
     background-color: #263036;
@@ -31,8 +32,8 @@ class CheckBox extends React.Component{
 
   render(){
     return (
-      <DivMargin onClick={this.handleChange}>
-        <input type="checkbox" checked={this.state.value} readOnly style={{marginRight: '5px', marginLeft: '5px'}}/>
+      <DivMargin className="clickable" onClick={this.handleChange}>
+        <input type="checkbox" checked={this.state.value} readOnly style={{marginRight: '10px', marginLeft: '5px'}}/>
         <span>{ this.props.label }</span>
         <br/>
       </DivMargin>

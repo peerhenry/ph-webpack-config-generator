@@ -55,13 +55,13 @@ class ConfigStore{
   }
 
   setSimpleEs2015 = () => {
-    everythingFalse()
+    this.everythingFalse()
     this.includeBabel = true
     this.useBabelEs2015 = true
   }
 
   setSimpleReact = () => {
-    setSimpleEs2015()
+    this.setSimpleEs2015()
     this.useBabelStage0 = true
     this.useBabelReact = true
   }
