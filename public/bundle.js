@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 29);
+/******/ 	return __webpack_require__(__webpack_require__.s = 31);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -7436,430 +7436,10 @@ function toComment(sourceMap) {
   return '/*# ' + data + ' */';
 }
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(32).Buffer))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(34).Buffer))
 
 /***/ }),
 /* 3 */
-/***/ (function(module, exports, __webpack_require__) {
-
-/*
-	MIT License http://www.opensource.org/licenses/mit-license.php
-	Author Tobias Koppers @sokra
-*/
-var stylesInDom = {},
-	memoize = function(fn) {
-		var memo;
-		return function () {
-			if (typeof memo === "undefined") memo = fn.apply(this, arguments);
-			return memo;
-		};
-	},
-	isOldIE = memoize(function() {
-		// Test for IE <= 9 as proposed by Browserhacks
-		// @see http://browserhacks.com/#hack-e71d8692f65334173fee715c222cb805
-		// Tests for existence of standard globals is to allow style-loader 
-		// to operate correctly into non-standard environments
-		// @see https://github.com/webpack-contrib/style-loader/issues/177
-		return window && document && document.all && !window.atob;
-	}),
-	getElement = (function(fn) {
-		var memo = {};
-		return function(selector) {
-			if (typeof memo[selector] === "undefined") {
-				memo[selector] = fn.call(this, selector);
-			}
-			return memo[selector]
-		};
-	})(function (styleTarget) {
-		return document.querySelector(styleTarget)
-	}),
-	singletonElement = null,
-	singletonCounter = 0,
-	styleElementsInsertedAtTop = [],
-	fixUrls = __webpack_require__(42);
-
-module.exports = function(list, options) {
-	if(typeof DEBUG !== "undefined" && DEBUG) {
-		if(typeof document !== "object") throw new Error("The style-loader cannot be used in a non-browser environment");
-	}
-
-	options = options || {};
-	options.attrs = typeof options.attrs === "object" ? options.attrs : {};
-
-	// Force single-tag solution on IE6-9, which has a hard limit on the # of <style>
-	// tags it will allow on a page
-	if (typeof options.singleton === "undefined") options.singleton = isOldIE();
-
-	// By default, add <style> tags to the <head> element
-	if (typeof options.insertInto === "undefined") options.insertInto = "head";
-
-	// By default, add <style> tags to the bottom of the target
-	if (typeof options.insertAt === "undefined") options.insertAt = "bottom";
-
-	var styles = listToStyles(list);
-	addStylesToDom(styles, options);
-
-	return function update(newList) {
-		var mayRemove = [];
-		for(var i = 0; i < styles.length; i++) {
-			var item = styles[i];
-			var domStyle = stylesInDom[item.id];
-			domStyle.refs--;
-			mayRemove.push(domStyle);
-		}
-		if(newList) {
-			var newStyles = listToStyles(newList);
-			addStylesToDom(newStyles, options);
-		}
-		for(var i = 0; i < mayRemove.length; i++) {
-			var domStyle = mayRemove[i];
-			if(domStyle.refs === 0) {
-				for(var j = 0; j < domStyle.parts.length; j++)
-					domStyle.parts[j]();
-				delete stylesInDom[domStyle.id];
-			}
-		}
-	};
-};
-
-function addStylesToDom(styles, options) {
-	for(var i = 0; i < styles.length; i++) {
-		var item = styles[i];
-		var domStyle = stylesInDom[item.id];
-		if(domStyle) {
-			domStyle.refs++;
-			for(var j = 0; j < domStyle.parts.length; j++) {
-				domStyle.parts[j](item.parts[j]);
-			}
-			for(; j < item.parts.length; j++) {
-				domStyle.parts.push(addStyle(item.parts[j], options));
-			}
-		} else {
-			var parts = [];
-			for(var j = 0; j < item.parts.length; j++) {
-				parts.push(addStyle(item.parts[j], options));
-			}
-			stylesInDom[item.id] = {id: item.id, refs: 1, parts: parts};
-		}
-	}
-}
-
-function listToStyles(list) {
-	var styles = [];
-	var newStyles = {};
-	for(var i = 0; i < list.length; i++) {
-		var item = list[i];
-		var id = item[0];
-		var css = item[1];
-		var media = item[2];
-		var sourceMap = item[3];
-		var part = {css: css, media: media, sourceMap: sourceMap};
-		if(!newStyles[id])
-			styles.push(newStyles[id] = {id: id, parts: [part]});
-		else
-			newStyles[id].parts.push(part);
-	}
-	return styles;
-}
-
-function insertStyleElement(options, styleElement) {
-	var styleTarget = getElement(options.insertInto)
-	if (!styleTarget) {
-		throw new Error("Couldn't find a style target. This probably means that the value for the 'insertInto' parameter is invalid.");
-	}
-	var lastStyleElementInsertedAtTop = styleElementsInsertedAtTop[styleElementsInsertedAtTop.length - 1];
-	if (options.insertAt === "top") {
-		if(!lastStyleElementInsertedAtTop) {
-			styleTarget.insertBefore(styleElement, styleTarget.firstChild);
-		} else if(lastStyleElementInsertedAtTop.nextSibling) {
-			styleTarget.insertBefore(styleElement, lastStyleElementInsertedAtTop.nextSibling);
-		} else {
-			styleTarget.appendChild(styleElement);
-		}
-		styleElementsInsertedAtTop.push(styleElement);
-	} else if (options.insertAt === "bottom") {
-		styleTarget.appendChild(styleElement);
-	} else {
-		throw new Error("Invalid value for parameter 'insertAt'. Must be 'top' or 'bottom'.");
-	}
-}
-
-function removeStyleElement(styleElement) {
-	styleElement.parentNode.removeChild(styleElement);
-	var idx = styleElementsInsertedAtTop.indexOf(styleElement);
-	if(idx >= 0) {
-		styleElementsInsertedAtTop.splice(idx, 1);
-	}
-}
-
-function createStyleElement(options) {
-	var styleElement = document.createElement("style");
-	options.attrs.type = "text/css";
-
-	attachTagAttrs(styleElement, options.attrs);
-	insertStyleElement(options, styleElement);
-	return styleElement;
-}
-
-function createLinkElement(options) {
-	var linkElement = document.createElement("link");
-	options.attrs.type = "text/css";
-	options.attrs.rel = "stylesheet";
-
-	attachTagAttrs(linkElement, options.attrs);
-	insertStyleElement(options, linkElement);
-	return linkElement;
-}
-
-function attachTagAttrs(element, attrs) {
-	Object.keys(attrs).forEach(function (key) {
-		element.setAttribute(key, attrs[key]);
-	});
-}
-
-function addStyle(obj, options) {
-	var styleElement, update, remove;
-
-	if (options.singleton) {
-		var styleIndex = singletonCounter++;
-		styleElement = singletonElement || (singletonElement = createStyleElement(options));
-		update = applyToSingletonTag.bind(null, styleElement, styleIndex, false);
-		remove = applyToSingletonTag.bind(null, styleElement, styleIndex, true);
-	} else if(obj.sourceMap &&
-		typeof URL === "function" &&
-		typeof URL.createObjectURL === "function" &&
-		typeof URL.revokeObjectURL === "function" &&
-		typeof Blob === "function" &&
-		typeof btoa === "function") {
-		styleElement = createLinkElement(options);
-		update = updateLink.bind(null, styleElement, options);
-		remove = function() {
-			removeStyleElement(styleElement);
-			if(styleElement.href)
-				URL.revokeObjectURL(styleElement.href);
-		};
-	} else {
-		styleElement = createStyleElement(options);
-		update = applyToTag.bind(null, styleElement);
-		remove = function() {
-			removeStyleElement(styleElement);
-		};
-	}
-
-	update(obj);
-
-	return function updateStyle(newObj) {
-		if(newObj) {
-			if(newObj.css === obj.css && newObj.media === obj.media && newObj.sourceMap === obj.sourceMap)
-				return;
-			update(obj = newObj);
-		} else {
-			remove();
-		}
-	};
-}
-
-var replaceText = (function () {
-	var textStore = [];
-
-	return function (index, replacement) {
-		textStore[index] = replacement;
-		return textStore.filter(Boolean).join('\n');
-	};
-})();
-
-function applyToSingletonTag(styleElement, index, remove, obj) {
-	var css = remove ? "" : obj.css;
-
-	if (styleElement.styleSheet) {
-		styleElement.styleSheet.cssText = replaceText(index, css);
-	} else {
-		var cssNode = document.createTextNode(css);
-		var childNodes = styleElement.childNodes;
-		if (childNodes[index]) styleElement.removeChild(childNodes[index]);
-		if (childNodes.length) {
-			styleElement.insertBefore(cssNode, childNodes[index]);
-		} else {
-			styleElement.appendChild(cssNode);
-		}
-	}
-}
-
-function applyToTag(styleElement, obj) {
-	var css = obj.css;
-	var media = obj.media;
-
-	if(media) {
-		styleElement.setAttribute("media", media)
-	}
-
-	if(styleElement.styleSheet) {
-		styleElement.styleSheet.cssText = css;
-	} else {
-		while(styleElement.firstChild) {
-			styleElement.removeChild(styleElement.firstChild);
-		}
-		styleElement.appendChild(document.createTextNode(css));
-	}
-}
-
-function updateLink(linkElement, options, obj) {
-	var css = obj.css;
-	var sourceMap = obj.sourceMap;
-
-	/* If convertToAbsoluteUrls isn't defined, but sourcemaps are enabled
-	and there is no publicPath defined then lets turn convertToAbsoluteUrls
-	on by default.  Otherwise default to the convertToAbsoluteUrls option
-	directly
-	*/
-	var autoFixUrls = options.convertToAbsoluteUrls === undefined && sourceMap;
-
-	if (options.convertToAbsoluteUrls || autoFixUrls){
-		css = fixUrls(css);
-	}
-
-	if(sourceMap) {
-		// http://stackoverflow.com/a/26603875
-		css += "\n/*# sourceMappingURL=data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap)))) + " */";
-	}
-
-	var blob = new Blob([css], { type: "text/css" });
-
-	var oldSrc = linkElement.href;
-
-	linkElement.href = URL.createObjectURL(blob);
-
-	if(oldSrc)
-		URL.revokeObjectURL(oldSrc);
-}
-
-
-/***/ }),
-/* 4 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _templateObject = _taggedTemplateLiteral(['\n  padding: 16px\n'], ['\n  padding: 16px\n']);
-
-var _react = __webpack_require__(0);
-
-var _react2 = _interopRequireDefault(_react);
-
-var _styledComponents = __webpack_require__(1);
-
-var _styledComponents2 = _interopRequireDefault(_styledComponents);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _taggedTemplateLiteral(strings, raw) { return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
-
-exports.default = _styledComponents2.default.div(_templateObject);
-
-/***/ }),
-/* 5 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _class;
-
-var _templateObject = _taggedTemplateLiteral(['\n  padding: 4px;\n  cursor: pointer;\n\n  &:hover {\n    background-color: #263036;\n  }\n'], ['\n  padding: 4px;\n  cursor: pointer;\n\n  &:hover {\n    background-color: #263036;\n  }\n']);
-
-var _react = __webpack_require__(0);
-
-var _react2 = _interopRequireDefault(_react);
-
-var _styledComponents = __webpack_require__(1);
-
-var _styledComponents2 = _interopRequireDefault(_styledComponents);
-
-var _mobxReact = __webpack_require__(6);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-function _taggedTemplateLiteral(strings, raw) { return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
-
-var DivMargin = _styledComponents2.default.div(_templateObject);
-
-var CheckBox = (0, _mobxReact.observer)(_class = function (_React$Component) {
-  _inherits(CheckBox, _React$Component);
-
-  function CheckBox(props) {
-    _classCallCheck(this, CheckBox);
-
-    var _this = _possibleConstructorReturn(this, (CheckBox.__proto__ || Object.getPrototypeOf(CheckBox)).call(this, props));
-
-    _this.handleCheck = _this.handleCheck.bind(_this);
-    return _this;
-  }
-
-  _createClass(CheckBox, [{
-    key: 'getVal',
-    value: function getVal() {
-      return this.props.store[this.props.storeKey];
-    }
-  }, {
-    key: 'handleCheck',
-    value: function handleCheck(e) {
-      //this.props.store.toggle(this.props.storeKey)
-    }
-  }, {
-    key: 'handleSelect',
-    value: function handleSelect(e) {
-      this.props.store.toggle(this.props.storeKey);
-    }
-  }, {
-    key: 'render',
-    value: function render() {
-      var _this2 = this;
-
-      var checked = this.getVal();
-      return _react2.default.createElement(
-        DivMargin,
-        { className: 'clickable', onClick: function onClick(e) {
-            return _this2.handleSelect(e);
-          } },
-        _react2.default.createElement('input', {
-          type: 'checkbox',
-          checked: checked,
-          style: { marginRight: '10px', marginLeft: '5px' },
-          onChange: this.handleCheck }),
-        _react2.default.createElement(
-          'span',
-          null,
-          this.props.label
-        ),
-        _react2.default.createElement('br', null)
-      );
-    }
-  }]);
-
-  return CheckBox;
-}(_react2.default.Component)) || _class;
-
-exports.default = CheckBox;
-
-/***/ }),
-/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 (function webpackUniversalModuleDefinition(root, factory) {
@@ -8881,6 +8461,426 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ ])
 });
 ;
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/*
+	MIT License http://www.opensource.org/licenses/mit-license.php
+	Author Tobias Koppers @sokra
+*/
+var stylesInDom = {},
+	memoize = function(fn) {
+		var memo;
+		return function () {
+			if (typeof memo === "undefined") memo = fn.apply(this, arguments);
+			return memo;
+		};
+	},
+	isOldIE = memoize(function() {
+		// Test for IE <= 9 as proposed by Browserhacks
+		// @see http://browserhacks.com/#hack-e71d8692f65334173fee715c222cb805
+		// Tests for existence of standard globals is to allow style-loader 
+		// to operate correctly into non-standard environments
+		// @see https://github.com/webpack-contrib/style-loader/issues/177
+		return window && document && document.all && !window.atob;
+	}),
+	getElement = (function(fn) {
+		var memo = {};
+		return function(selector) {
+			if (typeof memo[selector] === "undefined") {
+				memo[selector] = fn.call(this, selector);
+			}
+			return memo[selector]
+		};
+	})(function (styleTarget) {
+		return document.querySelector(styleTarget)
+	}),
+	singletonElement = null,
+	singletonCounter = 0,
+	styleElementsInsertedAtTop = [],
+	fixUrls = __webpack_require__(44);
+
+module.exports = function(list, options) {
+	if(typeof DEBUG !== "undefined" && DEBUG) {
+		if(typeof document !== "object") throw new Error("The style-loader cannot be used in a non-browser environment");
+	}
+
+	options = options || {};
+	options.attrs = typeof options.attrs === "object" ? options.attrs : {};
+
+	// Force single-tag solution on IE6-9, which has a hard limit on the # of <style>
+	// tags it will allow on a page
+	if (typeof options.singleton === "undefined") options.singleton = isOldIE();
+
+	// By default, add <style> tags to the <head> element
+	if (typeof options.insertInto === "undefined") options.insertInto = "head";
+
+	// By default, add <style> tags to the bottom of the target
+	if (typeof options.insertAt === "undefined") options.insertAt = "bottom";
+
+	var styles = listToStyles(list);
+	addStylesToDom(styles, options);
+
+	return function update(newList) {
+		var mayRemove = [];
+		for(var i = 0; i < styles.length; i++) {
+			var item = styles[i];
+			var domStyle = stylesInDom[item.id];
+			domStyle.refs--;
+			mayRemove.push(domStyle);
+		}
+		if(newList) {
+			var newStyles = listToStyles(newList);
+			addStylesToDom(newStyles, options);
+		}
+		for(var i = 0; i < mayRemove.length; i++) {
+			var domStyle = mayRemove[i];
+			if(domStyle.refs === 0) {
+				for(var j = 0; j < domStyle.parts.length; j++)
+					domStyle.parts[j]();
+				delete stylesInDom[domStyle.id];
+			}
+		}
+	};
+};
+
+function addStylesToDom(styles, options) {
+	for(var i = 0; i < styles.length; i++) {
+		var item = styles[i];
+		var domStyle = stylesInDom[item.id];
+		if(domStyle) {
+			domStyle.refs++;
+			for(var j = 0; j < domStyle.parts.length; j++) {
+				domStyle.parts[j](item.parts[j]);
+			}
+			for(; j < item.parts.length; j++) {
+				domStyle.parts.push(addStyle(item.parts[j], options));
+			}
+		} else {
+			var parts = [];
+			for(var j = 0; j < item.parts.length; j++) {
+				parts.push(addStyle(item.parts[j], options));
+			}
+			stylesInDom[item.id] = {id: item.id, refs: 1, parts: parts};
+		}
+	}
+}
+
+function listToStyles(list) {
+	var styles = [];
+	var newStyles = {};
+	for(var i = 0; i < list.length; i++) {
+		var item = list[i];
+		var id = item[0];
+		var css = item[1];
+		var media = item[2];
+		var sourceMap = item[3];
+		var part = {css: css, media: media, sourceMap: sourceMap};
+		if(!newStyles[id])
+			styles.push(newStyles[id] = {id: id, parts: [part]});
+		else
+			newStyles[id].parts.push(part);
+	}
+	return styles;
+}
+
+function insertStyleElement(options, styleElement) {
+	var styleTarget = getElement(options.insertInto)
+	if (!styleTarget) {
+		throw new Error("Couldn't find a style target. This probably means that the value for the 'insertInto' parameter is invalid.");
+	}
+	var lastStyleElementInsertedAtTop = styleElementsInsertedAtTop[styleElementsInsertedAtTop.length - 1];
+	if (options.insertAt === "top") {
+		if(!lastStyleElementInsertedAtTop) {
+			styleTarget.insertBefore(styleElement, styleTarget.firstChild);
+		} else if(lastStyleElementInsertedAtTop.nextSibling) {
+			styleTarget.insertBefore(styleElement, lastStyleElementInsertedAtTop.nextSibling);
+		} else {
+			styleTarget.appendChild(styleElement);
+		}
+		styleElementsInsertedAtTop.push(styleElement);
+	} else if (options.insertAt === "bottom") {
+		styleTarget.appendChild(styleElement);
+	} else {
+		throw new Error("Invalid value for parameter 'insertAt'. Must be 'top' or 'bottom'.");
+	}
+}
+
+function removeStyleElement(styleElement) {
+	styleElement.parentNode.removeChild(styleElement);
+	var idx = styleElementsInsertedAtTop.indexOf(styleElement);
+	if(idx >= 0) {
+		styleElementsInsertedAtTop.splice(idx, 1);
+	}
+}
+
+function createStyleElement(options) {
+	var styleElement = document.createElement("style");
+	options.attrs.type = "text/css";
+
+	attachTagAttrs(styleElement, options.attrs);
+	insertStyleElement(options, styleElement);
+	return styleElement;
+}
+
+function createLinkElement(options) {
+	var linkElement = document.createElement("link");
+	options.attrs.type = "text/css";
+	options.attrs.rel = "stylesheet";
+
+	attachTagAttrs(linkElement, options.attrs);
+	insertStyleElement(options, linkElement);
+	return linkElement;
+}
+
+function attachTagAttrs(element, attrs) {
+	Object.keys(attrs).forEach(function (key) {
+		element.setAttribute(key, attrs[key]);
+	});
+}
+
+function addStyle(obj, options) {
+	var styleElement, update, remove;
+
+	if (options.singleton) {
+		var styleIndex = singletonCounter++;
+		styleElement = singletonElement || (singletonElement = createStyleElement(options));
+		update = applyToSingletonTag.bind(null, styleElement, styleIndex, false);
+		remove = applyToSingletonTag.bind(null, styleElement, styleIndex, true);
+	} else if(obj.sourceMap &&
+		typeof URL === "function" &&
+		typeof URL.createObjectURL === "function" &&
+		typeof URL.revokeObjectURL === "function" &&
+		typeof Blob === "function" &&
+		typeof btoa === "function") {
+		styleElement = createLinkElement(options);
+		update = updateLink.bind(null, styleElement, options);
+		remove = function() {
+			removeStyleElement(styleElement);
+			if(styleElement.href)
+				URL.revokeObjectURL(styleElement.href);
+		};
+	} else {
+		styleElement = createStyleElement(options);
+		update = applyToTag.bind(null, styleElement);
+		remove = function() {
+			removeStyleElement(styleElement);
+		};
+	}
+
+	update(obj);
+
+	return function updateStyle(newObj) {
+		if(newObj) {
+			if(newObj.css === obj.css && newObj.media === obj.media && newObj.sourceMap === obj.sourceMap)
+				return;
+			update(obj = newObj);
+		} else {
+			remove();
+		}
+	};
+}
+
+var replaceText = (function () {
+	var textStore = [];
+
+	return function (index, replacement) {
+		textStore[index] = replacement;
+		return textStore.filter(Boolean).join('\n');
+	};
+})();
+
+function applyToSingletonTag(styleElement, index, remove, obj) {
+	var css = remove ? "" : obj.css;
+
+	if (styleElement.styleSheet) {
+		styleElement.styleSheet.cssText = replaceText(index, css);
+	} else {
+		var cssNode = document.createTextNode(css);
+		var childNodes = styleElement.childNodes;
+		if (childNodes[index]) styleElement.removeChild(childNodes[index]);
+		if (childNodes.length) {
+			styleElement.insertBefore(cssNode, childNodes[index]);
+		} else {
+			styleElement.appendChild(cssNode);
+		}
+	}
+}
+
+function applyToTag(styleElement, obj) {
+	var css = obj.css;
+	var media = obj.media;
+
+	if(media) {
+		styleElement.setAttribute("media", media)
+	}
+
+	if(styleElement.styleSheet) {
+		styleElement.styleSheet.cssText = css;
+	} else {
+		while(styleElement.firstChild) {
+			styleElement.removeChild(styleElement.firstChild);
+		}
+		styleElement.appendChild(document.createTextNode(css));
+	}
+}
+
+function updateLink(linkElement, options, obj) {
+	var css = obj.css;
+	var sourceMap = obj.sourceMap;
+
+	/* If convertToAbsoluteUrls isn't defined, but sourcemaps are enabled
+	and there is no publicPath defined then lets turn convertToAbsoluteUrls
+	on by default.  Otherwise default to the convertToAbsoluteUrls option
+	directly
+	*/
+	var autoFixUrls = options.convertToAbsoluteUrls === undefined && sourceMap;
+
+	if (options.convertToAbsoluteUrls || autoFixUrls){
+		css = fixUrls(css);
+	}
+
+	if(sourceMap) {
+		// http://stackoverflow.com/a/26603875
+		css += "\n/*# sourceMappingURL=data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap)))) + " */";
+	}
+
+	var blob = new Blob([css], { type: "text/css" });
+
+	var oldSrc = linkElement.href;
+
+	linkElement.href = URL.createObjectURL(blob);
+
+	if(oldSrc)
+		URL.revokeObjectURL(oldSrc);
+}
+
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _templateObject = _taggedTemplateLiteral(['\n  padding: 16px\n'], ['\n  padding: 16px\n']);
+
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _styledComponents = __webpack_require__(1);
+
+var _styledComponents2 = _interopRequireDefault(_styledComponents);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _taggedTemplateLiteral(strings, raw) { return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+
+exports.default = _styledComponents2.default.div(_templateObject);
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _class;
+
+var _templateObject = _taggedTemplateLiteral(['\n  padding: 10px 0;\n  cursor: pointer;\n  font-size: 16px;\n  position: relative;\n  border-color: #365363\n\n  &:hover {\n    background-color: #263036;\n    border-color: #263036;\n  }\n'], ['\n  padding: 10px 0;\n  cursor: pointer;\n  font-size: 16px;\n  position: relative;\n  border-color: #365363\n\n  &:hover {\n    background-color: #263036;\n    border-color: #263036;\n  }\n']);
+
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _styledComponents = __webpack_require__(1);
+
+var _styledComponents2 = _interopRequireDefault(_styledComponents);
+
+var _mobxReact = __webpack_require__(3);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+function _taggedTemplateLiteral(strings, raw) { return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+
+var DivMargin = _styledComponents2.default.div(_templateObject);
+
+var CheckBox = (0, _mobxReact.observer)(_class = function (_React$Component) {
+  _inherits(CheckBox, _React$Component);
+
+  function CheckBox(props) {
+    _classCallCheck(this, CheckBox);
+
+    var _this = _possibleConstructorReturn(this, (CheckBox.__proto__ || Object.getPrototypeOf(CheckBox)).call(this, props));
+
+    _this.handleCheck = _this.handleCheck.bind(_this);
+    return _this;
+  }
+
+  _createClass(CheckBox, [{
+    key: 'getVal',
+    value: function getVal() {
+      return this.props.store[this.props.storeKey];
+    }
+  }, {
+    key: 'handleCheck',
+    value: function handleCheck(e) {
+      //this.props.store.toggle(this.props.storeKey)
+    }
+  }, {
+    key: 'handleSelect',
+    value: function handleSelect(e) {
+      this.props.store.toggle(this.props.storeKey);
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      var _this2 = this;
+
+      var checked = this.getVal();
+      return _react2.default.createElement(
+        DivMargin,
+        { className: 'clickable', onClick: function onClick(e) {
+            return _this2.handleSelect(e);
+          } },
+        _react2.default.createElement('input', {
+          type: 'checkbox',
+          checked: checked,
+          style: { marginRight: '10px', marginLeft: '5px' },
+          onChange: this.handleCheck }),
+        _react2.default.createElement(
+          'span',
+          null,
+          this.props.label
+        ),
+        _react2.default.createElement('br', null)
+      );
+    }
+  }]);
+
+  return CheckBox;
+}(_react2.default.Component)) || _class;
+
+exports.default = CheckBox;
 
 /***/ }),
 /* 7 */
@@ -11889,25 +11889,25 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _mobxReact = __webpack_require__(6);
+var _mobxReact = __webpack_require__(3);
 
 var _styledComponents = __webpack_require__(1);
 
 var _styledComponents2 = _interopRequireDefault(_styledComponents);
 
-var _ConfigStore = __webpack_require__(20);
+var _ConfigStore = __webpack_require__(21);
 
 var _ConfigStore2 = _interopRequireDefault(_ConfigStore);
 
-var _Header = __webpack_require__(27);
+var _Header = __webpack_require__(29);
 
 var _Header2 = _interopRequireDefault(_Header);
 
-var _ConfigPage = __webpack_require__(18);
+var _ConfigPage = __webpack_require__(19);
 
 var _ConfigPage2 = _interopRequireDefault(_ConfigPage);
 
-var _Footer = __webpack_require__(26);
+var _Footer = __webpack_require__(28);
 
 var _Footer2 = _interopRequireDefault(_Footer);
 
@@ -11915,7 +11915,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _objectDestructuringEmpty(obj) { if (obj == null) throw new TypeError("Cannot destructure undefined"); }
 
-__webpack_require__(30);
+__webpack_require__(32);
 
 
 var App = function App(_ref) {
@@ -12140,6 +12140,111 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _class;
+
+var _templateObject = _taggedTemplateLiteral(['\n  padding: 10px 0;\n  cursor: pointer;\n  font-size: 16px;\n  position: relative;\n  border-color: #365363\n\n  &:hover {\n    background-color: #263036;\n    border-color: #263036;\n  }\n'], ['\n  padding: 10px 0;\n  cursor: pointer;\n  font-size: 16px;\n  position: relative;\n  border-color: #365363\n\n  &:hover {\n    background-color: #263036;\n    border-color: #263036;\n  }\n']),
+    _templateObject2 = _taggedTemplateLiteral(['\n  width: 0; \n  height: 0; \n  border-top: 18px solid transparent;\n  border-bottom: 18px solid transparent;\n  border-left: 24px solid #365363;\n  position: absolute;\n  top: 0;\n  left: 100%;\n'], ['\n  width: 0; \n  height: 0; \n  border-top: 18px solid transparent;\n  border-bottom: 18px solid transparent;\n  border-left: 24px solid #365363;\n  position: absolute;\n  top: 0;\n  left: 100%;\n']),
+    _templateObject3 = _taggedTemplateLiteral(['\n  width: 0; \n  height: 0; \n  border-top: 18px solid transparent;\n  border-bottom: 18px solid transparent;\n  border-left: 24px solid #1e292e;\n  position: absolute;\n  top: 4px;\n  right: -30px;\n  z-index: -1;\n'], ['\n  width: 0; \n  height: 0; \n  border-top: 18px solid transparent;\n  border-bottom: 18px solid transparent;\n  border-left: 24px solid #1e292e;\n  position: absolute;\n  top: 4px;\n  right: -30px;\n  z-index: -1;\n']);
+
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _styledComponents = __webpack_require__(1);
+
+var _styledComponents2 = _interopRequireDefault(_styledComponents);
+
+var _mobxReact = __webpack_require__(3);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+function _taggedTemplateLiteral(strings, raw) { return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+
+var DivMargin = _styledComponents2.default.div(_templateObject);
+
+var Trianlge = _styledComponents2.default.div(_templateObject2);
+
+var ShadowTrianlge = _styledComponents2.default.div(_templateObject3);
+
+var LoaderSelector = (0, _mobxReact.observer)(_class = function (_React$Component) {
+  _inherits(LoaderSelector, _React$Component);
+
+  function LoaderSelector(props) {
+    _classCallCheck(this, LoaderSelector);
+
+    var _this = _possibleConstructorReturn(this, (LoaderSelector.__proto__ || Object.getPrototypeOf(LoaderSelector)).call(this, props));
+
+    _this.handleCheck = _this.handleCheck.bind(_this);
+    return _this;
+  }
+
+  _createClass(LoaderSelector, [{
+    key: 'getVal',
+    value: function getVal() {
+      return this.props.store[this.props.storeKey];
+    }
+  }, {
+    key: 'handleCheck',
+    value: function handleCheck(e) {
+      this.props.store.toggle(this.props.storeKey);
+    }
+  }, {
+    key: 'handleSelect',
+    value: function handleSelect(e) {
+      this.props.store.selectLoader(this.props.storeKey);
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      var _this2 = this;
+
+      var checked = this.getVal();
+      var selected = this.props.store.selectedLoader === this.props.storeKey;
+      return _react2.default.createElement(
+        DivMargin,
+        { className: "clickable" + (selected ? ' selected' : ''), onClick: function onClick(e) {
+            return _this2.handleSelect(e);
+          } },
+        _react2.default.createElement('input', {
+          type: 'checkbox',
+          checked: checked,
+          style: { marginRight: '10px', marginLeft: '5px' },
+          onChange: this.handleCheck }),
+        _react2.default.createElement(
+          'span',
+          null,
+          this.props.label
+        ),
+        selected ? [_react2.default.createElement(ShadowTrianlge, { key: 1 }), _react2.default.createElement(Trianlge, { key: 2 })] : '',
+        _react2.default.createElement('br', null)
+      );
+    }
+  }]);
+
+  return LoaderSelector;
+}(_react2.default.Component)) || _class;
+
+exports.default = LoaderSelector;
+
+/***/ }),
+/* 15 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
 var _templateObject = _taggedTemplateLiteral(['\n  padding: 8px 2%;\n\n  &:after {\n    content: "";\n    display: table;\n    clear: both;\n  }\n'], ['\n  padding: 8px 2%;\n\n  &:after {\n    content: "";\n    display: table;\n    clear: both;\n  }\n']);
 
 var _react = __webpack_require__(0);
@@ -12168,7 +12273,7 @@ var MiniPanel = function MiniPanel(_ref) {
 exports.default = MiniPanel;
 
 /***/ }),
-/* 15 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12196,7 +12301,7 @@ var MiniPanelHeader = function MiniPanelHeader(_ref) {
 exports.default = MiniPanelHeader;
 
 /***/ }),
-/* 16 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12336,7 +12441,7 @@ var ConfigBuffer = function () {
 exports.default = ConfigBuffer;
 
 /***/ }),
-/* 17 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12346,12 +12451,13 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _ConfigBuffer = __webpack_require__(16);
+var _ConfigBuffer = __webpack_require__(17);
 
 var _ConfigBuffer2 = _interopRequireDefault(_ConfigBuffer);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+// attach format function to string
 if (!String.prototype.format) {
   String.prototype.format = function () {
     var args = arguments;
@@ -12413,7 +12519,14 @@ var insertLoaders = function insertLoaders(store, buffer) {
   if (store.includeCss) {
     buffer.openAnonymousObject();
     buffer.addCsLine('test: /\.css?$/');
-    buffer.addLine('use: [{0}style-loader{0}, {0}css-loader{0}]');
+    var loaders = ['style-loader', 'css-loader'];
+    if (store.usePostCss) loaders.push('postcss-loader');
+    var cssLine = loaders.map(function (i) {
+      return '{0}' + i + '{0}, ';
+    }).reduce(function (agr, next) {
+      return agr += next;
+    }).slice(0, -2);
+    buffer.addLine('use: [' + cssLine + ']');
     var _withComma = store.includeFileLoader;
     buffer.closeObject(_withComma);
   }
@@ -12450,7 +12563,7 @@ var generateConfig = window.generateConfig = function (store) {
 exports.default = generateConfig;
 
 /***/ }),
-/* 18 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12464,7 +12577,7 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _mobxReact = __webpack_require__(6);
+var _mobxReact = __webpack_require__(3);
 
 var _styledComponents = __webpack_require__(1);
 
@@ -12474,7 +12587,7 @@ var _EditPanel = __webpack_require__(22);
 
 var _EditPanel2 = _interopRequireDefault(_EditPanel);
 
-var _ConfigResult = __webpack_require__(19);
+var _ConfigResult = __webpack_require__(20);
 
 var _ConfigResult2 = _interopRequireDefault(_ConfigResult);
 
@@ -12515,7 +12628,7 @@ var ConfigPage = function ConfigPage(_ref) {
 exports.default = ConfigPage;
 
 /***/ }),
-/* 19 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12535,11 +12648,11 @@ var _styledComponents = __webpack_require__(1);
 
 var _styledComponents2 = _interopRequireDefault(_styledComponents);
 
-var _PaddedDiv = __webpack_require__(4);
+var _PaddedDiv = __webpack_require__(5);
 
 var _PaddedDiv2 = _interopRequireDefault(_PaddedDiv);
 
-var _ConfigGenerator = __webpack_require__(17);
+var _ConfigGenerator = __webpack_require__(18);
 
 var _ConfigGenerator2 = _interopRequireDefault(_ConfigGenerator);
 
@@ -12573,7 +12686,7 @@ var ConfigResult = function ConfigResult(_ref) {
 exports.default = ConfigResult;
 
 /***/ }),
-/* 20 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12585,7 +12698,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _desc, _value, _class, _descriptor, _desc2, _value2, _class3, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _descriptor6, _descriptor7, _descriptor8, _descriptor9, _descriptor10;
+var _desc, _value, _class, _descriptor, _desc2, _value2, _class3, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _descriptor6, _descriptor7, _descriptor8, _descriptor9, _descriptor10, _descriptor11, _descriptor12, _descriptor13;
 
 var _mobx = __webpack_require__(9);
 
@@ -12670,17 +12783,19 @@ var ConfigStore = (_class3 = function () {
       return _this.includeBabel || _this.includeCss || _this.includeFileLoader;
     };
 
-    _initDefineProp(this, "useBabelDecoratorsLegacy", _descriptor7, this);
+    _initDefineProp(this, "selectedLoader", _descriptor7, this);
+
+    _initDefineProp(this, "useBabelDecoratorsLegacy", _descriptor8, this);
 
     this.usesPlugins = function () {
       return _this.useBabelDecoratorsLegacy;
     };
 
-    _initDefineProp(this, "useBabelEs2015", _descriptor8, this);
+    _initDefineProp(this, "useBabelEs2015", _descriptor9, this);
 
-    _initDefineProp(this, "useBabelStage0", _descriptor9, this);
+    _initDefineProp(this, "useBabelStage0", _descriptor10, this);
 
-    _initDefineProp(this, "useBabelReact", _descriptor10, this);
+    _initDefineProp(this, "useBabelReact", _descriptor11, this);
 
     this.usesPresets = function () {
       return _this.useBabelEs2015 || _this.useBabelStage0 || _this.useBabelReact;
@@ -12690,6 +12805,10 @@ var ConfigStore = (_class3 = function () {
       return _this.usesPresets() || _this.usesPlugins();
     };
 
+    _initDefineProp(this, "usePostCss", _descriptor12, this);
+
+    _initDefineProp(this, "useExtractTextPlugin", _descriptor13, this);
+
     this.noLoaders = function () {
       _this.includeBabel = false;
       _this.includeCss = false;
@@ -12698,10 +12817,14 @@ var ConfigStore = (_class3 = function () {
 
     this.everythingFalse = function () {
       _this.noLoaders();
+      // babel
       _this.useBabelDecoratorsLegacy = false;
       _this.useBabelEs2015 = false;
       _this.useBabelStage0 = false;
       _this.useBabelReact = false;
+      // css
+      _this.usePostCss = false;
+      _this.useExtractTextPlugin = false;
     };
 
     this.setSimpleEs2015 = function () {
@@ -12717,23 +12840,31 @@ var ConfigStore = (_class3 = function () {
     };
   }
 
-  // general settings
+  // === 2. general settings
 
 
-  // loaders
-
-
-  // babel plugins
-
-
-  // babel presets
+  // === 3. loaders
 
 
   _createClass(ConfigStore, [{
+    key: "selectLoader",
+    value: function selectLoader(loader) {
+      this.selectedLoader = loader;
+    }
+
+    // ====== 3.1.1 babel plugins
+
+
+    // ====== 3.1.2 babel presets
+
+
+    // ====== 3.2 css options
+
+  }, {
     key: "toggle",
 
 
-    // Setter methods
+    // === 4. Setter methods
     value: function toggle(name) {
       this[name] = !this[name];
     }
@@ -12765,25 +12896,40 @@ var ConfigStore = (_class3 = function () {
   initializer: function initializer() {
     return false;
   }
-}), _descriptor7 = _applyDecoratedDescriptor(_class3.prototype, "useBabelDecoratorsLegacy", [_mobx.observable], {
+}), _descriptor7 = _applyDecoratedDescriptor(_class3.prototype, "selectedLoader", [_mobx.observable], {
+  enumerable: true,
+  initializer: function initializer() {
+    return 'includeBabel';
+  }
+}), _descriptor8 = _applyDecoratedDescriptor(_class3.prototype, "useBabelDecoratorsLegacy", [_mobx.observable], {
   enumerable: true,
   initializer: function initializer() {
     return false;
   }
-}), _descriptor8 = _applyDecoratedDescriptor(_class3.prototype, "useBabelEs2015", [_mobx.observable], {
+}), _descriptor9 = _applyDecoratedDescriptor(_class3.prototype, "useBabelEs2015", [_mobx.observable], {
   enumerable: true,
   initializer: function initializer() {
     return true;
   }
-}), _descriptor9 = _applyDecoratedDescriptor(_class3.prototype, "useBabelStage0", [_mobx.observable], {
+}), _descriptor10 = _applyDecoratedDescriptor(_class3.prototype, "useBabelStage0", [_mobx.observable], {
   enumerable: true,
   initializer: function initializer() {
     return true;
   }
-}), _descriptor10 = _applyDecoratedDescriptor(_class3.prototype, "useBabelReact", [_mobx.observable], {
+}), _descriptor11 = _applyDecoratedDescriptor(_class3.prototype, "useBabelReact", [_mobx.observable], {
   enumerable: true,
   initializer: function initializer() {
     return true;
+  }
+}), _descriptor12 = _applyDecoratedDescriptor(_class3.prototype, "usePostCss", [_mobx.observable], {
+  enumerable: true,
+  initializer: function initializer() {
+    return false;
+  }
+}), _descriptor13 = _applyDecoratedDescriptor(_class3.prototype, "useExtractTextPlugin", [_mobx.observable], {
+  enumerable: true,
+  initializer: function initializer() {
+    return false;
   }
 })), _class3);
 
@@ -12795,62 +12941,6 @@ exports.default = store;
 /*autorun(() => {
   console.log('store: ' + JSON.stringify(store))
 })//*/
-
-/***/ }),
-/* 21 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _react = __webpack_require__(0);
-
-var _react2 = _interopRequireDefault(_react);
-
-var _CheckBox = __webpack_require__(5);
-
-var _CheckBox2 = _interopRequireDefault(_CheckBox);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _objectDestructuringEmpty(obj) { if (obj == null) throw new TypeError("Cannot destructure undefined"); }
-
-var BabelOptions = function BabelOptions(_ref) {
-  _objectDestructuringEmpty(_ref);
-
-  return _react2.default.createElement(
-    'div',
-    null,
-    _react2.default.createElement(
-      'h4',
-      null,
-      'Presets'
-    ),
-    _react2.default.createElement(
-      'ul',
-      null,
-      _react2.default.createElement(_CheckBox2.default, { store: store, storeKey: 'useBabelEs2015', label: 'ES2015' }),
-      _react2.default.createElement(_CheckBox2.default, { store: store, storeKey: 'useBabelStage0', label: 'Stage-0' }),
-      _react2.default.createElement(_CheckBox2.default, { store: store, storeKey: 'useBabelReact', label: 'React' })
-    ),
-    _react2.default.createElement(
-      'h4',
-      null,
-      'Plugins'
-    ),
-    _react2.default.createElement(
-      'ul',
-      null,
-      _react2.default.createElement(_CheckBox2.default, { store: store, storeKey: 'useBabelDecoratorsLegacy', label: 'Legacy decorators' })
-    )
-  );
-};
-
-exports.default = BabelOptions;
 
 /***/ }),
 /* 22 */
@@ -12871,7 +12961,9 @@ var _styledComponents = __webpack_require__(1);
 
 var _styledComponents2 = _interopRequireDefault(_styledComponents);
 
-var _PaddedDiv = __webpack_require__(4);
+var _mobxReact = __webpack_require__(3);
+
+var _PaddedDiv = __webpack_require__(5);
 
 var _PaddedDiv2 = _interopRequireDefault(_PaddedDiv);
 
@@ -12879,15 +12971,15 @@ var _FreeFieldTableRow = __webpack_require__(13);
 
 var _FreeFieldTableRow2 = _interopRequireDefault(_FreeFieldTableRow);
 
-var _CheckBox = __webpack_require__(5);
+var _CheckBox = __webpack_require__(6);
 
 var _CheckBox2 = _interopRequireDefault(_CheckBox);
 
-var _MiniPanel = __webpack_require__(14);
+var _MiniPanel = __webpack_require__(15);
 
 var _MiniPanel2 = _interopRequireDefault(_MiniPanel);
 
-var _MiniPanelHeader = __webpack_require__(15);
+var _MiniPanelHeader = __webpack_require__(16);
 
 var _MiniPanelHeader2 = _interopRequireDefault(_MiniPanelHeader);
 
@@ -12895,22 +12987,47 @@ var _EntryOutputFields = __webpack_require__(23);
 
 var _EntryOutputFields2 = _interopRequireDefault(_EntryOutputFields);
 
-var _PresetSelection = __webpack_require__(25);
+var _PresetSelection = __webpack_require__(27);
 
 var _PresetSelection2 = _interopRequireDefault(_PresetSelection);
 
-var _LoaderSelection = __webpack_require__(24);
+var _LoaderSelection = __webpack_require__(26);
 
 var _LoaderSelection2 = _interopRequireDefault(_LoaderSelection);
 
-var _BabelOptions = __webpack_require__(21);
+var _BabelOptions = __webpack_require__(24);
 
 var _BabelOptions2 = _interopRequireDefault(_BabelOptions);
 
+var _CssOptions = __webpack_require__(25);
+
+var _CssOptions2 = _interopRequireDefault(_CssOptions);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var EditPanel = function EditPanel(_ref) {
+var LoaderOptionsSwitch = function LoaderOptionsSwitch(_ref) {
   var store = _ref.store;
+
+  switch (store.selectedLoader) {
+    case 'includeBabel':
+      return _react2.default.createElement(_BabelOptions2.default, { store: store });
+    case 'includeCss':
+      return _react2.default.createElement(_CssOptions2.default, { store: store });
+    case 'includeFileLoader':
+      return _react2.default.createElement(
+        'span',
+        null,
+        'No options for file loader'
+      );
+    default:
+      return false;
+  }
+};
+
+var LoaderOptionsOberver = (0, _mobxReact.observer)(LoaderOptionsSwitch);
+
+var EditPanel = function EditPanel(_ref2) {
+  var store = _ref2.store;
   return _react2.default.createElement(
     'div',
     { style: { margin: '0', height: '100%' } },
@@ -12929,7 +13046,7 @@ var EditPanel = function EditPanel(_ref) {
     ),
     _react2.default.createElement(
       'div',
-      { className: 'grid grid-pad', style: { maxWidth: 'none', overflow: 'visible' } },
+      { className: 'grid grid-pad', style: { maxWidth: 'none', overflow: 'visible', marginBottom: '20px' } },
       _react2.default.createElement(
         'div',
         { className: 'col-1-3' },
@@ -12940,7 +13057,7 @@ var EditPanel = function EditPanel(_ref) {
             _MiniPanelHeader2.default,
             null,
             _react2.default.createElement(
-              'h3',
+              'h2',
               null,
               'Presets'
             )
@@ -12958,7 +13075,7 @@ var EditPanel = function EditPanel(_ref) {
             _MiniPanelHeader2.default,
             null,
             _react2.default.createElement(
-              'h3',
+              'h2',
               null,
               'Loaders'
             )
@@ -12976,12 +13093,12 @@ var EditPanel = function EditPanel(_ref) {
             _MiniPanelHeader2.default,
             null,
             _react2.default.createElement(
-              'h3',
+              'h2',
               null,
               'Loader options'
             )
           ),
-          _react2.default.createElement(_BabelOptions2.default, { store: store })
+          _react2.default.createElement(LoaderOptionsOberver, { store: store })
         )
       )
     )
@@ -13062,9 +13179,101 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _CheckBox = __webpack_require__(5);
+var _CheckBox = __webpack_require__(6);
 
 var _CheckBox2 = _interopRequireDefault(_CheckBox);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _objectDestructuringEmpty(obj) { if (obj == null) throw new TypeError("Cannot destructure undefined"); }
+
+var BabelOptions = function BabelOptions(_ref) {
+  _objectDestructuringEmpty(_ref);
+
+  return _react2.default.createElement(
+    'div',
+    null,
+    _react2.default.createElement(
+      'h4',
+      null,
+      'Presets'
+    ),
+    _react2.default.createElement(
+      'ul',
+      null,
+      _react2.default.createElement(_CheckBox2.default, { store: store, storeKey: 'useBabelEs2015', label: 'ES2015' }),
+      _react2.default.createElement(_CheckBox2.default, { store: store, storeKey: 'useBabelStage0', label: 'Stage-0' }),
+      _react2.default.createElement(_CheckBox2.default, { store: store, storeKey: 'useBabelReact', label: 'React' })
+    ),
+    _react2.default.createElement(
+      'h4',
+      null,
+      'Plugins'
+    ),
+    _react2.default.createElement(
+      'ul',
+      null,
+      _react2.default.createElement(_CheckBox2.default, { store: store, storeKey: 'useBabelDecoratorsLegacy', label: 'Legacy decorators' })
+    )
+  );
+};
+
+exports.default = BabelOptions;
+
+/***/ }),
+/* 25 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _CheckBox = __webpack_require__(6);
+
+var _CheckBox2 = _interopRequireDefault(_CheckBox);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var CssOptions = function CssOptions(_ref) {
+  var store = _ref.store;
+  return _react2.default.createElement(
+    'div',
+    null,
+    _react2.default.createElement(
+      'ul',
+      null,
+      _react2.default.createElement(_CheckBox2.default, { store: store, storeKey: 'usePostCss', label: 'PostCss' })
+    )
+  );
+};
+
+exports.default = CssOptions;
+
+/***/ }),
+/* 26 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _LoaderSelector = __webpack_require__(14);
+
+var _LoaderSelector2 = _interopRequireDefault(_LoaderSelector);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -13073,16 +13282,16 @@ var LoaderSelection = function LoaderSelection(_ref) {
   return _react2.default.createElement(
     'ul',
     null,
-    _react2.default.createElement(_CheckBox2.default, { store: store, storeKey: 'includeBabel', label: 'Babel' }),
-    _react2.default.createElement(_CheckBox2.default, { store: store, storeKey: 'includeCss', label: 'Css' }),
-    _react2.default.createElement(_CheckBox2.default, { store: store, storeKey: 'includeFileLoader', label: 'File' })
+    _react2.default.createElement(_LoaderSelector2.default, { store: store, storeKey: 'includeBabel', label: 'Babel' }),
+    _react2.default.createElement(_LoaderSelector2.default, { store: store, storeKey: 'includeCss', label: 'Css' }),
+    _react2.default.createElement(_LoaderSelector2.default, { store: store, storeKey: 'includeFileLoader', label: 'File' })
   );
 };
 
 exports.default = LoaderSelection;
 
 /***/ }),
-/* 25 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -13166,7 +13375,7 @@ var PresetSelection = function PresetSelection(_ref2) {
 exports.default = PresetSelection;
 
 /***/ }),
-/* 26 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -13176,17 +13385,27 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _templateObject = _taggedTemplateLiteral(['\n  font-weight: bold;\n  color: orange;\n\n  &:hover {\n    color: white\n  }\n'], ['\n  font-weight: bold;\n  color: orange;\n\n  &:hover {\n    color: white\n  }\n']);
+
 var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _PaddedDiv = __webpack_require__(4);
+var _styledComponents = __webpack_require__(1);
+
+var _styledComponents2 = _interopRequireDefault(_styledComponents);
+
+var _PaddedDiv = __webpack_require__(5);
 
 var _PaddedDiv2 = _interopRequireDefault(_PaddedDiv);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _objectDestructuringEmpty(obj) { if (obj == null) throw new TypeError("Cannot destructure undefined"); }
+
+function _taggedTemplateLiteral(strings, raw) { return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+
+var GitHub = _styledComponents2.default.span(_templateObject);
 
 var Footer = function Footer(_ref) {
   _objectDestructuringEmpty(_ref);
@@ -13198,9 +13417,27 @@ var Footer = function Footer(_ref) {
       _PaddedDiv2.default,
       null,
       _react2.default.createElement(
-        'p',
+        'span',
         null,
         '\xA9 PeerHenry 2017'
+      ),
+      _react2.default.createElement(
+        'div',
+        { style: { display: 'inline-block', float: 'right' } },
+        _react2.default.createElement(
+          'span',
+          { style: { padding: '10px' } },
+          'Check me out on',
+          _react2.default.createElement(
+            'a',
+            { href: 'https://github.com/peerhenry/ph-webpack-config-generator' },
+            _react2.default.createElement(
+              GitHub,
+              null,
+              ' GitHub'
+            )
+          )
+        )
       )
     )
   );
@@ -13209,7 +13446,7 @@ var Footer = function Footer(_ref) {
 exports.default = Footer;
 
 /***/ }),
-/* 27 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -13225,7 +13462,7 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _PaddedDiv = __webpack_require__(4);
+var _PaddedDiv = __webpack_require__(5);
 
 var _PaddedDiv2 = _interopRequireDefault(_PaddedDiv);
 
@@ -13233,7 +13470,7 @@ var _styledComponents = __webpack_require__(1);
 
 var _styledComponents2 = _interopRequireDefault(_styledComponents);
 
-var _WebpackSvg = __webpack_require__(28);
+var _WebpackSvg = __webpack_require__(30);
 
 var _WebpackSvg2 = _interopRequireDefault(_WebpackSvg);
 
@@ -13257,7 +13494,11 @@ var Header = function Header(_ref) {
       _react2.default.createElement(
         'div',
         { style: { display: 'inline-block', marginRight: '20px' } },
-        _react2.default.createElement(_WebpackSvg2.default, { width: 70, height: 70 })
+        _react2.default.createElement(
+          'a',
+          { href: 'https://webpack.js.org/' },
+          _react2.default.createElement(_WebpackSvg2.default, { width: 70, height: 70 })
+        )
       ),
       _react2.default.createElement(
         'div',
@@ -13272,6 +13513,19 @@ var Header = function Header(_ref) {
           null,
           'When you just want a webpack config file without hassle!'
         )
+      ),
+      _react2.default.createElement(
+        'div',
+        { style: { float: 'right' } },
+        _react2.default.createElement(
+          'a',
+          { href: 'https://github.com/peerhenry/ph-webpack-config-generator' },
+          _react2.default.createElement(
+            'svg',
+            { 'aria-hidden': 'true', className: 'octicon octicon-mark-github', height: '32', version: '1.1', viewBox: '0 0 16 16', width: '32' },
+            _react2.default.createElement('path', { fillRule: 'evenodd', d: 'M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z' })
+          )
+        )
       )
     )
   );
@@ -13280,7 +13534,7 @@ var Header = function Header(_ref) {
 exports.default = Header;
 
 /***/ }),
-/* 28 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -13367,7 +13621,7 @@ var WebpackSvg = function WebpackSvg(_ref) {
 exports.default = WebpackSvg;
 
 /***/ }),
-/* 29 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -13385,20 +13639,20 @@ var app = document.getElementById('app');
 (0, _reactDom.render)(React.createElement(_App2.default, null), app);
 
 /***/ }),
-/* 30 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-__webpack_require__(46);
+__webpack_require__(48);
+__webpack_require__(49);
 __webpack_require__(47);
 __webpack_require__(45);
-__webpack_require__(43);
-__webpack_require__(44);
+__webpack_require__(46);
 
 /***/ }),
-/* 31 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -13519,7 +13773,7 @@ function fromByteArray (uint8) {
 
 
 /***/ }),
-/* 32 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -13533,9 +13787,9 @@ function fromByteArray (uint8) {
 
 
 
-var base64 = __webpack_require__(31)
-var ieee754 = __webpack_require__(40)
-var isArray = __webpack_require__(41)
+var base64 = __webpack_require__(33)
+var ieee754 = __webpack_require__(42)
+var isArray = __webpack_require__(43)
 
 exports.Buffer = Buffer
 exports.SlowBuffer = SlowBuffer
@@ -15316,34 +15570,6 @@ function isnan (val) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(10)))
 
 /***/ }),
-/* 33 */
-/***/ (function(module, exports, __webpack_require__) {
-
-exports = module.exports = __webpack_require__(2)(undefined);
-// imports
-
-
-// module
-exports.push([module.i, "\r\n\r\n/* ========= FONTS ========= */\r\n\r\n@font-face {\r\n  font-family: Cantarell;\r\n  src: url(" + __webpack_require__(38) + "); /* https://www.fontsquirrel.com/fonts/cantarell */\r\n}\r\n\r\n@font-face{\r\n  font-family: Ubuntu;\r\n  src: url(" + __webpack_require__(39) + ") /* http://font.ubuntu.com/ */\r\n}\r\n\r\nhtml{\r\n  font-family: Ubuntu, Arial, Helvetica, sans-serif;\r\n  font-size: 14px;\r\n}\r\n\r\nh1{\r\n  font-family: Cantarell;\r\n}\r\n\r\nbutton{\r\n  font-family: Ubuntu;\r\n}\r\n\r\nspan, input{\r\n  font-family: Courier, monospace;\r\n  font-size: 18px;\r\n}\r\n\r\n/* ========= COLORS ========= */\r\n\r\nhtml{\r\n  background-color: #2B3A42;  /* base color*/\r\n  color: white;\r\n  color: #d0dce1;\r\n}\r\n\r\nheader, footer{\r\n  background-color: #1e292f;\r\n  color: #7493a4;\r\n  color: #b1c5cd;\r\n  color: #92aeb9;\r\n}\r\n\r\nbutton{\r\n  color: #d0dce1;\r\n}\r\n\r\n.mini-panel{\r\n  background-color: #365363;\r\n  box-shadow: 5px 5px #1e292e;\r\n}\r\n\r\n.mini-panel-header{\r\n  margin-bottom: 5px;\r\n  color: #d0dce1;\r\n}\r\n\r\n.clickable:hover{\r\n  background-color: #263036;\r\n}", ""]);
-
-// exports
-
-
-/***/ }),
-/* 34 */
-/***/ (function(module, exports, __webpack_require__) {
-
-exports = module.exports = __webpack_require__(2)(undefined);
-// imports
-
-
-// module
-exports.push([module.i, "li{\r\n  display: block;\r\n}\r\n\r\nbutton{\r\n  border: none;\r\n  cursor: pointer;\r\n  background: transparent;\r\n}", ""]);
-
-// exports
-
-
-/***/ }),
 /* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -15352,7 +15578,7 @@ exports = module.exports = __webpack_require__(2)(undefined);
 
 
 // module
-exports.push([module.i, "body, #app, #wrapper {\r\n  height: 100%;\r\n  width: 100%;\r\n}\r\n\r\n#wrapper, #main{\r\n  display: table;\r\n}\r\n\r\nfooter, header {\r\n  display: table-row;\r\n  height:1px;\r\n}\r\n\r\n/* Basic Style*/\r\n* { margin:0; padding:0;}\r\nhtml, body { height: 100%; }", ""]);
+exports.push([module.i, "\r\n\r\n/* ========= FONTS ========= */\r\n\r\n@font-face {\r\n  font-family: Cantarell;\r\n  src: url(" + __webpack_require__(40) + "); /* https://www.fontsquirrel.com/fonts/cantarell */\r\n}\r\n\r\n@font-face{\r\n  font-family: Ubuntu;\r\n  src: url(" + __webpack_require__(41) + ") /* http://font.ubuntu.com/ */\r\n}\r\n\r\nhtml{\r\n  font-family: Ubuntu, Arial, Helvetica, sans-serif;\r\n  font-size: 18px;\r\n}\r\n\r\nh1{\r\n  font-family: Cantarell;\r\n}\r\n\r\nbutton{\r\n  font-family: Ubuntu;\r\n}\r\n\r\ninput{\r\n  font-family: Courier, monospace;\r\n  font-size: 18px;\r\n}\r\n\r\n/* ========= COLORS ========= */\r\n\r\nhtml{\r\n  background-color: #2B3A42;  /* base color*/\r\n  color: white;\r\n  color: #d0dce1;\r\n}\r\n\r\nheader, footer{\r\n  background-color: #1e242f;\r\n  background-color: #1e292f;\r\n  color: #7493a4;\r\n  color: #b1c5cd;\r\n  color: #92aeb9;\r\n}\r\n\r\nbutton{\r\n  color: #d0dce1;\r\n}\r\n\r\nsvg{\r\n  fill: #92aeb9;\r\n}\r\n\r\nsvg:hover{\r\n  fill: white;\r\n}\r\n\r\n.mini-panel{\r\n  background-color: #3e5174;\r\n  background-color: #365363;\r\n  box-shadow: 5px 5px #1e292e;\r\n}\r\n\r\n.mini-panel-header{\r\n  margin-bottom: 5px;\r\n  color: #d0dce1;\r\n  color: orange;\r\n}\r\n\r\n.clickable{\r\n  border-radius: 5px;\r\n}\r\n\r\n.clickable:hover{\r\n  background-color: #263036;\r\n  background-color: #2B3A42;\r\n}\r\n\r\n.selected{\r\n  background-color: #5a798c;\r\n}\r\n\r\n.loader-options{\r\n  padding: 10px;\r\n  border-radius: 5px;\r\n  background-color: #5a798c;\r\n}", ""]);
 
 // exports
 
@@ -15366,7 +15592,7 @@ exports = module.exports = __webpack_require__(2)(undefined);
 
 
 // module
-exports.push([module.i, "/*! normalize.css v6.0.0 | MIT License | github.com/necolas/normalize.css */\r\n\r\n/* Document\r\n   ========================================================================== */\r\n\r\n/**\r\n * 1. Correct the line height in all browsers.\r\n * 2. Prevent adjustments of font size after orientation changes in\r\n *    IE on Windows Phone and in iOS.\r\n */\r\n\r\nhtml {\r\n  line-height: 1.15; /* 1 */\r\n  -ms-text-size-adjust: 100%; /* 2 */\r\n  -webkit-text-size-adjust: 100%; /* 2 */\r\n}\r\n\r\n/* Sections\r\n   ========================================================================== */\r\n\r\n/**\r\n * Add the correct display in IE 9-.\r\n */\r\n\r\narticle,\r\naside,\r\nfooter,\r\nheader,\r\nnav,\r\nsection {\r\n  display: block;\r\n}\r\n\r\n/**\r\n * Correct the font size and margin on `h1` elements within `section` and\r\n * `article` contexts in Chrome, Firefox, and Safari.\r\n */\r\n\r\nh1 {\r\n  font-size: 2em;\r\n  margin: 0.67em 0;\r\n}\r\n\r\n/* Grouping content\r\n   ========================================================================== */\r\n\r\n/**\r\n * Add the correct display in IE 9-.\r\n * 1. Add the correct display in IE.\r\n */\r\n\r\nfigcaption,\r\nfigure,\r\nmain { /* 1 */\r\n  display: block;\r\n}\r\n\r\n/**\r\n * Add the correct margin in IE 8.\r\n */\r\n\r\nfigure {\r\n  margin: 1em 40px;\r\n}\r\n\r\n/**\r\n * 1. Add the correct box sizing in Firefox.\r\n * 2. Show the overflow in Edge and IE.\r\n */\r\n\r\nhr {\r\n  box-sizing: content-box; /* 1 */\r\n  height: 0; /* 1 */\r\n  overflow: visible; /* 2 */\r\n}\r\n\r\n/**\r\n * 1. Correct the inheritance and scaling of font size in all browsers.\r\n * 2. Correct the odd `em` font sizing in all browsers.\r\n */\r\n\r\npre {\r\n  font-family: monospace, monospace; /* 1 */\r\n  font-size: 1em; /* 2 */\r\n}\r\n\r\n/* Text-level semantics\r\n   ========================================================================== */\r\n\r\n/**\r\n * 1. Remove the gray background on active links in IE 10.\r\n * 2. Remove gaps in links underline in iOS 8+ and Safari 8+.\r\n */\r\n\r\na {\r\n  background-color: transparent; /* 1 */\r\n  -webkit-text-decoration-skip: objects; /* 2 */\r\n}\r\n\r\n/**\r\n * 1. Remove the bottom border in Chrome 57- and Firefox 39-.\r\n * 2. Add the correct text decoration in Chrome, Edge, IE, Opera, and Safari.\r\n */\r\n\r\nabbr[title] {\r\n  border-bottom: none; /* 1 */\r\n  text-decoration: underline; /* 2 */\r\n  text-decoration: underline dotted; /* 2 */\r\n}\r\n\r\n/**\r\n * Prevent the duplicate application of `bolder` by the next rule in Safari 6.\r\n */\r\n\r\nb,\r\nstrong {\r\n  font-weight: inherit;\r\n}\r\n\r\n/**\r\n * Add the correct font weight in Chrome, Edge, and Safari.\r\n */\r\n\r\nb,\r\nstrong {\r\n  font-weight: bolder;\r\n}\r\n\r\n/**\r\n * 1. Correct the inheritance and scaling of font size in all browsers.\r\n * 2. Correct the odd `em` font sizing in all browsers.\r\n */\r\n\r\ncode,\r\nkbd,\r\nsamp {\r\n  font-family: monospace, monospace; /* 1 */\r\n  font-size: 1em; /* 2 */\r\n}\r\n\r\n/**\r\n * Add the correct font style in Android 4.3-.\r\n */\r\n\r\ndfn {\r\n  font-style: italic;\r\n}\r\n\r\n/**\r\n * Add the correct background and color in IE 9-.\r\n */\r\n\r\nmark {\r\n  background-color: #ff0;\r\n  color: #000;\r\n}\r\n\r\n/**\r\n * Add the correct font size in all browsers.\r\n */\r\n\r\nsmall {\r\n  font-size: 80%;\r\n}\r\n\r\n/**\r\n * Prevent `sub` and `sup` elements from affecting the line height in\r\n * all browsers.\r\n */\r\n\r\nsub,\r\nsup {\r\n  font-size: 75%;\r\n  line-height: 0;\r\n  position: relative;\r\n  vertical-align: baseline;\r\n}\r\n\r\nsub {\r\n  bottom: -0.25em;\r\n}\r\n\r\nsup {\r\n  top: -0.5em;\r\n}\r\n\r\n/* Embedded content\r\n   ========================================================================== */\r\n\r\n/**\r\n * Add the correct display in IE 9-.\r\n */\r\n\r\naudio,\r\nvideo {\r\n  display: inline-block;\r\n}\r\n\r\n/**\r\n * Add the correct display in iOS 4-7.\r\n */\r\n\r\naudio:not([controls]) {\r\n  display: none;\r\n  height: 0;\r\n}\r\n\r\n/**\r\n * Remove the border on images inside links in IE 10-.\r\n */\r\n\r\nimg {\r\n  border-style: none;\r\n}\r\n\r\n/**\r\n * Hide the overflow in IE.\r\n */\r\n\r\nsvg:not(:root) {\r\n  overflow: hidden;\r\n}\r\n\r\n/* Forms\r\n   ========================================================================== */\r\n\r\n/**\r\n * Remove the margin in Firefox and Safari.\r\n */\r\n\r\nbutton,\r\ninput,\r\noptgroup,\r\nselect,\r\ntextarea {\r\n  margin: 0;\r\n}\r\n\r\n/**\r\n * Show the overflow in IE.\r\n * 1. Show the overflow in Edge.\r\n */\r\n\r\nbutton,\r\ninput { /* 1 */\r\n  overflow: visible;\r\n}\r\n\r\n/**\r\n * Remove the inheritance of text transform in Edge, Firefox, and IE.\r\n * 1. Remove the inheritance of text transform in Firefox.\r\n */\r\n\r\nbutton,\r\nselect { /* 1 */\r\n  text-transform: none;\r\n}\r\n\r\n/**\r\n * 1. Prevent a WebKit bug where (2) destroys native `audio` and `video`\r\n *    controls in Android 4.\r\n * 2. Correct the inability to style clickable types in iOS and Safari.\r\n */\r\n\r\nbutton,\r\nhtml [type=\"button\"], /* 1 */\r\n[type=\"reset\"],\r\n[type=\"submit\"] {\r\n  -webkit-appearance: button; /* 2 */\r\n}\r\n\r\n/**\r\n * Remove the inner border and padding in Firefox.\r\n */\r\n\r\nbutton::-moz-focus-inner,\r\n[type=\"button\"]::-moz-focus-inner,\r\n[type=\"reset\"]::-moz-focus-inner,\r\n[type=\"submit\"]::-moz-focus-inner {\r\n  border-style: none;\r\n  padding: 0;\r\n}\r\n\r\n/**\r\n * Restore the focus styles unset by the previous rule.\r\n */\r\n\r\nbutton:-moz-focusring,\r\n[type=\"button\"]:-moz-focusring,\r\n[type=\"reset\"]:-moz-focusring,\r\n[type=\"submit\"]:-moz-focusring {\r\n  outline: 1px dotted ButtonText;\r\n}\r\n\r\n/**\r\n * 1. Correct the text wrapping in Edge and IE.\r\n * 2. Correct the color inheritance from `fieldset` elements in IE.\r\n * 3. Remove the padding so developers are not caught out when they zero out\r\n *    `fieldset` elements in all browsers.\r\n */\r\n\r\nlegend {\r\n  box-sizing: border-box; /* 1 */\r\n  color: inherit; /* 2 */\r\n  display: table; /* 1 */\r\n  max-width: 100%; /* 1 */\r\n  padding: 0; /* 3 */\r\n  white-space: normal; /* 1 */\r\n}\r\n\r\n/**\r\n * 1. Add the correct display in IE 9-.\r\n * 2. Add the correct vertical alignment in Chrome, Firefox, and Opera.\r\n */\r\n\r\nprogress {\r\n  display: inline-block; /* 1 */\r\n  vertical-align: baseline; /* 2 */\r\n}\r\n\r\n/**\r\n * Remove the default vertical scrollbar in IE.\r\n */\r\n\r\ntextarea {\r\n  overflow: auto;\r\n}\r\n\r\n/**\r\n * 1. Add the correct box sizing in IE 10-.\r\n * 2. Remove the padding in IE 10-.\r\n */\r\n\r\n[type=\"checkbox\"],\r\n[type=\"radio\"] {\r\n  box-sizing: border-box; /* 1 */\r\n  padding: 0; /* 2 */\r\n}\r\n\r\n/**\r\n * Correct the cursor style of increment and decrement buttons in Chrome.\r\n */\r\n\r\n[type=\"number\"]::-webkit-inner-spin-button,\r\n[type=\"number\"]::-webkit-outer-spin-button {\r\n  height: auto;\r\n}\r\n\r\n/**\r\n * 1. Correct the odd appearance in Chrome and Safari.\r\n * 2. Correct the outline style in Safari.\r\n */\r\n\r\n[type=\"search\"] {\r\n  -webkit-appearance: textfield; /* 1 */\r\n  outline-offset: -2px; /* 2 */\r\n}\r\n\r\n/**\r\n * Remove the inner padding and cancel buttons in Chrome and Safari on macOS.\r\n */\r\n\r\n[type=\"search\"]::-webkit-search-cancel-button,\r\n[type=\"search\"]::-webkit-search-decoration {\r\n  -webkit-appearance: none;\r\n}\r\n\r\n/**\r\n * 1. Correct the inability to style clickable types in iOS and Safari.\r\n * 2. Change font properties to `inherit` in Safari.\r\n */\r\n\r\n::-webkit-file-upload-button {\r\n  -webkit-appearance: button; /* 1 */\r\n  font: inherit; /* 2 */\r\n}\r\n\r\n/* Interactive\r\n   ========================================================================== */\r\n\r\n/*\r\n * Add the correct display in IE 9-.\r\n * 1. Add the correct display in Edge, IE, and Firefox.\r\n */\r\n\r\ndetails, /* 1 */\r\nmenu {\r\n  display: block;\r\n}\r\n\r\n/*\r\n * Add the correct display in all browsers.\r\n */\r\n\r\nsummary {\r\n  display: list-item;\r\n}\r\n\r\n/* Scripting\r\n   ========================================================================== */\r\n\r\n/**\r\n * Add the correct display in IE 9-.\r\n */\r\n\r\ncanvas {\r\n  display: inline-block;\r\n}\r\n\r\n/**\r\n * Add the correct display in IE.\r\n */\r\n\r\ntemplate {\r\n  display: none;\r\n}\r\n\r\n/* Hidden\r\n   ========================================================================== */\r\n\r\n/**\r\n * Add the correct display in IE 10-.\r\n */\r\n\r\n[hidden] {\r\n  display: none;\r\n}\r\n", ""]);
+exports.push([module.i, "li{\r\n  display: block;\r\n}\r\n\r\nbutton{\r\n  border: none;\r\n  cursor: pointer;\r\n  background: transparent;\r\n}", ""]);
 
 // exports
 
@@ -15380,7 +15606,7 @@ exports = module.exports = __webpack_require__(2)(undefined);
 
 
 // module
-exports.push([module.i, "/*\n  Simple Grid\n  Project Page - http://thisisdallas.github.com/Simple-Grid/\n  Author - Dallas Bass\n  Site - http://dallasbass.com\n*/\n\n\n[class*='grid'],\n[class*='col-'],\n[class*='mobile-'],\n.grid:after {\n\tbox-sizing: border-box;\t\n}\n\n[class*='col-'] {\n\tfloat: left;\n  \tmin-height: 1px;\n\tpadding-right: 20px; /* column-space */\n}\n\n[class*='col-'] [class*='col-']:last-child {\n\tpadding-right: 0;\n}\n\n.grid {\n\twidth: 100%;\n\tmax-width: 1140px;\n\tmin-width: 748px; /* when using padded grid on ipad in portrait mode, width should be viewport-width - padding = (768 - 20) = 748. actually, it should be even smaller to allow for padding of grid containing element */\n\tmargin: 0 auto;\n\toverflow: hidden;\n}\n\n.grid:after {\n\tcontent: \"\";\n\tdisplay: table;\n\tclear: both;\n}\n\n.grid-pad {\n\tpadding-top: 20px;\n\tpadding-left: 20px; /* grid-space to left */\n\tpadding-right: 0; /* grid-space to right: (grid-space-left - column-space) e.g. 20px-20px=0 */\n}\n\n.push-right {\n\tfloat: right;\n}\n\n/* Content Columns */\n\n.col-1-1 {\n\twidth: 100%;\n}\n.col-2-3, .col-8-12 {\n\twidth: 66.66%;\n}\n\n.col-1-2, .col-6-12 {\n\twidth: 50%;\n}\n\n.col-1-3, .col-4-12 {\n\twidth: 33.33%;\n}\n\n.col-1-4, .col-3-12 {\n\twidth: 25%;\n}\n\n.col-1-5 {\n\twidth: 20%;\n}\n\n.col-1-6, .col-2-12 {\n\twidth: 16.667%;\n}\n\n.col-1-7 {\n\twidth: 14.28%;\n}\n\n.col-1-8 {\n\twidth: 12.5%;\n}\n\n.col-1-9 {\n\twidth: 11.1%;\n}\n\n.col-1-10 {\n\twidth: 10%;\n}\n\n.col-1-11 {\n\twidth: 9.09%;\n}\n\n.col-1-12 {\n\twidth: 8.33%\n}\n\n/* Layout Columns */\n\n.col-11-12 {\n\twidth: 91.66%\n}\n\n.col-10-12 {\n\twidth: 83.333%;\n}\n\n.col-9-12 {\n\twidth: 75%;\n}\n\n.col-5-12 {\n\twidth: 41.66%;\n}\n\n.col-7-12 {\n\twidth: 58.33%\n}\n\n/* Pushing blocks */\n\n.push-2-3, .push-8-12 {\n\tmargin-left: 66.66%;\n}\n\n.push-1-2, .push-6-12 {\n\tmargin-left: 50%;\n}\n\n.push-1-3, .push-4-12 {\n\tmargin-left: 33.33%;\n}\n\n.push-1-4, .push-3-12 {\n\tmargin-left: 25%;\n}\n\n.push-1-5 {\n\tmargin-left: 20%;\n}\n\n.push-1-6, .push-2-12 {\n\tmargin-left: 16.667%;\n}\n\n.push-1-7 {\n\tmargin-left: 14.28%;\n}\n\n.push-1-8 {\n\tmargin-left: 12.5%;\n}\n\n.push-1-9 {\n\tmargin-left: 11.1%;\n}\n\n.push-1-10 {\n\tmargin-left: 10%;\n}\n\n.push-1-11 {\n\tmargin-left: 9.09%;\n}\n\n.push-1-12 {\n\tmargin-left: 8.33%\n}\n\n@media handheld, only screen and (max-width: 767px) {\n\t.grid {\n\t\twidth: 100%;\n\t\tmin-width: 0;\n\t\tmargin-left: 0;\n\t\tmargin-right: 0;\n\t\tpadding-left: 20px; /* grid-space to left */\n\t\tpadding-right: 10px; /* grid-space to right: (grid-space-left - column-space) e.g. 20px-10px=10px */\n\t}\n\n\t[class*='col-'] {\n\t\twidth: auto;\n\t\tfloat: none;\n\t\tmargin: 10px 0;\n\t\tpadding-left: 0;\n\t\tpadding-right: 10px; /* column-space */\n\t}\n\n\t[class*='col-'] [class*='col-'] {\n\t\tpadding-right: 0;\n\t}\n\n\t/* Mobile Layout */\n\n\t[class*='mobile-col-'] {\n\t\tfloat: left;\n\t\tmargin: 0 0 10px;\n\t\tpadding-left: 0;\n\t\tpadding-right: 10px; /* column-space */\n\t\tpadding-bottom: 0;\n\t}\n\n\t.mobile-col-1-1 {\n\t\twidth: 100%;\n\t}\n\t.mobile-col-2-3, .mobile-col-8-12 {\n\t\twidth: 66.66%;\n\t}\n\n\t.mobile-col-1-2, .mobile-col-6-12 {\n\t\twidth: 50%;\n\t}\n\n\t.mobile-col-1-3, .mobile-col-4-12 {\n\t\twidth: 33.33%;\n\t}\n\n\t.mobile-col-1-4, .mobile-col-3-12 {\n\t\twidth: 25%;\n\t}\n\n\t.mobile-col-1-5 {\n\t\twidth: 20%;\n\t}\n\n\t.mobile-col-1-6, .mobile-col-2-12 {\n\t\twidth: 16.667%;\n\t}\n\n\t.mobile-col-1-7 {\n\t\twidth: 14.28%;\n\t}\n\n\t.mobile-col-1-8 {\n\t\twidth: 12.5%;\n\t}\n\n\t.mobile-col-1-9 {\n\t\twidth: 11.1%;\n\t}\n\n\t.mobile-col-1-10 {\n\t\twidth: 10%;\n\t}\n\n\t.mobile-col-1-11 {\n\t\twidth: 9.09%;\n\t}\n\n\t.mobile-col-1-12 {\n\t\twidth: 8.33%\n\t}\n\n\t/* Layout Columns */\n\n\t.mobile-col-11-12 {\n\t\twidth: 91.66%\n\t}\n\n\t.mobile-col-10-12 {\n\t\twidth: 83.333%;\n\t}\n\n\t.mobile-col-9-12 {\n\t\twidth: 75%;\n\t}\n\n\t.mobile-col-5-12 {\n\t\twidth: 41.66%;\n\t}\n\n\t.mobile-col-7-12 {\n\t\twidth: 58.33%\n\t}\n\n\t.hide-on-mobile {\n\t\tdisplay: none !important;\n\t\twidth: 0;\n\t\theight: 0;\n\t}\n}\n\n", ""]);
+exports.push([module.i, "body, #app, #wrapper {\r\n  height: 100%;\r\n  width: 100%;\r\n}\r\n\r\n#wrapper, #main{\r\n  display: table;\r\n}\r\n\r\nfooter, header {\r\n  display: table-row;\r\n  height:1px;\r\n}\r\n\r\n/* Basic Style*/\r\n* { margin:0; padding:0;}\r\nhtml, body { height: 100%; }", ""]);
 
 // exports
 
@@ -15389,16 +15615,44 @@ exports.push([module.i, "/*\n  Simple Grid\n  Project Page - http://thisisdallas
 /* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__.p + "public/fonts/Cantarell-Bold.ttf";
+exports = module.exports = __webpack_require__(2)(undefined);
+// imports
+
+
+// module
+exports.push([module.i, "/*! normalize.css v6.0.0 | MIT License | github.com/necolas/normalize.css */\r\n\r\n/* Document\r\n   ========================================================================== */\r\n\r\n/**\r\n * 1. Correct the line height in all browsers.\r\n * 2. Prevent adjustments of font size after orientation changes in\r\n *    IE on Windows Phone and in iOS.\r\n */\r\n\r\nhtml {\r\n  line-height: 1.15; /* 1 */\r\n  -ms-text-size-adjust: 100%; /* 2 */\r\n  -webkit-text-size-adjust: 100%; /* 2 */\r\n}\r\n\r\n/* Sections\r\n   ========================================================================== */\r\n\r\n/**\r\n * Add the correct display in IE 9-.\r\n */\r\n\r\narticle,\r\naside,\r\nfooter,\r\nheader,\r\nnav,\r\nsection {\r\n  display: block;\r\n}\r\n\r\n/**\r\n * Correct the font size and margin on `h1` elements within `section` and\r\n * `article` contexts in Chrome, Firefox, and Safari.\r\n */\r\n\r\nh1 {\r\n  font-size: 2em;\r\n  margin: 0.67em 0;\r\n}\r\n\r\n/* Grouping content\r\n   ========================================================================== */\r\n\r\n/**\r\n * Add the correct display in IE 9-.\r\n * 1. Add the correct display in IE.\r\n */\r\n\r\nfigcaption,\r\nfigure,\r\nmain { /* 1 */\r\n  display: block;\r\n}\r\n\r\n/**\r\n * Add the correct margin in IE 8.\r\n */\r\n\r\nfigure {\r\n  margin: 1em 40px;\r\n}\r\n\r\n/**\r\n * 1. Add the correct box sizing in Firefox.\r\n * 2. Show the overflow in Edge and IE.\r\n */\r\n\r\nhr {\r\n  box-sizing: content-box; /* 1 */\r\n  height: 0; /* 1 */\r\n  overflow: visible; /* 2 */\r\n}\r\n\r\n/**\r\n * 1. Correct the inheritance and scaling of font size in all browsers.\r\n * 2. Correct the odd `em` font sizing in all browsers.\r\n */\r\n\r\npre {\r\n  font-family: monospace, monospace; /* 1 */\r\n  font-size: 1em; /* 2 */\r\n}\r\n\r\n/* Text-level semantics\r\n   ========================================================================== */\r\n\r\n/**\r\n * 1. Remove the gray background on active links in IE 10.\r\n * 2. Remove gaps in links underline in iOS 8+ and Safari 8+.\r\n */\r\n\r\na {\r\n  background-color: transparent; /* 1 */\r\n  -webkit-text-decoration-skip: objects; /* 2 */\r\n}\r\n\r\n/**\r\n * 1. Remove the bottom border in Chrome 57- and Firefox 39-.\r\n * 2. Add the correct text decoration in Chrome, Edge, IE, Opera, and Safari.\r\n */\r\n\r\nabbr[title] {\r\n  border-bottom: none; /* 1 */\r\n  text-decoration: underline; /* 2 */\r\n  text-decoration: underline dotted; /* 2 */\r\n}\r\n\r\n/**\r\n * Prevent the duplicate application of `bolder` by the next rule in Safari 6.\r\n */\r\n\r\nb,\r\nstrong {\r\n  font-weight: inherit;\r\n}\r\n\r\n/**\r\n * Add the correct font weight in Chrome, Edge, and Safari.\r\n */\r\n\r\nb,\r\nstrong {\r\n  font-weight: bolder;\r\n}\r\n\r\n/**\r\n * 1. Correct the inheritance and scaling of font size in all browsers.\r\n * 2. Correct the odd `em` font sizing in all browsers.\r\n */\r\n\r\ncode,\r\nkbd,\r\nsamp {\r\n  font-family: monospace, monospace; /* 1 */\r\n  font-size: 1em; /* 2 */\r\n}\r\n\r\n/**\r\n * Add the correct font style in Android 4.3-.\r\n */\r\n\r\ndfn {\r\n  font-style: italic;\r\n}\r\n\r\n/**\r\n * Add the correct background and color in IE 9-.\r\n */\r\n\r\nmark {\r\n  background-color: #ff0;\r\n  color: #000;\r\n}\r\n\r\n/**\r\n * Add the correct font size in all browsers.\r\n */\r\n\r\nsmall {\r\n  font-size: 80%;\r\n}\r\n\r\n/**\r\n * Prevent `sub` and `sup` elements from affecting the line height in\r\n * all browsers.\r\n */\r\n\r\nsub,\r\nsup {\r\n  font-size: 75%;\r\n  line-height: 0;\r\n  position: relative;\r\n  vertical-align: baseline;\r\n}\r\n\r\nsub {\r\n  bottom: -0.25em;\r\n}\r\n\r\nsup {\r\n  top: -0.5em;\r\n}\r\n\r\n/* Embedded content\r\n   ========================================================================== */\r\n\r\n/**\r\n * Add the correct display in IE 9-.\r\n */\r\n\r\naudio,\r\nvideo {\r\n  display: inline-block;\r\n}\r\n\r\n/**\r\n * Add the correct display in iOS 4-7.\r\n */\r\n\r\naudio:not([controls]) {\r\n  display: none;\r\n  height: 0;\r\n}\r\n\r\n/**\r\n * Remove the border on images inside links in IE 10-.\r\n */\r\n\r\nimg {\r\n  border-style: none;\r\n}\r\n\r\n/**\r\n * Hide the overflow in IE.\r\n */\r\n\r\nsvg:not(:root) {\r\n  overflow: hidden;\r\n}\r\n\r\n/* Forms\r\n   ========================================================================== */\r\n\r\n/**\r\n * Remove the margin in Firefox and Safari.\r\n */\r\n\r\nbutton,\r\ninput,\r\noptgroup,\r\nselect,\r\ntextarea {\r\n  margin: 0;\r\n}\r\n\r\n/**\r\n * Show the overflow in IE.\r\n * 1. Show the overflow in Edge.\r\n */\r\n\r\nbutton,\r\ninput { /* 1 */\r\n  overflow: visible;\r\n}\r\n\r\n/**\r\n * Remove the inheritance of text transform in Edge, Firefox, and IE.\r\n * 1. Remove the inheritance of text transform in Firefox.\r\n */\r\n\r\nbutton,\r\nselect { /* 1 */\r\n  text-transform: none;\r\n}\r\n\r\n/**\r\n * 1. Prevent a WebKit bug where (2) destroys native `audio` and `video`\r\n *    controls in Android 4.\r\n * 2. Correct the inability to style clickable types in iOS and Safari.\r\n */\r\n\r\nbutton,\r\nhtml [type=\"button\"], /* 1 */\r\n[type=\"reset\"],\r\n[type=\"submit\"] {\r\n  -webkit-appearance: button; /* 2 */\r\n}\r\n\r\n/**\r\n * Remove the inner border and padding in Firefox.\r\n */\r\n\r\nbutton::-moz-focus-inner,\r\n[type=\"button\"]::-moz-focus-inner,\r\n[type=\"reset\"]::-moz-focus-inner,\r\n[type=\"submit\"]::-moz-focus-inner {\r\n  border-style: none;\r\n  padding: 0;\r\n}\r\n\r\n/**\r\n * Restore the focus styles unset by the previous rule.\r\n */\r\n\r\nbutton:-moz-focusring,\r\n[type=\"button\"]:-moz-focusring,\r\n[type=\"reset\"]:-moz-focusring,\r\n[type=\"submit\"]:-moz-focusring {\r\n  outline: 1px dotted ButtonText;\r\n}\r\n\r\n/**\r\n * 1. Correct the text wrapping in Edge and IE.\r\n * 2. Correct the color inheritance from `fieldset` elements in IE.\r\n * 3. Remove the padding so developers are not caught out when they zero out\r\n *    `fieldset` elements in all browsers.\r\n */\r\n\r\nlegend {\r\n  box-sizing: border-box; /* 1 */\r\n  color: inherit; /* 2 */\r\n  display: table; /* 1 */\r\n  max-width: 100%; /* 1 */\r\n  padding: 0; /* 3 */\r\n  white-space: normal; /* 1 */\r\n}\r\n\r\n/**\r\n * 1. Add the correct display in IE 9-.\r\n * 2. Add the correct vertical alignment in Chrome, Firefox, and Opera.\r\n */\r\n\r\nprogress {\r\n  display: inline-block; /* 1 */\r\n  vertical-align: baseline; /* 2 */\r\n}\r\n\r\n/**\r\n * Remove the default vertical scrollbar in IE.\r\n */\r\n\r\ntextarea {\r\n  overflow: auto;\r\n}\r\n\r\n/**\r\n * 1. Add the correct box sizing in IE 10-.\r\n * 2. Remove the padding in IE 10-.\r\n */\r\n\r\n[type=\"checkbox\"],\r\n[type=\"radio\"] {\r\n  box-sizing: border-box; /* 1 */\r\n  padding: 0; /* 2 */\r\n}\r\n\r\n/**\r\n * Correct the cursor style of increment and decrement buttons in Chrome.\r\n */\r\n\r\n[type=\"number\"]::-webkit-inner-spin-button,\r\n[type=\"number\"]::-webkit-outer-spin-button {\r\n  height: auto;\r\n}\r\n\r\n/**\r\n * 1. Correct the odd appearance in Chrome and Safari.\r\n * 2. Correct the outline style in Safari.\r\n */\r\n\r\n[type=\"search\"] {\r\n  -webkit-appearance: textfield; /* 1 */\r\n  outline-offset: -2px; /* 2 */\r\n}\r\n\r\n/**\r\n * Remove the inner padding and cancel buttons in Chrome and Safari on macOS.\r\n */\r\n\r\n[type=\"search\"]::-webkit-search-cancel-button,\r\n[type=\"search\"]::-webkit-search-decoration {\r\n  -webkit-appearance: none;\r\n}\r\n\r\n/**\r\n * 1. Correct the inability to style clickable types in iOS and Safari.\r\n * 2. Change font properties to `inherit` in Safari.\r\n */\r\n\r\n::-webkit-file-upload-button {\r\n  -webkit-appearance: button; /* 1 */\r\n  font: inherit; /* 2 */\r\n}\r\n\r\n/* Interactive\r\n   ========================================================================== */\r\n\r\n/*\r\n * Add the correct display in IE 9-.\r\n * 1. Add the correct display in Edge, IE, and Firefox.\r\n */\r\n\r\ndetails, /* 1 */\r\nmenu {\r\n  display: block;\r\n}\r\n\r\n/*\r\n * Add the correct display in all browsers.\r\n */\r\n\r\nsummary {\r\n  display: list-item;\r\n}\r\n\r\n/* Scripting\r\n   ========================================================================== */\r\n\r\n/**\r\n * Add the correct display in IE 9-.\r\n */\r\n\r\ncanvas {\r\n  display: inline-block;\r\n}\r\n\r\n/**\r\n * Add the correct display in IE.\r\n */\r\n\r\ntemplate {\r\n  display: none;\r\n}\r\n\r\n/* Hidden\r\n   ========================================================================== */\r\n\r\n/**\r\n * Add the correct display in IE 10-.\r\n */\r\n\r\n[hidden] {\r\n  display: none;\r\n}\r\n", ""]);
+
+// exports
+
 
 /***/ }),
 /* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__.p + "public/fonts/Ubuntu-L.ttf";
+exports = module.exports = __webpack_require__(2)(undefined);
+// imports
+
+
+// module
+exports.push([module.i, "/*\n  Simple Grid\n  Project Page - http://thisisdallas.github.com/Simple-Grid/\n  Author - Dallas Bass\n  Site - http://dallasbass.com\n*/\n\n\n[class*='grid'],\n[class*='col-'],\n[class*='mobile-'],\n.grid:after {\n\tbox-sizing: border-box;\t\n}\n\n[class*='col-'] {\n\tfloat: left;\n  \tmin-height: 1px;\n\tpadding-right: 20px; /* column-space */\n}\n\n[class*='col-'] [class*='col-']:last-child {\n\tpadding-right: 0;\n}\n\n.grid {\n\twidth: 100%;\n\tmax-width: 1140px;\n\tmin-width: 748px; /* when using padded grid on ipad in portrait mode, width should be viewport-width - padding = (768 - 20) = 748. actually, it should be even smaller to allow for padding of grid containing element */\n\tmargin: 0 auto;\n\toverflow: hidden;\n}\n\n.grid:after {\n\tcontent: \"\";\n\tdisplay: table;\n\tclear: both;\n}\n\n.grid-pad {\n\tpadding-top: 20px;\n\tpadding-left: 20px; /* grid-space to left */\n\tpadding-right: 0; /* grid-space to right: (grid-space-left - column-space) e.g. 20px-20px=0 */\n}\n\n.push-right {\n\tfloat: right;\n}\n\n/* Content Columns */\n\n.col-1-1 {\n\twidth: 100%;\n}\n.col-2-3, .col-8-12 {\n\twidth: 66.66%;\n}\n\n.col-1-2, .col-6-12 {\n\twidth: 50%;\n}\n\n.col-1-3, .col-4-12 {\n\twidth: 33.33%;\n}\n\n.col-1-4, .col-3-12 {\n\twidth: 25%;\n}\n\n.col-1-5 {\n\twidth: 20%;\n}\n\n.col-1-6, .col-2-12 {\n\twidth: 16.667%;\n}\n\n.col-1-7 {\n\twidth: 14.28%;\n}\n\n.col-1-8 {\n\twidth: 12.5%;\n}\n\n.col-1-9 {\n\twidth: 11.1%;\n}\n\n.col-1-10 {\n\twidth: 10%;\n}\n\n.col-1-11 {\n\twidth: 9.09%;\n}\n\n.col-1-12 {\n\twidth: 8.33%\n}\n\n/* Layout Columns */\n\n.col-11-12 {\n\twidth: 91.66%\n}\n\n.col-10-12 {\n\twidth: 83.333%;\n}\n\n.col-9-12 {\n\twidth: 75%;\n}\n\n.col-5-12 {\n\twidth: 41.66%;\n}\n\n.col-7-12 {\n\twidth: 58.33%\n}\n\n/* Pushing blocks */\n\n.push-2-3, .push-8-12 {\n\tmargin-left: 66.66%;\n}\n\n.push-1-2, .push-6-12 {\n\tmargin-left: 50%;\n}\n\n.push-1-3, .push-4-12 {\n\tmargin-left: 33.33%;\n}\n\n.push-1-4, .push-3-12 {\n\tmargin-left: 25%;\n}\n\n.push-1-5 {\n\tmargin-left: 20%;\n}\n\n.push-1-6, .push-2-12 {\n\tmargin-left: 16.667%;\n}\n\n.push-1-7 {\n\tmargin-left: 14.28%;\n}\n\n.push-1-8 {\n\tmargin-left: 12.5%;\n}\n\n.push-1-9 {\n\tmargin-left: 11.1%;\n}\n\n.push-1-10 {\n\tmargin-left: 10%;\n}\n\n.push-1-11 {\n\tmargin-left: 9.09%;\n}\n\n.push-1-12 {\n\tmargin-left: 8.33%\n}\n\n@media handheld, only screen and (max-width: 767px) {\n\t.grid {\n\t\twidth: 100%;\n\t\tmin-width: 0;\n\t\tmargin-left: 0;\n\t\tmargin-right: 0;\n\t\tpadding-left: 20px; /* grid-space to left */\n\t\tpadding-right: 10px; /* grid-space to right: (grid-space-left - column-space) e.g. 20px-10px=10px */\n\t}\n\n\t[class*='col-'] {\n\t\twidth: auto;\n\t\tfloat: none;\n\t\tmargin: 10px 0;\n\t\tpadding-left: 0;\n\t\tpadding-right: 10px; /* column-space */\n\t}\n\n\t[class*='col-'] [class*='col-'] {\n\t\tpadding-right: 0;\n\t}\n\n\t/* Mobile Layout */\n\n\t[class*='mobile-col-'] {\n\t\tfloat: left;\n\t\tmargin: 0 0 10px;\n\t\tpadding-left: 0;\n\t\tpadding-right: 10px; /* column-space */\n\t\tpadding-bottom: 0;\n\t}\n\n\t.mobile-col-1-1 {\n\t\twidth: 100%;\n\t}\n\t.mobile-col-2-3, .mobile-col-8-12 {\n\t\twidth: 66.66%;\n\t}\n\n\t.mobile-col-1-2, .mobile-col-6-12 {\n\t\twidth: 50%;\n\t}\n\n\t.mobile-col-1-3, .mobile-col-4-12 {\n\t\twidth: 33.33%;\n\t}\n\n\t.mobile-col-1-4, .mobile-col-3-12 {\n\t\twidth: 25%;\n\t}\n\n\t.mobile-col-1-5 {\n\t\twidth: 20%;\n\t}\n\n\t.mobile-col-1-6, .mobile-col-2-12 {\n\t\twidth: 16.667%;\n\t}\n\n\t.mobile-col-1-7 {\n\t\twidth: 14.28%;\n\t}\n\n\t.mobile-col-1-8 {\n\t\twidth: 12.5%;\n\t}\n\n\t.mobile-col-1-9 {\n\t\twidth: 11.1%;\n\t}\n\n\t.mobile-col-1-10 {\n\t\twidth: 10%;\n\t}\n\n\t.mobile-col-1-11 {\n\t\twidth: 9.09%;\n\t}\n\n\t.mobile-col-1-12 {\n\t\twidth: 8.33%\n\t}\n\n\t/* Layout Columns */\n\n\t.mobile-col-11-12 {\n\t\twidth: 91.66%\n\t}\n\n\t.mobile-col-10-12 {\n\t\twidth: 83.333%;\n\t}\n\n\t.mobile-col-9-12 {\n\t\twidth: 75%;\n\t}\n\n\t.mobile-col-5-12 {\n\t\twidth: 41.66%;\n\t}\n\n\t.mobile-col-7-12 {\n\t\twidth: 58.33%\n\t}\n\n\t.hide-on-mobile {\n\t\tdisplay: none !important;\n\t\twidth: 0;\n\t\theight: 0;\n\t}\n}\n\n", ""]);
+
+// exports
+
 
 /***/ }),
 /* 40 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__.p + "public/fonts/Cantarell-Bold.ttf";
+
+/***/ }),
+/* 41 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__.p + "public/fonts/Ubuntu-L.ttf";
+
+/***/ }),
+/* 42 */
 /***/ (function(module, exports) {
 
 exports.read = function (buffer, offset, isLE, mLen, nBytes) {
@@ -15488,7 +15742,7 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
 
 
 /***/ }),
-/* 41 */
+/* 43 */
 /***/ (function(module, exports) {
 
 var toString = {}.toString;
@@ -15499,7 +15753,7 @@ module.exports = Array.isArray || function (arr) {
 
 
 /***/ }),
-/* 42 */
+/* 44 */
 /***/ (function(module, exports) {
 
 
@@ -15594,58 +15848,6 @@ module.exports = function (css) {
 
 
 /***/ }),
-/* 43 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// style-loader: Adds some css to the DOM by adding a <style> tag
-
-// load the styles
-var content = __webpack_require__(33);
-if(typeof content === 'string') content = [[module.i, content, '']];
-// add the styles to the DOM
-var update = __webpack_require__(3)(content, {});
-if(content.locals) module.exports = content.locals;
-// Hot Module Replacement
-if(false) {
-	// When the styles change, update the <style> tags
-	if(!content.locals) {
-		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/postcss-loader/index.js!./colors-and-font.css", function() {
-			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/postcss-loader/index.js!./colors-and-font.css");
-			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-			update(newContent);
-		});
-	}
-	// When the module is disposed, remove the <style> tags
-	module.hot.dispose(function() { update(); });
-}
-
-/***/ }),
-/* 44 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// style-loader: Adds some css to the DOM by adding a <style> tag
-
-// load the styles
-var content = __webpack_require__(34);
-if(typeof content === 'string') content = [[module.i, content, '']];
-// add the styles to the DOM
-var update = __webpack_require__(3)(content, {});
-if(content.locals) module.exports = content.locals;
-// Hot Module Replacement
-if(false) {
-	// When the styles change, update the <style> tags
-	if(!content.locals) {
-		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/postcss-loader/index.js!./general.css", function() {
-			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/postcss-loader/index.js!./general.css");
-			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-			update(newContent);
-		});
-	}
-	// When the module is disposed, remove the <style> tags
-	module.hot.dispose(function() { update(); });
-}
-
-/***/ }),
 /* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -15655,14 +15857,14 @@ if(false) {
 var content = __webpack_require__(35);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
-var update = __webpack_require__(3)(content, {});
+var update = __webpack_require__(4)(content, {});
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/postcss-loader/index.js!./layout.css", function() {
-			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/postcss-loader/index.js!./layout.css");
+		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/postcss-loader/index.js!./colors-and-font.css", function() {
+			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/postcss-loader/index.js!./colors-and-font.css");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -15681,14 +15883,14 @@ if(false) {
 var content = __webpack_require__(36);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
-var update = __webpack_require__(3)(content, {});
+var update = __webpack_require__(4)(content, {});
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/postcss-loader/index.js!./normalize.css", function() {
-			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/postcss-loader/index.js!./normalize.css");
+		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/postcss-loader/index.js!./general.css", function() {
+			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/postcss-loader/index.js!./general.css");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -15707,7 +15909,59 @@ if(false) {
 var content = __webpack_require__(37);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
-var update = __webpack_require__(3)(content, {});
+var update = __webpack_require__(4)(content, {});
+if(content.locals) module.exports = content.locals;
+// Hot Module Replacement
+if(false) {
+	// When the styles change, update the <style> tags
+	if(!content.locals) {
+		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/postcss-loader/index.js!./layout.css", function() {
+			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/postcss-loader/index.js!./layout.css");
+			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+			update(newContent);
+		});
+	}
+	// When the module is disposed, remove the <style> tags
+	module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 48 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(38);
+if(typeof content === 'string') content = [[module.i, content, '']];
+// add the styles to the DOM
+var update = __webpack_require__(4)(content, {});
+if(content.locals) module.exports = content.locals;
+// Hot Module Replacement
+if(false) {
+	// When the styles change, update the <style> tags
+	if(!content.locals) {
+		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/postcss-loader/index.js!./normalize.css", function() {
+			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/postcss-loader/index.js!./normalize.css");
+			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+			update(newContent);
+		});
+	}
+	// When the module is disposed, remove the <style> tags
+	module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 49 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(39);
+if(typeof content === 'string') content = [[module.i, content, '']];
+// add the styles to the DOM
+var update = __webpack_require__(4)(content, {});
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
