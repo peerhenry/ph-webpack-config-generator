@@ -44,7 +44,7 @@ class CheckBox extends React.Component{
           checked={checked}
           style={{marginRight: '10px', marginLeft: '5px'}} 
           onChange={this.handleCheck}/>
-        <span>{ this.props.label }</span>
+        <span>{ this.props.children }</span>
         <br/>
       </DivMargin>
     )

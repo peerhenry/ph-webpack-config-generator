@@ -58,8 +58,15 @@ svg:hover{
   fill: white;
 }
 
+a{
+  color: orange;
+}
+
+a:hover{
+  color: white;
+}
+
 .mini-panel{
-  background-color: #3e5174;
   background-color: #365363;
   box-shadow: 5px 5px #1e292e;
 }
@@ -81,6 +88,7 @@ svg:hover{
 
 .selected{
   background-color: #5a798c;
+  background-color: #2d4552;
 }
 
 .loader-options{

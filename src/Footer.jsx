@@ -19,7 +19,7 @@ const Footer = ({}) => (
       
       <div style={{display: 'inline-block', float: 'right'}}>
         <span style={{padding: '10px'}}>Check me out on
-          <a href="https://github.com/peerhenry/ph-webpack-config-generator">
+          <a href="https://github.com/peerhenry/ph-webpack-config-generator" style={{textDecoration: 'none'}}>
             <GitHub> GitHub</GitHub>
           </a>
         </span>

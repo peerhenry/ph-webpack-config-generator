@@ -22,6 +22,14 @@ class ConfigBuffer{
     this.calculateOffset()
   }
 
+  incrTab(){
+    this.dTab(1)
+  }
+
+  decrTab(){
+    this.dTab(-1)
+  }
+
   add(text){
     this.text += text
   }
@@ -42,6 +50,10 @@ class ConfigBuffer{
     this.text += "\n"
   }
 
+  newLine(){
+    this.nextLine()
+  }
+
   openObject(name){
     this.addLine(name + ": {")
     this.dTab(1)
@@ -56,18 +68,6 @@ class ConfigBuffer{
     this.dTab(-1)
     this.addWithOffset("}")
     if( withComma ) this.add(",")
-    this.add("\n")
-  }
-  
-  closeObjectNoComma(){ // obsolete
-    this.dTab(-1)
-    this.addLine("}")
-  }
-
-  closeObjectConditionalComma(predicate){ // obsolete
-    this.dTab(-1)
-    this.addWithOffset("}")
-    if( predicate ) this.add(",")
     this.add("\n")
   }
 

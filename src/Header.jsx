@@ -20,7 +20,7 @@ const Header = ({}) => (
 
       <div style={{display: 'inline-block'}}>
         <StyledH1>PH Webpack Config Generator</StyledH1>
-        <h3>When you just want a webpack config file without hassle!</h3>
+        <h3>Get started with a webpack config file without hassle!</h3>
       </div>
 
       <div style={{float: 'right'}}>

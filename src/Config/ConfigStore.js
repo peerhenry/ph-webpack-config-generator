@@ -23,7 +23,7 @@ class ConfigStore{
 
   // === 3. loaders
   @observable includeBabel = true
-  @observable includeCss = false
+  @observable includeCss = true
   @observable includeFileLoader = false
   usesLoaders = () => (this.includeBabel || this.includeCss || this.includeFileLoader)
 
@@ -47,7 +47,11 @@ class ConfigStore{
   // ====== 3.2 css options
 
   @observable usePostCss = false
-  @observable useExtractTextPlugin = false
+  @observable useExtractTextPlugin = true
+
+  usesExtractTextPlugin = () => {
+    return this.includeCss && this.useExtractTextPlugin
+  }
 
   // === 4. Setter methods
   toggle(name){

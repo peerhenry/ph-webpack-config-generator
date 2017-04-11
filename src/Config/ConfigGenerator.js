@@ -53,10 +53,23 @@ const insertBabelLoader = (store, buffer) => {
 const insertCssLoader = (store, buffer) => {
   buffer.openAnonymousObject()
   buffer.addCsLine('test: /\.css?$/')
-  let loaders = ['style-loader', 'css-loader']
-  if(store.usePostCss) loaders.push('postcss-loader')
-  let cssLine = loaders.map(i => '{0}'+i+'{0}, ').reduce((agr, next) => agr += next).slice(0, -2)
-  buffer.addLine('use: [' + cssLine + ']')
+
+  if(store.usesExtractTextPlugin()){
+    buffer.addLine('use: ExtractTextPlugin.extract({')
+    buffer.incrTab()
+    buffer.addWithOffset('loader: {0}css-loader')
+    if(store.usePostCss) buffer.add('?importLoaders=1!postcss-loader')
+    buffer.add('{0}\n')
+    buffer.decrTab()
+    buffer.addLine('})')
+  }
+  else{
+    let loaders = ['style-loader', 'css-loader']
+    if(store.usePostCss) loaders.push('postcss-loader')
+    let cssLine = loaders.map(i => '{0}'+i+'{0}, ').reduce((agr, next) => agr += next).slice(0, -2)
+    buffer.addLine('use: [' + cssLine + ']')
+  }
+
   let withComma = store.includeFileLoader
   buffer.closeObject(withComma)
 }
@@ -79,11 +92,16 @@ const insertLoaders = (store, buffer) => {
   if(store.includeFileLoader) insertFileLoader(store, buffer)
 
   buffer.closeArray()
-  buffer.closeObjectNoComma()
+  let withComma = store.usesExtractTextPlugin()
+  buffer.closeObject(withComma)
 }
 
 const generateConfig = window.generateConfig = (store) => {
-  let buffer = new ConfigBuffer(store, "var webpack = require({0}webpack{0});\n\nmodule.exports = {\n")
+  let buffer = new ConfigBuffer(store, "var webpack = require({0}webpack{0});\n")
+
+  if(store.usesExtractTextPlugin()) buffer.addLine('var ExtractTextPlugin = require({0}extract-text-webpack-plugin{0});')
+  buffer.addLine('\nmodule.exports = {\n')
+
   buffer.dTab(1)
   buffer.addKvp('context')
   buffer.addKvpS('entry')
@@ -96,6 +114,13 @@ const generateConfig = window.generateConfig = (store) => {
   buffer.closeObject(withComma)
 
   if( store.usesLoaders() ) insertLoaders(store, buffer)
+
+  if( store.usesExtractTextPlugin() ){
+    buffer.nextLine()
+    buffer.openArray('plugins')
+    buffer.addLine('new ExtractTextPlugin({0}public/styleBundle.css{0})')
+    buffer.closeArray()
+  }
 
   buffer.add("}")
   return buffer.toString().format(store.quote)

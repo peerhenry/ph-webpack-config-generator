@@ -68,7 +68,7 @@ class LoaderSelector extends React.Component{
           checked={checked}
           style={{marginRight: '10px', marginLeft: '5px'}} 
           onChange={this.handleCheck}/>
-        <span>{ this.props.label }</span>
+        <span>{ this.props.children }</span>
         { selected ? ([<ShadowTrianlge key={1}/>, <Trianlge key={2}/>]) : '' }
         <br/>
       </DivMargin>

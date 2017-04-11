@@ -22,7 +22,7 @@ const LoaderOptionsSwitch = ({store}) => {
     case 'includeCss':
       return <CssOptions store={store}/>
     case 'includeFileLoader':
-      return <span>No options for file loader</span>
+      return <span>Use this loader to load font files.</span>
     default:
       return false
   }
