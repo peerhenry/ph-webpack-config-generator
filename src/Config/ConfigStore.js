@@ -10,28 +10,33 @@ class Kvp{
 }
 
 class ConfigStore{
-  // webpack config appearance
+  // === 1. webpack config appearance
   @observable tab = "  "
   @observable quote = "'"
 
-  // general settings
+  // === 2. general settings
   context = new Kvp('context', '__dirname')
   entry = new Kvp('entry', './src/main')
 
   outputPath = new Kvp('path', 'public')
   outputFilename = new Kvp('filename', 'bundle.js')
 
-  // loaders
+  // === 3. loaders
   @observable includeBabel = true
   @observable includeCss = false
   @observable includeFileLoader = false
   usesLoaders = () => (this.includeBabel || this.includeCss || this.includeFileLoader)
 
-  // babel plugins
+  @observable selectedLoader = 'includeBabel'
+  selectLoader(loader){
+    this.selectedLoader = loader
+  }
+
+  // ====== 3.1.1 babel plugins
   @observable useBabelDecoratorsLegacy = false;
   usesPlugins = () => (this.useBabelDecoratorsLegacy)
 
-  // babel presets
+  // ====== 3.1.2 babel presets
   @observable useBabelEs2015 = true
   @observable useBabelStage0 = true
   @observable useBabelReact = true
@@ -39,7 +44,12 @@ class ConfigStore{
 
   babelHasOptions = () => ( this.usesPresets() || this.usesPlugins() )
 
-  // Setter methods
+  // ====== 3.2 css options
+
+  @observable usePostCss = false
+  @observable useExtractTextPlugin = false
+
+  // === 4. Setter methods
   toggle(name){
     this[name] = !this[name]
   }
@@ -52,10 +62,14 @@ class ConfigStore{
 
   everythingFalse = () => {
     this.noLoaders()
+    // babel
     this.useBabelDecoratorsLegacy = false
     this.useBabelEs2015 = false
     this.useBabelStage0 = false
     this.useBabelReact = false
+    // css
+    this.usePostCss = false
+    this.useExtractTextPlugin = false
   }
 
   setSimpleEs2015 = () => {

@@ -1,5 +1,6 @@
 import ConfigBuffer from './ConfigBuffer'
 
+// attach format function to string
 if (!String.prototype.format) {
   String.prototype.format = function() {
     var args = arguments;
@@ -60,7 +61,10 @@ const insertLoaders = (store, buffer) => {
   if(store.includeCss){
     buffer.openAnonymousObject()
       buffer.addCsLine('test: /\.css?$/')
-      buffer.addLine('use: [{0}style-loader{0}, {0}css-loader{0}]')
+      let loaders = ['style-loader', 'css-loader']
+      if(store.usePostCss) loaders.push('postcss-loader')
+      let cssLine = loaders.map(i => '{0}'+i+'{0}, ').reduce((agr, next) => agr += next).slice(0, -2)
+      buffer.addLine('use: [' + cssLine + ']')
     let withComma = store.includeFileLoader
     buffer.closeObject(withComma)
   }

@@ -3,11 +3,15 @@ import styled from 'styled-components'
 import {observer} from 'mobx-react'
 
 const DivMargin = styled.div`
-  padding: 4px;
+  padding: 10px 0;
   cursor: pointer;
+  font-size: 16px;
+  position: relative;
+  border-color: #365363
 
   &:hover {
     background-color: #263036;
+    border-color: #263036;
   }
 `
 

@@ -1,5 +1,5 @@
 import React from 'react'
-import CheckBox from '../../Components/CheckBox'
+import CheckBox from '../../../Components/CheckBox'
 
 const BabelOptions = ({}) => (
   <div>

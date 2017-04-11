@@ -1,5 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
+import {observer} from 'mobx-react'
 
 import PaddedDiv from '../../Components/PaddedDiv'
 import FreeFieldTableRow from '../../Components/FreeFieldTableRow'
@@ -10,7 +11,24 @@ import MiniPanelHeader from '../../Components/MiniPanelHeader'
 import EntryOutputFields from './EntryOutputFields'
 import PresetSelection from './PresetSelection'
 import LoaderSelection from './LoaderSelection'
-import BabelOptions from './BabelOptions'
+
+import BabelOptions from './LoaderOptions/BabelOptions'
+import CssOptions from './LoaderOptions/CssOptions'
+
+const LoaderOptionsSwitch = ({store}) => {
+  switch(store.selectedLoader){
+    case 'includeBabel':
+      return <BabelOptions store={store}/>
+    case 'includeCss':
+      return <CssOptions store={store}/>
+    case 'includeFileLoader':
+      return <span>No options for file loader</span>
+    default:
+      return false
+  }
+}
+
+const LoaderOptionsOberver = observer(LoaderOptionsSwitch)
 
 const EditPanel = ({store}) => (
   <div style={{margin: '0', height: '100%'}}>
@@ -23,21 +41,21 @@ const EditPanel = ({store}) => (
       </div>
     </div>
 
-    <div className="grid grid-pad" style={{maxWidth: 'none', overflow: 'visible'}}>
+    <div className="grid grid-pad" style={{maxWidth: 'none', overflow: 'visible', marginBottom: '20px'}}>
 
       <div className="col-1-3"><MiniPanel>
-        <MiniPanelHeader><h3>Presets</h3></MiniPanelHeader>
+        <MiniPanelHeader><h2>Presets</h2></MiniPanelHeader>
         <PresetSelection store={store}/>
       </MiniPanel></div>
 
       <div className="col-1-3"><MiniPanel>
-        <MiniPanelHeader><h3>Loaders</h3></MiniPanelHeader>
+        <MiniPanelHeader><h2>Loaders</h2></MiniPanelHeader>
         <LoaderSelection store={store}/>
       </MiniPanel></div>
 
       <div className="col-1-3"><MiniPanel>
-        <MiniPanelHeader><h3>Loader options</h3></MiniPanelHeader>
-        <BabelOptions store={store}/>
+        <MiniPanelHeader><h2>Loader options</h2></MiniPanelHeader>
+        <LoaderOptionsOberver store={store}/>
       </MiniPanel></div>
 
     </div>

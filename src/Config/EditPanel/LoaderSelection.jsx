@@ -1,11 +1,11 @@
 import React from 'react'
-import CheckBox from '../../Components/CheckBox'
+import LoaderSelector from '../../Components/LoaderSelector'
 
 const LoaderSelection = ({store}) => (
   <ul>
-    <CheckBox store={store} storeKey={'includeBabel'} label={'Babel'}/>
-    <CheckBox store={store} storeKey={'includeCss'} label={'Css'}/>
-    <CheckBox store={store} storeKey={'includeFileLoader'} label={'File'}/>
+    <LoaderSelector store={store} storeKey={'includeBabel'} label={'Babel'}/>
+    <LoaderSelector store={store} storeKey={'includeCss'} label={'Css'}/>
+    <LoaderSelector store={store} storeKey={'includeFileLoader'} label={'File'}/>
   </ul>
 )
 
