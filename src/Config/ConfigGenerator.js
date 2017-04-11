@@ -31,50 +31,52 @@ const insertBabelPlugins = (store, buffer) => {
   buffer.addLine('plugins: [' + line + ']')
 }
 
+const insertBabelLoader = (store, buffer) => {
+  buffer.openAnonymousObject()
+  buffer.addCsLine('test: /\.jsx?$/')
+  buffer.addLine('exclude: /node_modules/')
+  buffer.openObject('use')
+  buffer.addCsLine('loader: {0}babel-loader{0}')
+
+  if(store.babelHasOptions()){
+    buffer.openObject('options')
+    if(store.usesPresets()) insertBabelPresets(store, buffer)
+    if(store.usesPlugins()) insertBabelPlugins(store, buffer)
+    buffer.closeObject()
+  }
+
+  buffer.closeObject()
+  let withComma = store.includeCss || store.includeFileLoader
+  buffer.closeObject(withComma)
+}
+
+const insertCssLoader = (store, buffer) => {
+  buffer.openAnonymousObject()
+  buffer.addCsLine('test: /\.css?$/')
+  let loaders = ['style-loader', 'css-loader']
+  if(store.usePostCss) loaders.push('postcss-loader')
+  let cssLine = loaders.map(i => '{0}'+i+'{0}, ').reduce((agr, next) => agr += next).slice(0, -2)
+  buffer.addLine('use: [' + cssLine + ']')
+  let withComma = store.includeFileLoader
+  buffer.closeObject(withComma)
+}
+
+const insertFileLoader = (store, buffer) => {
+  buffer.openAnonymousObject()
+  buffer.addLine('test: /\.(eot|svg|ttf|woff|woff2)$/,')
+  buffer.addLine('loader: {0}file-loader?name=public/fonts/[name].[ext]{0}')
+  buffer.closeObject()
+}
+
 const insertLoaders = (store, buffer) => {
 
   buffer.nextLine()
   buffer.openObject("module")
   buffer.openArray("rules")
 
-  if(store.includeBabel){
-    buffer.openAnonymousObject()
-
-      buffer.addCsLine('test: /\.jsx?$/')
-      buffer.addLine('exclude: /node_modules/')
-      buffer.openObject('use')
-      buffer.addCsLine('loader: {0}babel-loader{0}')
-
-      if(store.babelHasOptions()){
-        buffer.openObject('options')
-        if(store.usesPresets()) insertBabelPresets(store, buffer)
-        if(store.usesPlugins()) insertBabelPlugins(store, buffer)
-        buffer.closeObject()
-      }
-
-      buffer.closeObject()
-
-    let withComma = store.includeCss || store.includeFileLoader
-    buffer.closeObject(withComma)
-  }
-
-  if(store.includeCss){
-    buffer.openAnonymousObject()
-      buffer.addCsLine('test: /\.css?$/')
-      let loaders = ['style-loader', 'css-loader']
-      if(store.usePostCss) loaders.push('postcss-loader')
-      let cssLine = loaders.map(i => '{0}'+i+'{0}, ').reduce((agr, next) => agr += next).slice(0, -2)
-      buffer.addLine('use: [' + cssLine + ']')
-    let withComma = store.includeFileLoader
-    buffer.closeObject(withComma)
-  }
-
-  if(store.includeFileLoader){
-    buffer.openAnonymousObject()
-    buffer.addLine('test: /\.(eot|svg|ttf|woff|woff2)$/,')
-    buffer.addLine('loader: {0}file-loader?name=public/fonts/[name].[ext]{0}')
-    buffer.closeObject()
-  }
+  if(store.includeBabel) insertBabelLoader(store, buffer)
+  if(store.includeCss) insertCssLoader(store, buffer)
+  if(store.includeFileLoader) insertFileLoader(store, buffer)
 
   buffer.closeArray()
   buffer.closeObjectNoComma()
@@ -90,9 +92,10 @@ const generateConfig = window.generateConfig = (store) => {
   buffer.openObject("output")
   buffer.addKvpS('outputPath')
   buffer.addKvpS('outputFilename')
-  buffer.closeObject()
+  let withComma = store.usesLoaders()
+  buffer.closeObject(withComma)
 
-  if(store.usesLoaders()) insertLoaders(store, buffer)
+  if( store.usesLoaders() ) insertLoaders(store, buffer)
 
   buffer.add("}")
   return buffer.toString().format(store.quote)

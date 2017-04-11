@@ -11,16 +11,47 @@ const StyledDiv = styled.div`
   display: table-cell;
 `
 
-const ConfigResult = ({store}) => (
-  <StyledDiv><PaddedDiv>    
-    
-    <pre><code>
-      {
-        generateConfig(store)
-      }
-    </code></pre>
+const StyledButton = styled.button`
+  color: #aaa;
+  border: 1px solid #aaa;
+  transition: 0.3s;
+  border-radius: 5px;
+  outline: none;
 
-  </PaddedDiv></StyledDiv>
-)
+  &:hover{
+    color: #333;
+    border: 1px solid #333;
+    transition: 0.3s;
+  }
+`
+
+function download(filename, text) {
+  var element = document.createElement('a');
+  element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+  element.setAttribute('download', filename);
+
+  element.style.display = 'none';
+  document.body.appendChild(element);
+
+  element.click();
+
+  document.body.removeChild(element);
+}
+
+const ConfigResult = ({store}) => {
+
+  const config = generateConfig(store)
+
+  return (
+    <StyledDiv><PaddedDiv>    
+      
+      <pre><code>
+        { config }
+      </code></pre>
+      <br/>
+      <StyledButton onClick={e => download('webpack.config.js', config)}>Download</StyledButton>
+
+    </PaddedDiv></StyledDiv>
+)}
 
 export default ConfigResult

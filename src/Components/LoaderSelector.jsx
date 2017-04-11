@@ -34,7 +34,7 @@ const ShadowTrianlge = styled.div`
   border-left: 24px solid #1e292e;
   position: absolute;
   top: 4px;
-  right: -30px;
+  right: -28px;
   z-index: -1;
 `
 
