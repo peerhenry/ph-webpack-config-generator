@@ -2,18 +2,27 @@
 
 /* ========= FONTS ========= */
 
-html{
-  font-family: Arial, Helvetica, sans-serif;
-  font-size: 14px;
-}
-
 @font-face {
   font-family: Cantarell;
   src: url(fonts/Cantarell-Bold.ttf); /* https://www.fontsquirrel.com/fonts/cantarell */
 }
 
+@font-face{
+  font-family: Ubuntu;
+  src: url(fonts/Ubuntu-L.ttf) /* http://font.ubuntu.com/ */
+}
+
+html{
+  font-family: Ubuntu, Arial, Helvetica, sans-serif;
+  font-size: 14px;
+}
+
 h1{
   font-family: Cantarell;
+}
+
+button{
+  font-family: Ubuntu;
 }
 
 span, input{

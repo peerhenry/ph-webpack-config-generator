@@ -40,6 +40,10 @@ class ConfigStore{
   babelHasOptions = () => ( this.usesPresets() || this.usesPlugins() )
 
   // Setter methods
+  toggle(name){
+    this[name] = !this[name]
+  }
+
   noLoaders = () => {
     this.includeBabel = false
     this.includeCss = false

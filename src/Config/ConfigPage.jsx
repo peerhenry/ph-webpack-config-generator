@@ -5,7 +5,7 @@ import styled from 'styled-components'
 import EditPanel from './EditPanel/EditPanel'
 import ConfigResult from './ConfigResult'
 
-const ConfigEditPanel = inject("store")(observer(EditPanel))
+const ConfigEditPanel = inject("store")(EditPanel)
 const Result = inject("store")(observer(ConfigResult))
 
 const ConfigPage = ({}) => (

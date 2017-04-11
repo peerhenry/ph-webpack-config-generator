@@ -1,5 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
+import {observer} from 'mobx-react'
 
 const DivMargin = styled.div`
   padding: 4px;
@@ -10,30 +11,35 @@ const DivMargin = styled.div`
   }
 `
 
+@observer
 class CheckBox extends React.Component{
 
   constructor(props){
     super(props)
-    this.state = { 
-      value: props.store[props.storeKey]
-    }
-    this.handleChange = this.handleChange.bind(this)
+    this.handleCheck = this.handleCheck.bind(this)
   }
 
   getVal(){
     return this.props.store[this.props.storeKey]
   }
 
-  handleChange(e){
-    let newValue = !this.getVal()
-    this.setState({value: newValue})
-    this.props.store[this.props.storeKey] = newValue
+  handleCheck(e){
+    //this.props.store.toggle(this.props.storeKey)
+  }
+
+  handleSelect(e){
+    this.props.store.toggle(this.props.storeKey)
   }
 
   render(){
+    const checked = this.getVal()
     return (
-      <DivMargin className="clickable" onClick={this.handleChange}>
-        <input type="checkbox" checked={this.state.value} readOnly style={{marginRight: '10px', marginLeft: '5px'}}/>
+      <DivMargin className="clickable" onClick={e => this.handleSelect(e)}>
+        <input 
+          type="checkbox" 
+          checked={checked}
+          style={{marginRight: '10px', marginLeft: '5px'}} 
+          onChange={this.handleCheck}/>
         <span>{ this.props.label }</span>
         <br/>
       </DivMargin>
