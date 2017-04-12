@@ -15,7 +15,7 @@ FileStore.getTest = store => {
   if(store.loadImages) extensions = extensions.concat(['jpg', 'jpeg', 'png', 'gif'])
   if(store.loadText) extensions.push('txt')
   if(store.loadHtml) extensions.push('html')
-  result += extensions.map(e => e+'|').reduce((agr, next) => agr += next).slice(0, -1)
+  if(extensions.length > 0) result += extensions.map(e => e+'|').reduce((agr, next) => agr += next).slice(0, -1)
   result += ')$/'
   return result
 }

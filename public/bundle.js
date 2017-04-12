@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 31);
+/******/ 	return __webpack_require__(__webpack_require__.s = 41);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -7360,91 +7360,9 @@ var styled = _styled(_styledComponent(_ComponentStyle(generateAlphabeticName)));
 /* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(Buffer) {/*
-	MIT License http://www.opensource.org/licenses/mit-license.php
-	Author Tobias Koppers @sokra
-*/
-// css base code, injected by the css-loader
-module.exports = function(useSourceMap) {
-	var list = [];
-
-	// return the list of modules as css string
-	list.toString = function toString() {
-		return this.map(function (item) {
-			var content = cssWithMappingToString(item, useSourceMap);
-			if(item[2]) {
-				return "@media " + item[2] + "{" + content + "}";
-			} else {
-				return content;
-			}
-		}).join("");
-	};
-
-	// import a list of modules into the list
-	list.i = function(modules, mediaQuery) {
-		if(typeof modules === "string")
-			modules = [[null, modules, ""]];
-		var alreadyImportedModules = {};
-		for(var i = 0; i < this.length; i++) {
-			var id = this[i][0];
-			if(typeof id === "number")
-				alreadyImportedModules[id] = true;
-		}
-		for(i = 0; i < modules.length; i++) {
-			var item = modules[i];
-			// skip already imported module
-			// this implementation is not 100% perfect for weird media query combinations
-			//  when a module is imported multiple times with different media queries.
-			//  I hope this will never occur (Hey this way we have smaller bundles)
-			if(typeof item[0] !== "number" || !alreadyImportedModules[item[0]]) {
-				if(mediaQuery && !item[2]) {
-					item[2] = mediaQuery;
-				} else if(mediaQuery) {
-					item[2] = "(" + item[2] + ") and (" + mediaQuery + ")";
-				}
-				list.push(item);
-			}
-		}
-	};
-	return list;
-};
-
-function cssWithMappingToString(item, useSourceMap) {
-	var content = item[1] || '';
-	var cssMapping = item[3];
-	if (!cssMapping) {
-		return content;
-	}
-
-	if (useSourceMap) {
-		var sourceMapping = toComment(cssMapping);
-		var sourceURLs = cssMapping.sources.map(function (source) {
-			return '/*# sourceURL=' + cssMapping.sourceRoot + source + ' */'
-		});
-
-		return [content].concat(sourceURLs).concat([sourceMapping]).join('\n');
-	}
-
-	return [content].join('\n');
-}
-
-// Adapted from convert-source-map (MIT)
-function toComment(sourceMap) {
-  var base64 = new Buffer(JSON.stringify(sourceMap)).toString('base64');
-  var data = 'sourceMappingURL=data:application/json;charset=utf-8;base64,' + base64;
-
-  return '/*# ' + data + ' */';
-}
-
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(34).Buffer))
-
-/***/ }),
-/* 3 */
-/***/ (function(module, exports, __webpack_require__) {
-
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(true)
-		module.exports = factory(__webpack_require__(9), __webpack_require__(0), __webpack_require__(7));
+		module.exports = factory(__webpack_require__(10), __webpack_require__(0), __webpack_require__(11));
 	else if(typeof define === 'function' && define.amd)
 		define(["mobx", "react", "react-dom"], factory);
 	else if(typeof exports === 'object')
@@ -8463,6 +8381,88 @@ return /******/ (function(modules) { // webpackBootstrap
 ;
 
 /***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(Buffer) {/*
+	MIT License http://www.opensource.org/licenses/mit-license.php
+	Author Tobias Koppers @sokra
+*/
+// css base code, injected by the css-loader
+module.exports = function(useSourceMap) {
+	var list = [];
+
+	// return the list of modules as css string
+	list.toString = function toString() {
+		return this.map(function (item) {
+			var content = cssWithMappingToString(item, useSourceMap);
+			if(item[2]) {
+				return "@media " + item[2] + "{" + content + "}";
+			} else {
+				return content;
+			}
+		}).join("");
+	};
+
+	// import a list of modules into the list
+	list.i = function(modules, mediaQuery) {
+		if(typeof modules === "string")
+			modules = [[null, modules, ""]];
+		var alreadyImportedModules = {};
+		for(var i = 0; i < this.length; i++) {
+			var id = this[i][0];
+			if(typeof id === "number")
+				alreadyImportedModules[id] = true;
+		}
+		for(i = 0; i < modules.length; i++) {
+			var item = modules[i];
+			// skip already imported module
+			// this implementation is not 100% perfect for weird media query combinations
+			//  when a module is imported multiple times with different media queries.
+			//  I hope this will never occur (Hey this way we have smaller bundles)
+			if(typeof item[0] !== "number" || !alreadyImportedModules[item[0]]) {
+				if(mediaQuery && !item[2]) {
+					item[2] = mediaQuery;
+				} else if(mediaQuery) {
+					item[2] = "(" + item[2] + ") and (" + mediaQuery + ")";
+				}
+				list.push(item);
+			}
+		}
+	};
+	return list;
+};
+
+function cssWithMappingToString(item, useSourceMap) {
+	var content = item[1] || '';
+	var cssMapping = item[3];
+	if (!cssMapping) {
+		return content;
+	}
+
+	if (useSourceMap) {
+		var sourceMapping = toComment(cssMapping);
+		var sourceURLs = cssMapping.sources.map(function (source) {
+			return '/*# sourceURL=' + cssMapping.sourceRoot + source + ' */'
+		});
+
+		return [content].concat(sourceURLs).concat([sourceMapping]).join('\n');
+	}
+
+	return [content].join('\n');
+}
+
+// Adapted from convert-source-map (MIT)
+function toComment(sourceMap) {
+  var base64 = new Buffer(JSON.stringify(sourceMap)).toString('base64');
+  var data = 'sourceMappingURL=data:application/json;charset=utf-8;base64,' + base64;
+
+  return '/*# ' + data + ' */';
+}
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(44).Buffer))
+
+/***/ }),
 /* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -8500,7 +8500,7 @@ var stylesInDom = {},
 	singletonElement = null,
 	singletonCounter = 0,
 	styleElementsInsertedAtTop = [],
-	fixUrls = __webpack_require__(44);
+	fixUrls = __webpack_require__(54);
 
 module.exports = function(list, options) {
 	if(typeof DEBUG !== "undefined" && DEBUG) {
@@ -8798,9 +8798,121 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _class;
+var _desc, _value, _class, _descriptor, _descriptor2, _descriptor3;
 
-var _templateObject = _taggedTemplateLiteral(['\n  padding: 10px 0;\n  cursor: pointer;\n  font-size: 16px;\n  position: relative;\n  border-color: #365363\n\n  &:hover {\n    background-color: #263036;\n    border-color: #263036;\n  }\n'], ['\n  padding: 10px 0;\n  cursor: pointer;\n  font-size: 16px;\n  position: relative;\n  border-color: #365363\n\n  &:hover {\n    background-color: #263036;\n    border-color: #263036;\n  }\n']);
+var _mobx = __webpack_require__(10);
+
+function _initDefineProp(target, property, descriptor, context) {
+  if (!descriptor) return;
+  Object.defineProperty(target, property, {
+    enumerable: descriptor.enumerable,
+    configurable: descriptor.configurable,
+    writable: descriptor.writable,
+    value: descriptor.initializer ? descriptor.initializer.call(context) : void 0
+  });
+}
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _applyDecoratedDescriptor(target, property, decorators, descriptor, context) {
+  var desc = {};
+  Object['ke' + 'ys'](descriptor).forEach(function (key) {
+    desc[key] = descriptor[key];
+  });
+  desc.enumerable = !!desc.enumerable;
+  desc.configurable = !!desc.configurable;
+
+  if ('value' in desc || desc.initializer) {
+    desc.writable = true;
+  }
+
+  desc = decorators.slice().reverse().reduce(function (desc, decorator) {
+    return decorator(target, property, desc) || desc;
+  }, desc);
+
+  if (context && desc.initializer !== void 0) {
+    desc.value = desc.initializer ? desc.initializer.call(context) : void 0;
+    desc.initializer = undefined;
+  }
+
+  if (desc.initializer === void 0) {
+    Object['define' + 'Property'](target, property, desc);
+    desc = null;
+  }
+
+  return desc;
+}
+
+function _initializerWarningHelper(descriptor, context) {
+  throw new Error('Decorating class property failed. Please ensure that transform-class-properties is enabled.');
+}
+
+var LoaderStore = (_class = function () {
+  function LoaderStore(label, test, writeToBuffer) {
+    _classCallCheck(this, LoaderStore);
+
+    _initDefineProp(this, 'test', _descriptor, this);
+
+    _initDefineProp(this, 'active', _descriptor2, this);
+
+    _initDefineProp(this, 'selected', _descriptor3, this);
+
+    this.label = label;
+    this.name = name;
+    this.active;
+    this.test = test;
+    this.writeToBuffer = writeToBuffer; // (store, buffer) => void
+  }
+
+  _createClass(LoaderStore, [{
+    key: 'toggleActive',
+    value: function toggleActive() {
+      this.active = !this.active;
+    }
+  }, {
+    key: 'select',
+    value: function select() {
+      this.selected = true;
+    }
+  }, {
+    key: 'unSelect',
+    value: function unSelect() {
+      this.selected = false;
+    }
+  }, {
+    key: 'getTest',
+    value: function getTest() {
+      return this.test;
+    }
+  }]);
+
+  return LoaderStore;
+}(), (_descriptor = _applyDecoratedDescriptor(_class.prototype, 'test', [_mobx.observable], {
+  enumerable: true,
+  initializer: null
+}), _descriptor2 = _applyDecoratedDescriptor(_class.prototype, 'active', [_mobx.observable], {
+  enumerable: true,
+  initializer: function initializer() {
+    return false;
+  }
+}), _descriptor3 = _applyDecoratedDescriptor(_class.prototype, 'selected', [_mobx.observable], {
+  enumerable: true,
+  initializer: function initializer() {
+    return false;
+  }
+})), _class);
+exports.default = LoaderStore;
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 
 var _react = __webpack_require__(0);
 
@@ -8810,83 +8922,35 @@ var _styledComponents = __webpack_require__(1);
 
 var _styledComponents2 = _interopRequireDefault(_styledComponents);
 
-var _mobxReact = __webpack_require__(3);
+var _mobxReact = __webpack_require__(2);
+
+var _CheckBoxInSelectableDiv = __webpack_require__(8);
+
+var _CheckBoxInSelectableDiv2 = _interopRequireDefault(_CheckBoxInSelectableDiv);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+var CheckBoxForStoreKey = function CheckBoxForStoreKey(_ref) {
+  var store = _ref.store,
+      storeKey = _ref.storeKey,
+      children = _ref.children;
 
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-function _taggedTemplateLiteral(strings, raw) { return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
-
-var DivMargin = _styledComponents2.default.div(_templateObject);
-
-var CheckBox = (0, _mobxReact.observer)(_class = function (_React$Component) {
-  _inherits(CheckBox, _React$Component);
-
-  function CheckBox(props) {
-    _classCallCheck(this, CheckBox);
-
-    var _this = _possibleConstructorReturn(this, (CheckBox.__proto__ || Object.getPrototypeOf(CheckBox)).call(this, props));
-
-    _this.handleCheck = _this.handleCheck.bind(_this);
-    return _this;
-  }
-
-  _createClass(CheckBox, [{
-    key: 'getVal',
-    value: function getVal() {
-      return this.props.store[this.props.storeKey];
+  var props = {
+    checked: store[storeKey],
+    selected: false,
+    handleCheck: function handleCheck(e) {},
+    handleSelect: function handleSelect(e) {
+      store.toggle(storeKey);
     }
-  }, {
-    key: 'handleCheck',
-    value: function handleCheck(e) {
-      //this.props.store.toggle(this.props.storeKey)
-    }
-  }, {
-    key: 'handleSelect',
-    value: function handleSelect(e) {
-      this.props.store.toggle(this.props.storeKey);
-    }
-  }, {
-    key: 'render',
-    value: function render() {
-      var _this2 = this;
+  };
+  return _react2.default.createElement(
+    _CheckBoxInSelectableDiv2.default,
+    props,
+    children
+  );
+};
 
-      var checked = this.getVal();
-      return _react2.default.createElement(
-        DivMargin,
-        { className: 'clickable', onClick: function onClick(e) {
-            return _this2.handleSelect(e);
-          } },
-        _react2.default.createElement('input', {
-          type: 'checkbox',
-          checked: checked,
-          style: { marginRight: '10px', marginLeft: '5px' },
-          onChange: this.handleCheck }),
-        _react2.default.createElement(
-          'span',
-          null,
-          this.props.label
-        ),
-        _react2.default.createElement('br', null)
-      );
-    }
-  }]);
-
-  return CheckBox;
-}(_react2.default.Component)) || _class;
-
-exports.default = CheckBox;
-
-/***/ }),
-/* 7 */
-/***/ (function(module, exports) {
-
-module.exports = ReactDOM;
+exports.default = (0, _mobxReact.observer)(CheckBoxForStoreKey);
 
 /***/ }),
 /* 8 */
@@ -8899,7 +8963,95 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _templateObject = _taggedTemplateLiteral(['\n  &:after {\n    content: "";\n    display: table;\n    clear: both;\n  }\n'], ['\n  &:after {\n    content: "";\n    display: table;\n    clear: both;\n  }\n']);
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _templateObject = _taggedTemplateLiteral(['\n  padding: 10px 0;\n  cursor: pointer;\n  font-size: 16px;\n  position: relative;\n  border-color: #365363\n\n  &:hover {\n    background-color: #263036;\n    border-color: #263036;\n  }\n'], ['\n  padding: 10px 0;\n  cursor: pointer;\n  font-size: 16px;\n  position: relative;\n  border-color: #365363\n\n  &:hover {\n    background-color: #263036;\n    border-color: #263036;\n  }\n']);
+
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _styledComponents = __webpack_require__(1);
+
+var _styledComponents2 = _interopRequireDefault(_styledComponents);
+
+var _mobxReact = __webpack_require__(2);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+function _taggedTemplateLiteral(strings, raw) { return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+
+var ClickableDiv = _styledComponents2.default.div(_templateObject);
+
+var CheckBoxInSelectableDiv = function (_React$Component) {
+  _inherits(CheckBoxInSelectableDiv, _React$Component);
+
+  function CheckBoxInSelectableDiv(props) {
+    _classCallCheck(this, CheckBoxInSelectableDiv);
+
+    var _this = _possibleConstructorReturn(this, (CheckBoxInSelectableDiv.__proto__ || Object.getPrototypeOf(CheckBoxInSelectableDiv)).call(this, props));
+
+    _this.handleCheck = _this.handleCheck.bind(_this);
+    return _this;
+  }
+
+  _createClass(CheckBoxInSelectableDiv, [{
+    key: 'handleCheck',
+    value: function handleCheck(e) {
+      this.props.handleCheck(e);
+    }
+  }, {
+    key: 'handleSelect',
+    value: function handleSelect(e) {
+      this.props.handleSelect(e);
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      var _this2 = this;
+
+      var checked = this.props.checked;
+      var selected = this.props.selected;
+      return _react2.default.createElement(
+        ClickableDiv,
+        { className: 'clickable', onClick: function onClick(e) {
+            return _this2.handleSelect(e);
+          } },
+        _react2.default.createElement('input', {
+          type: 'checkbox',
+          checked: checked,
+          style: { marginRight: '10px', marginLeft: '5px' },
+          onChange: this.handleCheck }),
+        this.props.children,
+        _react2.default.createElement('br', null)
+      );
+    }
+  }]);
+
+  return CheckBoxInSelectableDiv;
+}(_react2.default.Component);
+
+exports.default = CheckBoxInSelectableDiv;
+
+/***/ }),
+/* 9 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _templateObject = _taggedTemplateLiteral(['\n  position: relative;\n  display: inline-block;\n\n  &:hover{\n    color: white;\n  }\n\n  &:hover span{\n    visibility: visible;\n  }\n'], ['\n  position: relative;\n  display: inline-block;\n\n  &:hover{\n    color: white;\n  }\n\n  &:hover span{\n    visibility: visible;\n  }\n']),
+    _templateObject2 = _taggedTemplateLiteral(['\n  visibility: hidden;\n  width: 300px;\n  background-color: #365363;\n  color: #fff;\n  text-align: center;\n  border: 1px solid black;\n  padding: 5px 0;\n\n  /* Position the tooltip */\n  position: absolute;\n  z-index: 1;\n'], ['\n  visibility: hidden;\n  width: 300px;\n  background-color: #365363;\n  color: #fff;\n  text-align: center;\n  border: 1px solid black;\n  padding: 5px 0;\n\n  /* Position the tooltip */\n  position: absolute;\n  z-index: 1;\n']);
 
 var _react = __webpack_require__(0);
 
@@ -8913,12 +9065,30 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _taggedTemplateLiteral(strings, raw) { return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
 
-var ExpandedDiv = _styledComponents2.default.div(_templateObject);
+// border-bottom: 1px dotted black;
+var ToolTip = _styledComponents2.default.div(_templateObject);
 
-exports.default = ExpandedDiv;
+var ToolTipContent = _styledComponents2.default.span(_templateObject2);
+
+var ToolTipLabel = function ToolTipLabel(_ref) {
+  var label = _ref.label,
+      tooltip = _ref.tooltip;
+  return _react2.default.createElement(
+    ToolTip,
+    null,
+    label,
+    _react2.default.createElement(
+      ToolTipContent,
+      null,
+      tooltip
+    )
+  );
+};
+
+exports.default = ToolTipLabel;
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11845,10 +12015,45 @@ function toPrimitive(value) {
     return value === null ? null : typeof value === "object" ? ("" + value) : value;
 }
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(10)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(13)))
 
 /***/ }),
-/* 10 */
+/* 11 */
+/***/ (function(module, exports) {
+
+module.exports = ReactDOM;
+
+/***/ }),
+/* 12 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _templateObject = _taggedTemplateLiteral(['\n  &:after {\n    content: "";\n    display: table;\n    clear: both;\n  }\n'], ['\n  &:after {\n    content: "";\n    display: table;\n    clear: both;\n  }\n']);
+
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _styledComponents = __webpack_require__(1);
+
+var _styledComponents2 = _interopRequireDefault(_styledComponents);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _taggedTemplateLiteral(strings, raw) { return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+
+var ExpandedDiv = _styledComponents2.default.div(_templateObject);
+
+exports.default = ExpandedDiv;
+
+/***/ }),
+/* 13 */
 /***/ (function(module, exports) {
 
 var g;
@@ -11875,7 +12080,7 @@ module.exports = g;
 
 
 /***/ }),
-/* 11 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11889,25 +12094,25 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _mobxReact = __webpack_require__(3);
+var _mobxReact = __webpack_require__(2);
 
 var _styledComponents = __webpack_require__(1);
 
 var _styledComponents2 = _interopRequireDefault(_styledComponents);
 
-var _ConfigStore = __webpack_require__(21);
+var _ConfigStore = __webpack_require__(22);
 
 var _ConfigStore2 = _interopRequireDefault(_ConfigStore);
 
-var _Header = __webpack_require__(29);
+var _Header = __webpack_require__(39);
 
 var _Header2 = _interopRequireDefault(_Header);
 
-var _ConfigPage = __webpack_require__(19);
+var _ConfigPage = __webpack_require__(20);
 
 var _ConfigPage2 = _interopRequireDefault(_ConfigPage);
 
-var _Footer = __webpack_require__(28);
+var _Footer = __webpack_require__(38);
 
 var _Footer2 = _interopRequireDefault(_Footer);
 
@@ -11915,7 +12120,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _objectDestructuringEmpty(obj) { if (obj == null) throw new TypeError("Cannot destructure undefined"); }
 
-__webpack_require__(32);
+__webpack_require__(42);
 
 
 var App = function App(_ref) {
@@ -11937,7 +12142,7 @@ var App = function App(_ref) {
 exports.default = App;
 
 /***/ }),
-/* 12 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11949,11 +12154,15 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+var _class;
+
 var _templateObject = _taggedTemplateLiteral(['\n  padding: 5px;\n  border-radius: 5px;\n  font-size: 22px;\n  font-weight: bold;\n'], ['\n  padding: 5px;\n  border-radius: 5px;\n  font-size: 22px;\n  font-weight: bold;\n']);
 
 var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
+
+var _mobxReact = __webpack_require__(2);
 
 var _styledComponents = __webpack_require__(1);
 
@@ -11975,7 +12184,7 @@ var capitalizeFirstLetter = function capitalizeFirstLetter(string) {
 
 var StyledInput = _styledComponents2.default.input(_templateObject);
 
-var FreeField = function (_React$Component) {
+var FreeField = (0, _mobxReact.observer)(_class = function (_React$Component) {
   _inherits(FreeField, _React$Component);
 
   function FreeField(props) {
@@ -11987,7 +12196,6 @@ var FreeField = function (_React$Component) {
       return agr += capitalizeFirstLetter(next);
     });
     _this.state = {
-      value: props.store[storeKey].value,
       storeKey: storeKey
     };
     _this.handleInput = _this.handleInput.bind(_this);
@@ -11998,14 +12206,14 @@ var FreeField = function (_React$Component) {
     key: 'handleInput',
     value: function handleInput(event) {
       var newValue = event.target.value;
-      this.setState({ value: newValue });
-      store[this.state.storeKey].value = newValue;
+      this.props.store[this.state.storeKey].value = newValue;
     }
   }, {
     key: 'render',
     value: function render() {
       var _this2 = this;
 
+      var value = this.props.store[this.state.storeKey].value;
       return _react2.default.createElement(
         'div',
         { style: { fontSize: '18px', display: 'table' } },
@@ -12024,7 +12232,7 @@ var FreeField = function (_React$Component) {
           { className: 'col-2-3' },
           _react2.default.createElement(StyledInput, {
             type: 'text',
-            value: this.state.value,
+            value: value,
             onChange: function onChange(e) {
               return _this2.handleInput(e);
             }
@@ -12035,207 +12243,12 @@ var FreeField = function (_React$Component) {
   }]);
 
   return FreeField;
-}(_react2.default.Component);
+}(_react2.default.Component)) || _class;
 
 exports.default = FreeField;
 
 /***/ }),
-/* 13 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _react = __webpack_require__(0);
-
-var _react2 = _interopRequireDefault(_react);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var capitalizeFirstLetter = function capitalizeFirstLetter(string) {
-  return string.charAt(0).toUpperCase() + string.slice(1);
-};
-
-var FreeFieldTableRow = function (_React$Component) {
-  _inherits(FreeFieldTableRow, _React$Component);
-
-  function FreeFieldTableRow(props) {
-    _classCallCheck(this, FreeFieldTableRow);
-
-    var _this = _possibleConstructorReturn(this, (FreeFieldTableRow.__proto__ || Object.getPrototypeOf(FreeFieldTableRow)).call(this, props));
-
-    var storeKey = props.storeKey || props.label.split('.').reduce(function (agr, next) {
-      return agr += capitalizeFirstLetter(next);
-    });
-    _this.state = {
-      value: props.store[storeKey].value,
-      storeKey: storeKey
-    };
-    _this.handleInput = _this.handleInput.bind(_this);
-    return _this;
-  }
-
-  _createClass(FreeFieldTableRow, [{
-    key: 'handleInput',
-    value: function handleInput(event) {
-      var newValue = event.target.value;
-      this.setState({ value: newValue });
-      store[this.state.storeKey].value = newValue;
-    }
-  }, {
-    key: 'render',
-    value: function render() {
-      var _this2 = this;
-
-      return _react2.default.createElement(
-        'tr',
-        null,
-        _react2.default.createElement(
-          'td',
-          null,
-          this.props.children,
-          ':'
-        ),
-        _react2.default.createElement(
-          'td',
-          null,
-          _react2.default.createElement('input', {
-            type: 'text',
-            value: this.state.value,
-            onChange: function onChange(e) {
-              return _this2.handleInput(e);
-            },
-            style: { width: '100%' }
-          })
-        )
-      );
-    }
-  }]);
-
-  return FreeFieldTableRow;
-}(_react2.default.Component);
-
-exports.default = FreeFieldTableRow;
-
-/***/ }),
-/* 14 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _class;
-
-var _templateObject = _taggedTemplateLiteral(['\n  padding: 10px 0;\n  cursor: pointer;\n  font-size: 16px;\n  position: relative;\n  border-color: #365363\n\n  &:hover {\n    background-color: #263036;\n    border-color: #263036;\n  }\n'], ['\n  padding: 10px 0;\n  cursor: pointer;\n  font-size: 16px;\n  position: relative;\n  border-color: #365363\n\n  &:hover {\n    background-color: #263036;\n    border-color: #263036;\n  }\n']),
-    _templateObject2 = _taggedTemplateLiteral(['\n  width: 0; \n  height: 0; \n  border-top: 18px solid transparent;\n  border-bottom: 18px solid transparent;\n  border-left: 24px solid #365363;\n  position: absolute;\n  top: 0;\n  left: 100%;\n'], ['\n  width: 0; \n  height: 0; \n  border-top: 18px solid transparent;\n  border-bottom: 18px solid transparent;\n  border-left: 24px solid #365363;\n  position: absolute;\n  top: 0;\n  left: 100%;\n']),
-    _templateObject3 = _taggedTemplateLiteral(['\n  width: 0; \n  height: 0; \n  border-top: 18px solid transparent;\n  border-bottom: 18px solid transparent;\n  border-left: 24px solid #1e292e;\n  position: absolute;\n  top: 4px;\n  right: -30px;\n  z-index: -1;\n'], ['\n  width: 0; \n  height: 0; \n  border-top: 18px solid transparent;\n  border-bottom: 18px solid transparent;\n  border-left: 24px solid #1e292e;\n  position: absolute;\n  top: 4px;\n  right: -30px;\n  z-index: -1;\n']);
-
-var _react = __webpack_require__(0);
-
-var _react2 = _interopRequireDefault(_react);
-
-var _styledComponents = __webpack_require__(1);
-
-var _styledComponents2 = _interopRequireDefault(_styledComponents);
-
-var _mobxReact = __webpack_require__(3);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-function _taggedTemplateLiteral(strings, raw) { return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
-
-var DivMargin = _styledComponents2.default.div(_templateObject);
-
-var Trianlge = _styledComponents2.default.div(_templateObject2);
-
-var ShadowTrianlge = _styledComponents2.default.div(_templateObject3);
-
-var LoaderSelector = (0, _mobxReact.observer)(_class = function (_React$Component) {
-  _inherits(LoaderSelector, _React$Component);
-
-  function LoaderSelector(props) {
-    _classCallCheck(this, LoaderSelector);
-
-    var _this = _possibleConstructorReturn(this, (LoaderSelector.__proto__ || Object.getPrototypeOf(LoaderSelector)).call(this, props));
-
-    _this.handleCheck = _this.handleCheck.bind(_this);
-    return _this;
-  }
-
-  _createClass(LoaderSelector, [{
-    key: 'getVal',
-    value: function getVal() {
-      return this.props.store[this.props.storeKey];
-    }
-  }, {
-    key: 'handleCheck',
-    value: function handleCheck(e) {
-      this.props.store.toggle(this.props.storeKey);
-    }
-  }, {
-    key: 'handleSelect',
-    value: function handleSelect(e) {
-      this.props.store.selectLoader(this.props.storeKey);
-    }
-  }, {
-    key: 'render',
-    value: function render() {
-      var _this2 = this;
-
-      var checked = this.getVal();
-      var selected = this.props.store.selectedLoader === this.props.storeKey;
-      return _react2.default.createElement(
-        DivMargin,
-        { className: "clickable" + (selected ? ' selected' : ''), onClick: function onClick(e) {
-            return _this2.handleSelect(e);
-          } },
-        _react2.default.createElement('input', {
-          type: 'checkbox',
-          checked: checked,
-          style: { marginRight: '10px', marginLeft: '5px' },
-          onChange: this.handleCheck }),
-        _react2.default.createElement(
-          'span',
-          null,
-          this.props.label
-        ),
-        selected ? [_react2.default.createElement(ShadowTrianlge, { key: 1 }), _react2.default.createElement(Trianlge, { key: 2 })] : '',
-        _react2.default.createElement('br', null)
-      );
-    }
-  }]);
-
-  return LoaderSelector;
-}(_react2.default.Component)) || _class;
-
-exports.default = LoaderSelector;
-
-/***/ }),
-/* 15 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12273,7 +12286,7 @@ var MiniPanel = function MiniPanel(_ref) {
 exports.default = MiniPanel;
 
 /***/ }),
-/* 16 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12301,7 +12314,7 @@ var MiniPanelHeader = function MiniPanelHeader(_ref) {
 exports.default = MiniPanelHeader;
 
 /***/ }),
-/* 17 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12344,6 +12357,16 @@ var ConfigBuffer = function () {
       this.calculateOffset();
     }
   }, {
+    key: "incrTab",
+    value: function incrTab() {
+      this.dTab(1);
+    }
+  }, {
+    key: "decrTab",
+    value: function decrTab() {
+      this.dTab(-1);
+    }
+  }, {
     key: "add",
     value: function add(text) {
       this.text += text;
@@ -12359,6 +12382,11 @@ var ConfigBuffer = function () {
       this.text += this.offset + text + "\n";
     }
   }, {
+    key: "writeLine",
+    value: function writeLine(text) {
+      this.addLine(text);
+    }
+  }, {
     key: "addCsLine",
     value: function addCsLine(text) {
       this.text += this.offset + text + ",\n";
@@ -12367,6 +12395,11 @@ var ConfigBuffer = function () {
     key: "nextLine",
     value: function nextLine() {
       this.text += "\n";
+    }
+  }, {
+    key: "newLine",
+    value: function newLine() {
+      this.nextLine();
     }
   }, {
     key: "openObject",
@@ -12389,22 +12422,6 @@ var ConfigBuffer = function () {
       this.add("\n");
     }
   }, {
-    key: "closeObjectNoComma",
-    value: function closeObjectNoComma() {
-      // obsolete
-      this.dTab(-1);
-      this.addLine("}");
-    }
-  }, {
-    key: "closeObjectConditionalComma",
-    value: function closeObjectConditionalComma(predicate) {
-      // obsolete
-      this.dTab(-1);
-      this.addWithOffset("}");
-      if (predicate) this.add(",");
-      this.add("\n");
-    }
-  }, {
     key: "openArray",
     value: function openArray(name) {
       this.addLine(name + ": [");
@@ -12418,13 +12435,13 @@ var ConfigBuffer = function () {
     }
   }, {
     key: "addKvp",
-    value: function addKvp(storeKey) {
+    value: function addKvp(store, storeKey) {
       var key = store[storeKey].key.split('.').pop();
       this.addCsLine(key + ": " + store[storeKey].value);
     }
   }, {
     key: "addKvpS",
-    value: function addKvpS(storeKey) {
+    value: function addKvpS(store, storeKey) {
       var key = store[storeKey].key.split('.').pop();
       this.addCsLine(key + ": {0}" + store[storeKey].value + "{0}");
     }
@@ -12441,7 +12458,7 @@ var ConfigBuffer = function () {
 exports.default = ConfigBuffer;
 
 /***/ }),
-/* 18 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12451,7 +12468,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _ConfigBuffer = __webpack_require__(17);
+var _ConfigBuffer = __webpack_require__(18);
 
 var _ConfigBuffer2 = _interopRequireDefault(_ConfigBuffer);
 
@@ -12467,95 +12484,62 @@ if (!String.prototype.format) {
   };
 }
 
-var insertBabelPresets = function insertBabelPresets(store, buffer) {
-  var presets = [];
-  if (store.useBabelEs2015) presets.push('{0}es2015{0}, '); // they all get ", " appended
-  if (store.useBabelStage0) presets.push('{0}stage-0{0}, '); // because the need to be csv'd
-  if (store.useBabelReact) presets.push('{0}react{0}, '); // also the last one because of the slice
-  var line = presets.reduce(function (agr, next) {
-    return agr += next;
-  }).slice(0, -2);
-  buffer.addWithOffset('presets: [' + line + ']');
-  if (store.usesPlugins()) buffer.add(',');
-  buffer.nextLine();
-};
-
-var insertBabelPlugins = function insertBabelPlugins(store, buffer) {
-  var plugins = [];
-  if (store.useBabelDecoratorsLegacy) plugins.push('{0}transform-decorators-legacy{0}, ');
-  var line = plugins.reduce(function (agr, next) {
-    return agr += next;
-  }).slice(0, -2);
-  buffer.addLine('plugins: [' + line + ']');
-};
-
 var insertLoaders = function insertLoaders(store, buffer) {
 
   buffer.nextLine();
   buffer.openObject("module");
   buffer.openArray("rules");
 
-  if (store.includeBabel) {
+  var activeLoaders = store.loaders.filter(function (l) {
+    return l.active;
+  });
+  activeLoaders.forEach(function (loader, index) {
     buffer.openAnonymousObject();
-
-    buffer.addCsLine('test: /\.jsx?$/');
-    buffer.addLine('exclude: /node_modules/');
-    buffer.openObject('use');
-    buffer.addCsLine('loader: {0}babel-loader{0}');
-
-    if (store.babelHasOptions()) {
-      buffer.openObject('options');
-      if (store.usesPresets()) insertBabelPresets(store, buffer);
-      if (store.usesPlugins()) insertBabelPlugins(store, buffer);
-      buffer.closeObject();
-    }
-
-    buffer.closeObject();
-
-    var withComma = store.includeCss || store.includeFileLoader;
+    buffer.addCsLine('test: ' + loader.getTest(store));
+    loader.writeToBuffer(store, buffer);
+    var withComma = index !== activeLoaders.length - 1;
     buffer.closeObject(withComma);
-  }
-
-  if (store.includeCss) {
-    buffer.openAnonymousObject();
-    buffer.addCsLine('test: /\.css?$/');
-    var loaders = ['style-loader', 'css-loader'];
-    if (store.usePostCss) loaders.push('postcss-loader');
-    var cssLine = loaders.map(function (i) {
-      return '{0}' + i + '{0}, ';
-    }).reduce(function (agr, next) {
-      return agr += next;
-    }).slice(0, -2);
-    buffer.addLine('use: [' + cssLine + ']');
-    var _withComma = store.includeFileLoader;
-    buffer.closeObject(_withComma);
-  }
-
-  if (store.includeFileLoader) {
-    buffer.openAnonymousObject();
-    buffer.addLine('test: /\.(eot|svg|ttf|woff|woff2)$/,');
-    buffer.addLine('loader: {0}file-loader?name=public/fonts/[name].[ext]{0}');
-    buffer.closeObject();
-  }
+  });
 
   buffer.closeArray();
-  buffer.closeObjectNoComma();
+  var withComma = store.anyPlugins();
+  buffer.closeObject(withComma);
 };
 
-var generateConfig = window.generateConfig = function (store) {
-  var buffer = new _ConfigBuffer2.default(store, "var webpack = require({0}webpack{0});\n\nmodule.exports = {\n");
+var generateConfig = /*window.generateConfig = */function generateConfig(store) {
+  var buffer = new _ConfigBuffer2.default(store, "var webpack = require({0}webpack{0});\n");
+
+  var extractText = store.usesExtractTextPlugin();
+  var checker = store.usesCheckerPlugin();
+
+  if (extractText) buffer.addLine('var ExtractTextPlugin = require({0}extract-text-webpack-plugin{0});');
+  if (checker) buffer.addLine('const { CheckerPlugin } = require({0}awesome-typescript-loader{0});');
+  buffer.addLine('\nmodule.exports = {\n');
+
   buffer.dTab(1);
-  buffer.addKvp('context');
-  buffer.addKvpS('entry');
+  buffer.addKvp(store, 'context');
+  buffer.addKvpS(store, 'entry');
   buffer.nextLine();
 
   buffer.openObject("output");
-  buffer.addKvpS('outputPath');
-  buffer.addKvpS('outputFilename');
-  buffer.closeObject();
+  buffer.addKvpS(store, 'outputPath');
+  buffer.addKvpS(store, 'outputFilename');
+  var withComma = store.usesLoaders();
+  buffer.closeObject(withComma);
 
   if (store.usesLoaders()) insertLoaders(store, buffer);
 
+  if (store.anyPlugins()) {
+    buffer.nextLine();
+    buffer.openArray('plugins');
+    if (extractText) {
+      buffer.addWithOffset('new ExtractTextPlugin({0}public/styleBundle.css{0})');
+      if (checker) buffer.add(',\n');
+    }
+    if (checker) buffer.addWithOffset('new CheckerPlugin()');
+    buffer.nextLine();
+    buffer.closeArray();
+  }
   buffer.add("}");
   return buffer.toString().format(store.quote);
 };
@@ -12563,7 +12547,7 @@ var generateConfig = window.generateConfig = function (store) {
 exports.default = generateConfig;
 
 /***/ }),
-/* 19 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12577,17 +12561,17 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _mobxReact = __webpack_require__(3);
+var _mobxReact = __webpack_require__(2);
 
 var _styledComponents = __webpack_require__(1);
 
 var _styledComponents2 = _interopRequireDefault(_styledComponents);
 
-var _EditPanel = __webpack_require__(22);
+var _EditPanel = __webpack_require__(23);
 
 var _EditPanel2 = _interopRequireDefault(_EditPanel);
 
-var _ConfigResult = __webpack_require__(20);
+var _ConfigResult = __webpack_require__(21);
 
 var _ConfigResult2 = _interopRequireDefault(_ConfigResult);
 
@@ -12628,7 +12612,7 @@ var ConfigPage = function ConfigPage(_ref) {
 exports.default = ConfigPage;
 
 /***/ }),
-/* 20 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12638,7 +12622,8 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _templateObject = _taggedTemplateLiteral(['\n  background-color: white;\n  color: black;\n  height: 100%;\n  width: 100%;\n  display: table-cell;\n'], ['\n  background-color: white;\n  color: black;\n  height: 100%;\n  width: 100%;\n  display: table-cell;\n']);
+var _templateObject = _taggedTemplateLiteral(['\n  background-color: white;\n  color: black;\n  height: 100%;\n  width: 100%;\n  display: table-cell;\n'], ['\n  background-color: white;\n  color: black;\n  height: 100%;\n  width: 100%;\n  display: table-cell;\n']),
+    _templateObject2 = _taggedTemplateLiteral(['\n  color: #aaa;\n  border: 1px solid #aaa;\n  transition: 0.3s;\n  border-radius: 5px;\n  outline: none;\n\n  &:hover{\n    color: #333;\n    border: 1px solid #333;\n    transition: 0.3s;\n  }\n'], ['\n  color: #aaa;\n  border: 1px solid #aaa;\n  transition: 0.3s;\n  border-radius: 5px;\n  outline: none;\n\n  &:hover{\n    color: #333;\n    border: 1px solid #333;\n    transition: 0.3s;\n  }\n']);
 
 var _react = __webpack_require__(0);
 
@@ -12652,7 +12637,7 @@ var _PaddedDiv = __webpack_require__(5);
 
 var _PaddedDiv2 = _interopRequireDefault(_PaddedDiv);
 
-var _ConfigGenerator = __webpack_require__(18);
+var _ConfigGenerator = __webpack_require__(19);
 
 var _ConfigGenerator2 = _interopRequireDefault(_ConfigGenerator);
 
@@ -12662,8 +12647,26 @@ function _taggedTemplateLiteral(strings, raw) { return Object.freeze(Object.defi
 
 var StyledDiv = _styledComponents2.default.div(_templateObject);
 
+var StyledButton = _styledComponents2.default.button(_templateObject2);
+
+function download(filename, text) {
+  var element = document.createElement('a');
+  element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+  element.setAttribute('download', filename);
+
+  element.style.display = 'none';
+  document.body.appendChild(element);
+
+  element.click();
+
+  document.body.removeChild(element);
+}
+
 var ConfigResult = function ConfigResult(_ref) {
   var store = _ref.store;
+
+  var config = (0, _ConfigGenerator2.default)(store);
+
   return _react2.default.createElement(
     StyledDiv,
     null,
@@ -12676,8 +12679,16 @@ var ConfigResult = function ConfigResult(_ref) {
         _react2.default.createElement(
           'code',
           null,
-          (0, _ConfigGenerator2.default)(store)
+          config
         )
+      ),
+      _react2.default.createElement('br', null),
+      _react2.default.createElement(
+        StyledButton,
+        { onClick: function onClick(e) {
+            return download('webpack.config.js', config);
+          } },
+        'Download'
       )
     )
   );
@@ -12686,7 +12697,7 @@ var ConfigResult = function ConfigResult(_ref) {
 exports.default = ConfigResult;
 
 /***/ }),
-/* 21 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12698,9 +12709,27 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _desc, _value, _class, _descriptor, _desc2, _value2, _class3, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _descriptor6, _descriptor7, _descriptor8, _descriptor9, _descriptor10, _descriptor11, _descriptor12, _descriptor13;
+var _desc, _value, _class, _descriptor, _desc2, _value2, _class3, _descriptor2, _desc3, _value3, _class5, _descriptor3, _descriptor4, _descriptor5, _descriptor6, _descriptor7, _descriptor8, _descriptor9, _descriptor10, _descriptor11, _descriptor12;
 
-var _mobx = __webpack_require__(9);
+var _mobx = __webpack_require__(10);
+
+var _BabelStore = __webpack_require__(34);
+
+var _BabelStore2 = _interopRequireDefault(_BabelStore);
+
+var _CssStore = __webpack_require__(35);
+
+var _CssStore2 = _interopRequireDefault(_CssStore);
+
+var _FileLoader = __webpack_require__(36);
+
+var _FileLoader2 = _interopRequireDefault(_FileLoader);
+
+var _TypeScriptLoader = __webpack_require__(37);
+
+var _TypeScriptLoader2 = _interopRequireDefault(_TypeScriptLoader);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _initDefineProp(target, property, descriptor, context) {
   if (!descriptor) return;
@@ -12750,78 +12779,131 @@ function _initializerWarningHelper(descriptor, context) {
 var Kvp = (_class = function Kvp(key, value) {
   _classCallCheck(this, Kvp);
 
-  _initDefineProp(this, "value", _descriptor, this);
+  _initDefineProp(this, 'value', _descriptor, this);
 
   this.key = key;
   this.value = value;
-}, (_descriptor = _applyDecoratedDescriptor(_class.prototype, "value", [_mobx.observable], {
+}, (_descriptor = _applyDecoratedDescriptor(_class.prototype, 'value', [_mobx.observable], {
   enumerable: true,
   initializer: null
 })), _class);
-var ConfigStore = (_class3 = function () {
+var BabelOption = (_class3 = function () {
+  function BabelOption(label, webpackValue, url, tooltipText) {
+    _classCallCheck(this, BabelOption);
+
+    _initDefineProp(this, 'active', _descriptor2, this);
+
+    this.label = label;
+    this.webpackValue = webpackValue;
+    this.url = url;
+    this.tooltipText = tooltipText;
+  }
+
+  _createClass(BabelOption, [{
+    key: 'toggleActive',
+    value: function toggleActive() {
+      this.active = !this.active;
+    }
+  }]);
+
+  return BabelOption;
+}(), (_descriptor2 = _applyDecoratedDescriptor(_class3.prototype, 'active', [_mobx.observable], {
+  enumerable: true,
+  initializer: function initializer() {
+    return false;
+  }
+})), _class3);
+var ConfigStore = (_class5 = function () {
   function ConfigStore() {
     var _this = this;
 
     _classCallCheck(this, ConfigStore);
 
-    _initDefineProp(this, "tab", _descriptor2, this);
+    _initDefineProp(this, 'tab', _descriptor3, this);
 
-    _initDefineProp(this, "quote", _descriptor3, this);
+    _initDefineProp(this, 'quote', _descriptor4, this);
+
+    _initDefineProp(this, 'showLinks', _descriptor5, this);
 
     this.context = new Kvp('context', '__dirname');
     this.entry = new Kvp('entry', './src/main');
     this.outputPath = new Kvp('path', 'public');
     this.outputFilename = new Kvp('filename', 'bundle.js');
-
-    _initDefineProp(this, "includeBabel", _descriptor4, this);
-
-    _initDefineProp(this, "includeCss", _descriptor5, this);
-
-    _initDefineProp(this, "includeFileLoader", _descriptor6, this);
+    this.loaders = [_BabelStore2.default, _CssStore2.default, _FileLoader2.default, _TypeScriptLoader2.default];
 
     this.usesLoaders = function () {
-      return _this.includeBabel || _this.includeCss || _this.includeFileLoader;
+      return _this.loaders.find(function (l) {
+        return l.active;
+      });
     };
 
-    _initDefineProp(this, "selectedLoader", _descriptor7, this);
-
-    _initDefineProp(this, "useBabelDecoratorsLegacy", _descriptor8, this);
-
-    this.usesPlugins = function () {
-      return _this.useBabelDecoratorsLegacy;
+    this.getSelectedLoader = function () {
+      return _this.loaders.find(function (l) {
+        return l.selected;
+      });
     };
 
-    _initDefineProp(this, "useBabelEs2015", _descriptor9, this);
+    this.babelPresets = [new BabelOption('ES2015', // label
+    'es2015', // webpack.config value  
+    'https://babeljs.io/docs/plugins/preset-es2015/', // url
+    'Use this preset to have access to modern ES2015 features for javascript.' // tooltip
+    ), new BabelOption('Stage-0', // label
+    'stage-0', // webpack.config value
+    'https://babeljs.io/docs/plugins/preset-stage-0/', // url
+    'Use this if you absolutely must have access to bleeding edge javascript features. Beware: may contain features that will not end up in ECMAScript.' // tooltip
+    ), new BabelOption('React', // label
+    'react', // webpack.config value
+    '', // url
+    'Turns JSX syntax into React components' // tooltip
+    )
+    // tooltip: Use the <a href="https://babeljs.io/docs/plugins/preset-react/">Babel React preset</a> to turn JSX syntax into <a href="https://facebook.github.io/react/">React</a> components.
+    ];
+    this.babelPlugins = [new BabelOption('Legacy decorators', // label
+    'transform-decorators-legacy', // webpack.config value
+    'https://github.com/loganfsmyth/babel-plugin-transform-decorators-legacy', 'A plugin for Babel 6 that replicates the old decorator behavior from Babel 5.' // tooltip
+    ), new BabelOption('React html attributes', // label
+    'react-html-attrs', // webpack.config value
+    'https://github.com/insin/babel-plugin-react-html-attrs', 'Transforms JSX class attributes into classname and for into htmlFor.' // tooltip
+    )];
 
-    _initDefineProp(this, "useBabelStage0", _descriptor10, this);
-
-    _initDefineProp(this, "useBabelReact", _descriptor11, this);
-
-    this.usesPresets = function () {
-      return _this.useBabelEs2015 || _this.useBabelStage0 || _this.useBabelReact;
+    this.anyActiveBabelPresets = function () {
+      return _this.babelPresets.find(function (o) {
+        return o.active;
+      });
     };
 
-    this.babelHasOptions = function () {
-      return _this.usesPresets() || _this.usesPlugins();
+    this.anyActiveBabelPlugins = function () {
+      return _this.babelPlugins.find(function (o) {
+        return o.active;
+      });
     };
 
-    _initDefineProp(this, "usePostCss", _descriptor12, this);
-
-    _initDefineProp(this, "useExtractTextPlugin", _descriptor13, this);
-
-    this.noLoaders = function () {
-      _this.includeBabel = false;
-      _this.includeCss = false;
-      _this.includeFileLoader = false;
+    this.anyActiveBabelOptions = function () {
+      return _this.anyActiveBabelPresets() || _this.anyActiveBabelPlugins();
     };
+
+    _initDefineProp(this, 'usePostCss', _descriptor6, this);
+
+    _initDefineProp(this, 'useExtractTextPlugin', _descriptor7, this);
+
+    _initDefineProp(this, 'loadFonts', _descriptor8, this);
+
+    _initDefineProp(this, 'loadImages', _descriptor9, this);
+
+    _initDefineProp(this, 'loadText', _descriptor10, this);
+
+    _initDefineProp(this, 'loadHtml', _descriptor11, this);
+
+    _initDefineProp(this, 'useCheckerPlugin', _descriptor12, this);
 
     this.everythingFalse = function () {
-      _this.noLoaders();
+      _this.loaders.forEach(function (l) {
+        return l.active = false;
+      });
       // babel
-      _this.useBabelDecoratorsLegacy = false;
-      _this.useBabelEs2015 = false;
-      _this.useBabelStage0 = false;
-      _this.useBabelReact = false;
+      _this.babelPresets.concat(_this.babelPlugins).forEach(function (l) {
+        return l.active = false;
+      });
       // css
       _this.usePostCss = false;
       _this.useExtractTextPlugin = false;
@@ -12829,121 +12911,129 @@ var ConfigStore = (_class3 = function () {
 
     this.setSimpleEs2015 = function () {
       _this.everythingFalse();
-      _this.includeBabel = true;
-      _this.useBabelEs2015 = true;
+      _BabelStore2.default.active = true;
+      _this.enableBabelPreset('ES2015');
     };
 
     this.setSimpleReact = function () {
       _this.setSimpleEs2015();
-      _this.useBabelStage0 = true;
-      _this.useBabelReact = true;
+      _this.enableBabelPreset('Stage-0');
+      _this.enableBabelPreset('React');
     };
+
+    _BabelStore2.default.select();
   }
 
-  // === 2. general settings
+  // === 1. Appearance
+
+
+  // === 2. General webpack.config settings
 
 
   // === 3. loaders
 
 
+  // ====== 3.1 babel options
+
+  // ====== 3.2 css options
+
   _createClass(ConfigStore, [{
-    key: "selectLoader",
-    value: function selectLoader(loader) {
-      this.selectedLoader = loader;
+    key: 'usesExtractTextPlugin',
+    value: function usesExtractTextPlugin() {
+      return _CssStore2.default.active && this.useExtractTextPlugin;
     }
 
-    // ====== 3.1.1 babel plugins
+    // ====== 3.3 File loader options
 
-
-    // ====== 3.1.2 babel presets
-
-
-    // ====== 3.2 css options
+    // ====== 3.4 TypeScript options
 
   }, {
-    key: "toggle",
+    key: 'usesCheckerPlugin',
+    value: function usesCheckerPlugin() {
+      return _TypeScriptLoader2.default.active && this.useCheckerPlugin;
+    }
 
+    // === 4. Other class methods
 
-    // === 4. Setter methods
+  }, {
+    key: 'anyPlugins',
+    value: function anyPlugins() {
+      return this.usesExtractTextPlugin() || this.usesCheckerPlugin();
+    }
+  }, {
+    key: 'toggle',
     value: function toggle(name) {
       this[name] = !this[name];
+    }
+  }, {
+    key: 'enableBabelPreset',
+    value: function enableBabelPreset(name) {
+      this.babelPresets.find(function (p) {
+        return p.label === name;
+      }).active = true;
     }
   }]);
 
   return ConfigStore;
-}(), (_descriptor2 = _applyDecoratedDescriptor(_class3.prototype, "tab", [_mobx.observable], {
+}(), (_descriptor3 = _applyDecoratedDescriptor(_class5.prototype, 'tab', [_mobx.observable], {
   enumerable: true,
   initializer: function initializer() {
     return "  ";
   }
-}), _descriptor3 = _applyDecoratedDescriptor(_class3.prototype, "quote", [_mobx.observable], {
+}), _descriptor4 = _applyDecoratedDescriptor(_class5.prototype, 'quote', [_mobx.observable], {
   enumerable: true,
   initializer: function initializer() {
     return "'";
   }
-}), _descriptor4 = _applyDecoratedDescriptor(_class3.prototype, "includeBabel", [_mobx.observable], {
+}), _descriptor5 = _applyDecoratedDescriptor(_class5.prototype, 'showLinks', [_mobx.observable], {
+  enumerable: true,
+  initializer: function initializer() {
+    return false;
+  }
+}), _descriptor6 = _applyDecoratedDescriptor(_class5.prototype, 'usePostCss', [_mobx.observable], {
+  enumerable: true,
+  initializer: function initializer() {
+    return false;
+  }
+}), _descriptor7 = _applyDecoratedDescriptor(_class5.prototype, 'useExtractTextPlugin', [_mobx.observable], {
   enumerable: true,
   initializer: function initializer() {
     return true;
   }
-}), _descriptor5 = _applyDecoratedDescriptor(_class3.prototype, "includeCss", [_mobx.observable], {
-  enumerable: true,
-  initializer: function initializer() {
-    return false;
-  }
-}), _descriptor6 = _applyDecoratedDescriptor(_class3.prototype, "includeFileLoader", [_mobx.observable], {
-  enumerable: true,
-  initializer: function initializer() {
-    return false;
-  }
-}), _descriptor7 = _applyDecoratedDescriptor(_class3.prototype, "selectedLoader", [_mobx.observable], {
-  enumerable: true,
-  initializer: function initializer() {
-    return 'includeBabel';
-  }
-}), _descriptor8 = _applyDecoratedDescriptor(_class3.prototype, "useBabelDecoratorsLegacy", [_mobx.observable], {
-  enumerable: true,
-  initializer: function initializer() {
-    return false;
-  }
-}), _descriptor9 = _applyDecoratedDescriptor(_class3.prototype, "useBabelEs2015", [_mobx.observable], {
+}), _descriptor8 = _applyDecoratedDescriptor(_class5.prototype, 'loadFonts', [_mobx.observable], {
   enumerable: true,
   initializer: function initializer() {
     return true;
   }
-}), _descriptor10 = _applyDecoratedDescriptor(_class3.prototype, "useBabelStage0", [_mobx.observable], {
-  enumerable: true,
-  initializer: function initializer() {
-    return true;
-  }
-}), _descriptor11 = _applyDecoratedDescriptor(_class3.prototype, "useBabelReact", [_mobx.observable], {
-  enumerable: true,
-  initializer: function initializer() {
-    return true;
-  }
-}), _descriptor12 = _applyDecoratedDescriptor(_class3.prototype, "usePostCss", [_mobx.observable], {
+}), _descriptor9 = _applyDecoratedDescriptor(_class5.prototype, 'loadImages', [_mobx.observable], {
   enumerable: true,
   initializer: function initializer() {
     return false;
   }
-}), _descriptor13 = _applyDecoratedDescriptor(_class3.prototype, "useExtractTextPlugin", [_mobx.observable], {
+}), _descriptor10 = _applyDecoratedDescriptor(_class5.prototype, 'loadText', [_mobx.observable], {
   enumerable: true,
   initializer: function initializer() {
     return false;
   }
-})), _class3);
+}), _descriptor11 = _applyDecoratedDescriptor(_class5.prototype, 'loadHtml', [_mobx.observable], {
+  enumerable: true,
+  initializer: function initializer() {
+    return false;
+  }
+}), _descriptor12 = _applyDecoratedDescriptor(_class5.prototype, 'useCheckerPlugin', [_mobx.observable], {
+  enumerable: true,
+  initializer: function initializer() {
+    return false;
+  }
+})), _class5);
 
 
-var store = window.store = new ConfigStore(); // setting window.store is purely for debugging
+var store = /*window.store = */new ConfigStore(); // setting window.store is purely for debugging
 
 exports.default = store;
 
-/*autorun(() => {
-  console.log('store: ' + JSON.stringify(store))
-})//*/
-
 /***/ }),
-/* 22 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12961,73 +13051,40 @@ var _styledComponents = __webpack_require__(1);
 
 var _styledComponents2 = _interopRequireDefault(_styledComponents);
 
-var _mobxReact = __webpack_require__(3);
+var _mobxReact = __webpack_require__(2);
 
 var _PaddedDiv = __webpack_require__(5);
 
 var _PaddedDiv2 = _interopRequireDefault(_PaddedDiv);
 
-var _FreeFieldTableRow = __webpack_require__(13);
-
-var _FreeFieldTableRow2 = _interopRequireDefault(_FreeFieldTableRow);
-
-var _CheckBox = __webpack_require__(6);
-
-var _CheckBox2 = _interopRequireDefault(_CheckBox);
-
-var _MiniPanel = __webpack_require__(15);
+var _MiniPanel = __webpack_require__(16);
 
 var _MiniPanel2 = _interopRequireDefault(_MiniPanel);
 
-var _MiniPanelHeader = __webpack_require__(16);
+var _MiniPanelHeader = __webpack_require__(17);
 
 var _MiniPanelHeader2 = _interopRequireDefault(_MiniPanelHeader);
 
-var _EntryOutputFields = __webpack_require__(23);
+var _EntryOutputFields = __webpack_require__(24);
 
 var _EntryOutputFields2 = _interopRequireDefault(_EntryOutputFields);
 
-var _PresetSelection = __webpack_require__(27);
+var _PresetSelection = __webpack_require__(33);
 
 var _PresetSelection2 = _interopRequireDefault(_PresetSelection);
 
-var _LoaderSelection = __webpack_require__(26);
+var _LoaderSelection = __webpack_require__(31);
 
 var _LoaderSelection2 = _interopRequireDefault(_LoaderSelection);
 
-var _BabelOptions = __webpack_require__(24);
+var _LoaderOptions = __webpack_require__(25);
 
-var _BabelOptions2 = _interopRequireDefault(_BabelOptions);
-
-var _CssOptions = __webpack_require__(25);
-
-var _CssOptions2 = _interopRequireDefault(_CssOptions);
+var _LoaderOptions2 = _interopRequireDefault(_LoaderOptions);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var LoaderOptionsSwitch = function LoaderOptionsSwitch(_ref) {
+var EditPanel = function EditPanel(_ref) {
   var store = _ref.store;
-
-  switch (store.selectedLoader) {
-    case 'includeBabel':
-      return _react2.default.createElement(_BabelOptions2.default, { store: store });
-    case 'includeCss':
-      return _react2.default.createElement(_CssOptions2.default, { store: store });
-    case 'includeFileLoader':
-      return _react2.default.createElement(
-        'span',
-        null,
-        'No options for file loader'
-      );
-    default:
-      return false;
-  }
-};
-
-var LoaderOptionsOberver = (0, _mobxReact.observer)(LoaderOptionsSwitch);
-
-var EditPanel = function EditPanel(_ref2) {
-  var store = _ref2.store;
   return _react2.default.createElement(
     'div',
     { style: { margin: '0', height: '100%' } },
@@ -13098,7 +13155,88 @@ var EditPanel = function EditPanel(_ref2) {
               'Loader options'
             )
           ),
-          _react2.default.createElement(LoaderOptionsOberver, { store: store })
+          _react2.default.createElement(_LoaderOptions2.default, { store: store })
+        )
+      )
+    ),
+    _react2.default.createElement(
+      'div',
+      { className: 'grid grid-pad', style: { overflow: 'visible', visibility: 'hidden' } },
+      _react2.default.createElement(
+        'div',
+        { className: 'col-1-1' },
+        _react2.default.createElement(
+          _MiniPanel2.default,
+          null,
+          _react2.default.createElement(
+            'h2',
+            null,
+            'Required packages'
+          ),
+          _react2.default.createElement(
+            'ul',
+            null,
+            _react2.default.createElement(
+              'li',
+              null,
+              'webpack'
+            ),
+            _react2.default.createElement(
+              'li',
+              null,
+              'babel-core'
+            ),
+            _react2.default.createElement(
+              'li',
+              null,
+              'babel-loader'
+            ),
+            _react2.default.createElement(
+              'li',
+              null,
+              'babel-plugin-transform-decorators-legacy'
+            ),
+            _react2.default.createElement(
+              'li',
+              null,
+              'babel-plugin-react-html-attrs'
+            ),
+            _react2.default.createElement(
+              'li',
+              null,
+              'babel-preset-es2015'
+            ),
+            _react2.default.createElement(
+              'li',
+              null,
+              'babel-preset-stage-0'
+            ),
+            _react2.default.createElement(
+              'li',
+              null,
+              'babel-preset-react'
+            ),
+            _react2.default.createElement(
+              'li',
+              null,
+              'css-loader'
+            ),
+            _react2.default.createElement(
+              'li',
+              null,
+              'style-loader'
+            ),
+            _react2.default.createElement(
+              'li',
+              null,
+              'postcss'
+            ),
+            _react2.default.createElement(
+              'li',
+              null,
+              'file-loader'
+            )
+          )
         )
       )
     )
@@ -13108,7 +13246,7 @@ var EditPanel = function EditPanel(_ref2) {
 exports.default = EditPanel;
 
 /***/ }),
-/* 23 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -13126,11 +13264,11 @@ var _styledComponents = __webpack_require__(1);
 
 var _styledComponents2 = _interopRequireDefault(_styledComponents);
 
-var _FreeField = __webpack_require__(12);
+var _FreeField = __webpack_require__(15);
 
 var _FreeField2 = _interopRequireDefault(_FreeField);
 
-var _ExpandedDiv = __webpack_require__(8);
+var _ExpandedDiv = __webpack_require__(12);
 
 var _ExpandedDiv2 = _interopRequireDefault(_ExpandedDiv);
 
@@ -13165,62 +13303,6 @@ var EntryOutputFields = function EntryOutputFields(_ref) {
 exports.default = EntryOutputFields;
 
 /***/ }),
-/* 24 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _react = __webpack_require__(0);
-
-var _react2 = _interopRequireDefault(_react);
-
-var _CheckBox = __webpack_require__(6);
-
-var _CheckBox2 = _interopRequireDefault(_CheckBox);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _objectDestructuringEmpty(obj) { if (obj == null) throw new TypeError("Cannot destructure undefined"); }
-
-var BabelOptions = function BabelOptions(_ref) {
-  _objectDestructuringEmpty(_ref);
-
-  return _react2.default.createElement(
-    'div',
-    null,
-    _react2.default.createElement(
-      'h4',
-      null,
-      'Presets'
-    ),
-    _react2.default.createElement(
-      'ul',
-      null,
-      _react2.default.createElement(_CheckBox2.default, { store: store, storeKey: 'useBabelEs2015', label: 'ES2015' }),
-      _react2.default.createElement(_CheckBox2.default, { store: store, storeKey: 'useBabelStage0', label: 'Stage-0' }),
-      _react2.default.createElement(_CheckBox2.default, { store: store, storeKey: 'useBabelReact', label: 'React' })
-    ),
-    _react2.default.createElement(
-      'h4',
-      null,
-      'Plugins'
-    ),
-    _react2.default.createElement(
-      'ul',
-      null,
-      _react2.default.createElement(_CheckBox2.default, { store: store, storeKey: 'useBabelDecoratorsLegacy', label: 'Legacy decorators' })
-    )
-  );
-};
-
-exports.default = BabelOptions;
-
-/***/ }),
 /* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -13235,26 +13317,44 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _CheckBox = __webpack_require__(6);
+var _mobxReact = __webpack_require__(2);
 
-var _CheckBox2 = _interopRequireDefault(_CheckBox);
+var _BabelOptions = __webpack_require__(27);
+
+var _BabelOptions2 = _interopRequireDefault(_BabelOptions);
+
+var _CssOptions = __webpack_require__(28);
+
+var _CssOptions2 = _interopRequireDefault(_CssOptions);
+
+var _TypeScriptOptions = __webpack_require__(30);
+
+var _TypeScriptOptions2 = _interopRequireDefault(_TypeScriptOptions);
+
+var _FileLoaderOptions = __webpack_require__(29);
+
+var _FileLoaderOptions2 = _interopRequireDefault(_FileLoaderOptions);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var CssOptions = function CssOptions(_ref) {
+var LoaderOptions = function LoaderOptions(_ref) {
   var store = _ref.store;
-  return _react2.default.createElement(
-    'div',
-    null,
-    _react2.default.createElement(
-      'ul',
-      null,
-      _react2.default.createElement(_CheckBox2.default, { store: store, storeKey: 'usePostCss', label: 'PostCss' })
-    )
-  );
+
+  switch (store.getSelectedLoader().label) {
+    case 'Babel':
+      return _react2.default.createElement(_BabelOptions2.default, { store: store });
+    case 'Css':
+      return _react2.default.createElement(_CssOptions2.default, { store: store });
+    case 'File':
+      return _react2.default.createElement(_FileLoaderOptions2.default, { store: store });
+    case 'TypeScript':
+      return _react2.default.createElement(_TypeScriptOptions2.default, { store: store });
+    default:
+      return false;
+  }
 };
 
-exports.default = CssOptions;
+exports.default = (0, _mobxReact.observer)(LoaderOptions);
 
 /***/ }),
 /* 26 */
@@ -13271,27 +13371,380 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _LoaderSelector = __webpack_require__(14);
+var _mobxReact = __webpack_require__(2);
 
-var _LoaderSelector2 = _interopRequireDefault(_LoaderSelector);
+var _CheckBoxInSelectableDiv = __webpack_require__(8);
+
+var _CheckBoxInSelectableDiv2 = _interopRequireDefault(_CheckBoxInSelectableDiv);
+
+var _ToolTipLabel = __webpack_require__(9);
+
+var _ToolTipLabel2 = _interopRequireDefault(_ToolTipLabel);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var WithLink = function WithLink(_ref) {
+  var babelOption = _ref.babelOption;
+
+  var props = {
+    label: _react2.default.createElement(
+      'a',
+      { href: babelOption.url },
+      babelOption.label
+    ),
+    tooltip: babelOption.tooltipText
+  };
+  return _react2.default.createElement(_ToolTipLabel2.default, props);
+};
+
+var WithoutLink = function WithoutLink(_ref2) {
+  var babelOption = _ref2.babelOption;
+
+  var props = {
+    label: babelOption.label,
+    tooltip: babelOption.tooltipText
+  };
+  return _react2.default.createElement(_ToolTipLabel2.default, props);
+};
+
+var BabelOptionCheckbox = function BabelOptionCheckbox(_ref3) {
+  var store = _ref3.store,
+      babelOption = _ref3.babelOption;
+
+
+  var props = {
+    checked: babelOption.active,
+    selected: false,
+    handleSelect: function handleSelect(e) {},
+    handleCheck: function handleCheck(e) {
+      babelOption.toggleActive();
+    }
+  };
+
+  return _react2.default.createElement(
+    _CheckBoxInSelectableDiv2.default,
+    props,
+    store.showLinks ? _react2.default.createElement(WithLink, { babelOption: babelOption }) : _react2.default.createElement(WithoutLink, { babelOption: babelOption })
+  );
+};
+
+exports.default = (0, _mobxReact.observer)(BabelOptionCheckbox);
+
+/***/ }),
+/* 27 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _styledComponents = __webpack_require__(1);
+
+var _styledComponents2 = _interopRequireDefault(_styledComponents);
+
+var _BabelOptionCheckbox = __webpack_require__(26);
+
+var _BabelOptionCheckbox2 = _interopRequireDefault(_BabelOptionCheckbox);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var BabelOptions = function BabelOptions(_ref) {
+  var store = _ref.store;
+  return _react2.default.createElement(
+    'div',
+    null,
+    _react2.default.createElement(
+      'h4',
+      null,
+      'Presets'
+    ),
+    store.babelPresets.map(function (option, index) {
+      return _react2.default.createElement(_BabelOptionCheckbox2.default, { key: index, store: store, babelOption: option });
+    }),
+    _react2.default.createElement(
+      'h4',
+      null,
+      'Plugins'
+    ),
+    _react2.default.createElement(
+      'ul',
+      null,
+      store.babelPlugins.map(function (option, index) {
+        return _react2.default.createElement(_BabelOptionCheckbox2.default, { key: index, store: store, babelOption: option });
+      })
+    )
+  );
+};
+
+exports.default = BabelOptions;
+
+/***/ }),
+/* 28 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _CheckBoxForStoreKey = __webpack_require__(7);
+
+var _CheckBoxForStoreKey2 = _interopRequireDefault(_CheckBoxForStoreKey);
+
+var _ToolTipLabel = __webpack_require__(9);
+
+var _ToolTipLabel2 = _interopRequireDefault(_ToolTipLabel);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var CssOptions = function CssOptions(_ref) {
+  var store = _ref.store;
+  return _react2.default.createElement(
+    'div',
+    null,
+    _react2.default.createElement(
+      'ul',
+      null,
+      _react2.default.createElement(
+        _CheckBoxForStoreKey2.default,
+        { store: store, storeKey: 'usePostCss' },
+        'PostCss'
+      ),
+      _react2.default.createElement(
+        _CheckBoxForStoreKey2.default,
+        { store: store, storeKey: 'useExtractTextPlugin' },
+        _react2.default.createElement(
+          _ToolTipLabel2.default,
+          { label: 'ExtractTextPlugin' },
+          'This plugin transpiles all styling into a separate bundle as a .css file.'
+        )
+      )
+    )
+  );
+};
+
+exports.default = CssOptions;
+
+/***/ }),
+/* 29 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _CheckBoxForStoreKey = __webpack_require__(7);
+
+var _CheckBoxForStoreKey2 = _interopRequireDefault(_CheckBoxForStoreKey);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var FileLoaderOptions = function FileLoaderOptions(_ref) {
+  var store = _ref.store;
+  return _react2.default.createElement(
+    'div',
+    null,
+    _react2.default.createElement(
+      _CheckBoxForStoreKey2.default,
+      { store: store, storeKey: 'loadFonts' },
+      'Font files'
+    ),
+    _react2.default.createElement(
+      _CheckBoxForStoreKey2.default,
+      { store: store, storeKey: 'loadImages' },
+      'Image files'
+    ),
+    _react2.default.createElement(
+      _CheckBoxForStoreKey2.default,
+      { store: store, storeKey: 'loadText' },
+      'Text files'
+    ),
+    _react2.default.createElement(
+      _CheckBoxForStoreKey2.default,
+      { store: store, storeKey: 'loadHtml' },
+      'Html files'
+    )
+  );
+};
+
+exports.default = FileLoaderOptions;
+
+/***/ }),
+/* 30 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _CheckBoxForStoreKey = __webpack_require__(7);
+
+var _CheckBoxForStoreKey2 = _interopRequireDefault(_CheckBoxForStoreKey);
+
+var _ToolTipLabel = __webpack_require__(9);
+
+var _ToolTipLabel2 = _interopRequireDefault(_ToolTipLabel);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var TypeScriptOptions = function TypeScriptOptions(_ref) {
+  var store = _ref.store;
+  return _react2.default.createElement(
+    'div',
+    null,
+    _react2.default.createElement(
+      _CheckBoxForStoreKey2.default,
+      { store: store, storeKey: 'useCheckerPlugin' },
+      'CheckerPlugin'
+    )
+  );
+};
+
+exports.default = TypeScriptOptions;
+
+/***/ }),
+/* 31 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _LoaderSelectionItem = __webpack_require__(32);
+
+var _LoaderSelectionItem2 = _interopRequireDefault(_LoaderSelectionItem);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var LoaderSelection = function LoaderSelection(_ref) {
   var store = _ref.store;
   return _react2.default.createElement(
-    'ul',
+    'div',
     null,
-    _react2.default.createElement(_LoaderSelector2.default, { store: store, storeKey: 'includeBabel', label: 'Babel' }),
-    _react2.default.createElement(_LoaderSelector2.default, { store: store, storeKey: 'includeCss', label: 'Css' }),
-    _react2.default.createElement(_LoaderSelector2.default, { store: store, storeKey: 'includeFileLoader', label: 'File' })
+    store.loaders.map(function (loader, index) {
+      return _react2.default.createElement(
+        _LoaderSelectionItem2.default,
+        { key: index, store: store, loaderStore: loader },
+        store.showLinks ? _react2.default.createElement(
+          'a',
+          { href: loader.url },
+          loader.label
+        ) : _react2.default.createElement(
+          'span',
+          null,
+          loader.label
+        )
+      );
+    })
   );
 };
 
 exports.default = LoaderSelection;
 
 /***/ }),
-/* 27 */
+/* 32 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _templateObject = _taggedTemplateLiteral(['\n  width: 0; \n  height: 0; \n  border-top: 18px solid transparent;\n  border-bottom: 18px solid transparent;\n  border-left: 24px solid #365363;\n  position: absolute;\n  top: 0;\n  left: 100%;\n'], ['\n  width: 0; \n  height: 0; \n  border-top: 18px solid transparent;\n  border-bottom: 18px solid transparent;\n  border-left: 24px solid #365363;\n  position: absolute;\n  top: 0;\n  left: 100%;\n']),
+    _templateObject2 = _taggedTemplateLiteral(['\n  width: 0; \n  height: 0; \n  border-top: 18px solid transparent;\n  border-bottom: 18px solid transparent;\n  border-left: 24px solid #1e292e;\n  position: absolute;\n  top: 4px;\n  right: -28px;\n  z-index: -1;\n'], ['\n  width: 0; \n  height: 0; \n  border-top: 18px solid transparent;\n  border-bottom: 18px solid transparent;\n  border-left: 24px solid #1e292e;\n  position: absolute;\n  top: 4px;\n  right: -28px;\n  z-index: -1;\n']);
+
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _styledComponents = __webpack_require__(1);
+
+var _styledComponents2 = _interopRequireDefault(_styledComponents);
+
+var _mobxReact = __webpack_require__(2);
+
+var _CheckBoxInSelectableDiv = __webpack_require__(8);
+
+var _CheckBoxInSelectableDiv2 = _interopRequireDefault(_CheckBoxInSelectableDiv);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _taggedTemplateLiteral(strings, raw) { return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+
+var Trianlge = _styledComponents2.default.div(_templateObject);
+
+var ShadowTrianlge = _styledComponents2.default.div(_templateObject2);
+
+var LoaderSelectionItem = function LoaderSelectionItem(_ref) {
+  var store = _ref.store,
+      loaderStore = _ref.loaderStore,
+      children = _ref.children;
+
+  var props = {
+    checked: loaderStore.active,
+    selected: loaderStore.selected,
+    handleCheck: function handleCheck(e) {
+      loaderStore.toggleActive();
+    },
+    handleSelect: function handleSelect(e) {
+      store.loaders.forEach(function (l) {
+        return l.unSelect();
+      });
+      loaderStore.select();
+    }
+  };
+  return _react2.default.createElement(
+    _CheckBoxInSelectableDiv2.default,
+    props,
+    _react2.default.createElement(
+      'span',
+      null,
+      children
+    ),
+    loaderStore.selected ? [_react2.default.createElement(ShadowTrianlge, { key: 1 }), _react2.default.createElement(Trianlge, { key: 2 })] : ''
+  );
+};
+
+exports.default = (0, _mobxReact.observer)(LoaderSelectionItem);
+
+/***/ }),
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -13311,7 +13764,7 @@ var _styledComponents = __webpack_require__(1);
 
 var _styledComponents2 = _interopRequireDefault(_styledComponents);
 
-var _ExpandedDiv = __webpack_require__(8);
+var _ExpandedDiv = __webpack_require__(12);
 
 var _ExpandedDiv2 = _interopRequireDefault(_ExpandedDiv);
 
@@ -13375,7 +13828,178 @@ var PresetSelection = function PresetSelection(_ref2) {
 exports.default = PresetSelection;
 
 /***/ }),
-/* 28 */
+/* 34 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _LoaderStore = __webpack_require__(6);
+
+var _LoaderStore2 = _interopRequireDefault(_LoaderStore);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var insertOptions = function insertOptions(buffer, options, label) {
+  var wpval = options.filter(function (p) {
+    return p.active;
+  }).map(function (p) {
+    return '{0}' + p.webpackValue + '{0}, ';
+  });
+  var line = wpval.reduce(function (agr, next) {
+    return agr += next;
+  }).slice(0, -2);
+  buffer.addWithOffset(label + ': [' + line + ']');
+};
+
+var insertBabelPresets = function insertBabelPresets(store, buffer) {
+  insertOptions(buffer, store.babelPresets, 'presets');
+  if (store.anyActiveBabelPlugins()) buffer.add(',');
+  buffer.nextLine();
+};
+
+var insertBabelPlugins = function insertBabelPlugins(store, buffer) {
+  insertOptions(buffer, store.babelPlugins, 'plugins');
+};
+
+var writeBabel = function writeBabel(store, buffer) {
+  buffer.addLine('exclude: /node_modules/');
+  buffer.openObject('use');
+  buffer.addCsLine('loader: {0}babel-loader{0}');
+
+  if (store.anyActiveBabelOptions()) {
+    buffer.openObject('options');
+    if (store.anyActiveBabelPresets()) insertBabelPresets(store, buffer);
+    if (store.anyActiveBabelPlugins()) insertBabelPlugins(store, buffer);
+    buffer.closeObject();
+  }
+};
+
+var BabelStore = new _LoaderStore2.default('Babel', '/\\.jsx?$/', writeBabel);
+BabelStore.url = 'https://babeljs.io/';
+BabelStore.tooltipText = 'Babel is a compiler that transforms modern javascript to browser compatible javascript.';
+exports.default = BabelStore;
+
+/***/ }),
+/* 35 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _LoaderStore = __webpack_require__(6);
+
+var _LoaderStore2 = _interopRequireDefault(_LoaderStore);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var writeCssLoader = function writeCssLoader(store, buffer) {
+  if (store.usesExtractTextPlugin()) {
+    buffer.addLine('use: ExtractTextPlugin.extract({');
+    buffer.incrTab();
+    buffer.addWithOffset('loader: {0}css-loader');
+    if (store.usePostCss) buffer.add('?importLoaders=1!postcss-loader');
+    buffer.add('{0}\n');
+    buffer.decrTab();
+    buffer.addLine('})');
+  } else {
+    var loaders = ['style-loader', 'css-loader'];
+    if (store.usePostCss) loaders.push('postcss-loader');
+    var cssLine = loaders.map(function (i) {
+      return '{0}' + i + '{0}, ';
+    }).reduce(function (agr, next) {
+      return agr += next;
+    }).slice(0, -2);
+    buffer.addLine('use: [' + cssLine + ']');
+  }
+};
+
+var CssLoader = new _LoaderStore2.default('Css', '/\\.css?$/', writeCssLoader);
+CssLoader.url = 'https://github.com/webpack-contrib/css-loader';
+CssLoader.tooltipText = 'The css-loader interprets @import and url() like requires.';
+exports.default = CssLoader;
+
+/***/ }),
+/* 36 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _LoaderStore = __webpack_require__(6);
+
+var _LoaderStore2 = _interopRequireDefault(_LoaderStore);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var writeFileLoader = function writeFileLoader(store, buffer) {
+  buffer.addLine('loader: {0}file-loader{0}'); // ?name=public/fonts/[name].[ext]
+};
+
+// label, test, writeToBuffer
+var FileStore = new _LoaderStore2.default('File', '/\\.(eot|svg|ttf|woff|woff2)$/', writeFileLoader);
+FileStore.url = 'https://github.com/webpack-contrib/file-loader';
+FileStore.tooltipText = 'Loads files - what a shocking surprise!';
+FileStore.getTest = function (store) {
+  var result = '/\\.(';
+  var extensions = [];
+  if (store.loadFonts) extensions = extensions.concat(['eot', 'svg', 'ttf', 'woff', 'woff2']);
+  if (store.loadImages) extensions = extensions.concat(['jpg', 'jpeg', 'png', 'gif']);
+  if (store.loadText) extensions.push('txt');
+  if (store.loadHtml) extensions.push('html');
+  if (extensions.length > 0) result += extensions.map(function (e) {
+    return e + '|';
+  }).reduce(function (agr, next) {
+    return agr += next;
+  }).slice(0, -1);
+  result += ')$/';
+  return result;
+};
+
+exports.default = FileStore;
+
+/***/ }),
+/* 37 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _LoaderStore = __webpack_require__(6);
+
+var _LoaderStore2 = _interopRequireDefault(_LoaderStore);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var writeTypeScriptLoader = function writeTypeScriptLoader(store, buffer) {
+  buffer.addLine('loader: {0}awesome-typescript-loader{0},');
+  buffer.addLine('exclude: /node_modules/');
+};
+
+// label, test, writeToBuffer
+var TypeScriptLoader = new _LoaderStore2.default('TypeScript', '/\\.tsx?$/', writeTypeScriptLoader);
+TypeScriptLoader.url = 'https://github.com/s-panferov/awesome-typescript-loader';
+TypeScriptLoader.tooltipText = 'Transpiles TypeScript to Javascript.';
+exports.default = TypeScriptLoader;
+
+/***/ }),
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -13430,7 +14054,7 @@ var Footer = function Footer(_ref) {
           'Check me out on',
           _react2.default.createElement(
             'a',
-            { href: 'https://github.com/peerhenry/ph-webpack-config-generator' },
+            { href: 'https://github.com/peerhenry/ph-webpack-config-generator', style: { textDecoration: 'none' } },
             _react2.default.createElement(
               GitHub,
               null,
@@ -13446,7 +14070,7 @@ var Footer = function Footer(_ref) {
 exports.default = Footer;
 
 /***/ }),
-/* 29 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -13470,7 +14094,7 @@ var _styledComponents = __webpack_require__(1);
 
 var _styledComponents2 = _interopRequireDefault(_styledComponents);
 
-var _WebpackSvg = __webpack_require__(30);
+var _WebpackSvg = __webpack_require__(40);
 
 var _WebpackSvg2 = _interopRequireDefault(_WebpackSvg);
 
@@ -13511,7 +14135,7 @@ var Header = function Header(_ref) {
         _react2.default.createElement(
           'h3',
           null,
-          'When you just want a webpack config file without hassle!'
+          'Get started with a webpack config file without hassle!'
         )
       ),
       _react2.default.createElement(
@@ -13534,7 +14158,7 @@ var Header = function Header(_ref) {
 exports.default = Header;
 
 /***/ }),
-/* 30 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -13621,15 +14245,15 @@ var WebpackSvg = function WebpackSvg(_ref) {
 exports.default = WebpackSvg;
 
 /***/ }),
-/* 31 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _reactDom = __webpack_require__(7);
+var _reactDom = __webpack_require__(11);
 
-var _App = __webpack_require__(11);
+var _App = __webpack_require__(14);
 
 var _App2 = _interopRequireDefault(_App);
 
@@ -13639,20 +14263,20 @@ var app = document.getElementById('app');
 (0, _reactDom.render)(React.createElement(_App2.default, null), app);
 
 /***/ }),
-/* 32 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-__webpack_require__(48);
-__webpack_require__(49);
-__webpack_require__(47);
-__webpack_require__(45);
-__webpack_require__(46);
+__webpack_require__(58);
+__webpack_require__(59);
+__webpack_require__(57);
+__webpack_require__(55);
+__webpack_require__(56);
 
 /***/ }),
-/* 33 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -13773,7 +14397,7 @@ function fromByteArray (uint8) {
 
 
 /***/ }),
-/* 34 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -13787,9 +14411,9 @@ function fromByteArray (uint8) {
 
 
 
-var base64 = __webpack_require__(33)
-var ieee754 = __webpack_require__(42)
-var isArray = __webpack_require__(43)
+var base64 = __webpack_require__(43)
+var ieee754 = __webpack_require__(52)
+var isArray = __webpack_require__(53)
 
 exports.Buffer = Buffer
 exports.SlowBuffer = SlowBuffer
@@ -15567,41 +16191,41 @@ function isnan (val) {
   return val !== val // eslint-disable-line no-self-compare
 }
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(10)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(13)))
 
 /***/ }),
-/* 35 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(2)(undefined);
+exports = module.exports = __webpack_require__(3)(undefined);
 // imports
 
 
 // module
-exports.push([module.i, "\r\n\r\n/* ========= FONTS ========= */\r\n\r\n@font-face {\r\n  font-family: Cantarell;\r\n  src: url(" + __webpack_require__(40) + "); /* https://www.fontsquirrel.com/fonts/cantarell */\r\n}\r\n\r\n@font-face{\r\n  font-family: Ubuntu;\r\n  src: url(" + __webpack_require__(41) + ") /* http://font.ubuntu.com/ */\r\n}\r\n\r\nhtml{\r\n  font-family: Ubuntu, Arial, Helvetica, sans-serif;\r\n  font-size: 18px;\r\n}\r\n\r\nh1{\r\n  font-family: Cantarell;\r\n}\r\n\r\nbutton{\r\n  font-family: Ubuntu;\r\n}\r\n\r\ninput{\r\n  font-family: Courier, monospace;\r\n  font-size: 18px;\r\n}\r\n\r\n/* ========= COLORS ========= */\r\n\r\nhtml{\r\n  background-color: #2B3A42;  /* base color*/\r\n  color: white;\r\n  color: #d0dce1;\r\n}\r\n\r\nheader, footer{\r\n  background-color: #1e242f;\r\n  background-color: #1e292f;\r\n  color: #7493a4;\r\n  color: #b1c5cd;\r\n  color: #92aeb9;\r\n}\r\n\r\nbutton{\r\n  color: #d0dce1;\r\n}\r\n\r\nsvg{\r\n  fill: #92aeb9;\r\n}\r\n\r\nsvg:hover{\r\n  fill: white;\r\n}\r\n\r\n.mini-panel{\r\n  background-color: #3e5174;\r\n  background-color: #365363;\r\n  box-shadow: 5px 5px #1e292e;\r\n}\r\n\r\n.mini-panel-header{\r\n  margin-bottom: 5px;\r\n  color: #d0dce1;\r\n  color: orange;\r\n}\r\n\r\n.clickable{\r\n  border-radius: 5px;\r\n}\r\n\r\n.clickable:hover{\r\n  background-color: #263036;\r\n  background-color: #2B3A42;\r\n}\r\n\r\n.selected{\r\n  background-color: #5a798c;\r\n}\r\n\r\n.loader-options{\r\n  padding: 10px;\r\n  border-radius: 5px;\r\n  background-color: #5a798c;\r\n}", ""]);
+exports.push([module.i, "\r\n\r\n/* ========= FONTS ========= */\r\n\r\n@font-face {\r\n  font-family: Cantarell;\r\n  src: url(" + __webpack_require__(50) + "); /* https://www.fontsquirrel.com/fonts/cantarell */\r\n}\r\n\r\n@font-face{\r\n  font-family: Ubuntu;\r\n  src: url(" + __webpack_require__(51) + ") /* http://font.ubuntu.com/ */\r\n}\r\n\r\nhtml{\r\n  font-family: Ubuntu, Arial, Helvetica, sans-serif;\r\n  font-size: 18px;\r\n}\r\n\r\nh1{\r\n  font-family: Cantarell;\r\n}\r\n\r\nbutton{\r\n  font-family: Ubuntu;\r\n}\r\n\r\ninput{\r\n  font-family: Courier, monospace;\r\n  font-size: 18px;\r\n}\r\n\r\n/* ========= COLORS ========= */\r\n\r\nhtml{\r\n  background-color: #2B3A42;  /* base color*/\r\n  color: white;\r\n  color: #d0dce1;\r\n}\r\n\r\nheader, footer{\r\n  background-color: #1e242f;\r\n  background-color: #1e292f;\r\n  color: #7493a4;\r\n  color: #b1c5cd;\r\n  color: #92aeb9;\r\n}\r\n\r\nbutton{\r\n  color: #d0dce1;\r\n}\r\n\r\nsvg{\r\n  fill: #92aeb9;\r\n}\r\n\r\nsvg:hover{\r\n  fill: white;\r\n}\r\n\r\na{\r\n  color: orange;\r\n  color: #8DD6F9;\r\n}\r\n\r\na:hover{\r\n  color: white;\r\n}\r\n\r\n.mini-panel{\r\n  background-color: #365363;\r\n  box-shadow: 5px 5px #1e292e;\r\n}\r\n\r\n.mini-panel-header{\r\n  margin-bottom: 5px;\r\n  color: #d0dce1;\r\n  color: orange;\r\n  color: #8DD6F9;\r\n}\r\n\r\n.clickable{\r\n  border-radius: 5px;\r\n}\r\n\r\n.clickable:hover{\r\n  background-color: #263036;\r\n  background-color: #2B3A42;\r\n}\r\n\r\n.selected{\r\n  background-color: #5a798c;\r\n  background-color: #2d4552;\r\n}\r\n\r\n.loader-options{\r\n  padding: 10px;\r\n  border-radius: 5px;\r\n  background-color: #5a798c;\r\n}", ""]);
 
 // exports
 
 
 /***/ }),
-/* 36 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(2)(undefined);
+exports = module.exports = __webpack_require__(3)(undefined);
 // imports
 
 
 // module
-exports.push([module.i, "li{\r\n  display: block;\r\n}\r\n\r\nbutton{\r\n  border: none;\r\n  cursor: pointer;\r\n  background: transparent;\r\n}", ""]);
+exports.push([module.i, "li{\r\n  display: block;\r\n}\r\n\r\nbutton{\r\n  padding: 10px;\r\n  border: none;\r\n  cursor: pointer;\r\n  background: transparent;\r\n}\r\n\r\ninput{\r\n  box-sizing: border-box;\r\n}", ""]);
 
 // exports
 
 
 /***/ }),
-/* 37 */
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(2)(undefined);
+exports = module.exports = __webpack_require__(3)(undefined);
 // imports
 
 
@@ -15612,10 +16236,10 @@ exports.push([module.i, "body, #app, #wrapper {\r\n  height: 100%;\r\n  width: 1
 
 
 /***/ }),
-/* 38 */
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(2)(undefined);
+exports = module.exports = __webpack_require__(3)(undefined);
 // imports
 
 
@@ -15626,10 +16250,10 @@ exports.push([module.i, "/*! normalize.css v6.0.0 | MIT License | github.com/nec
 
 
 /***/ }),
-/* 39 */
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(2)(undefined);
+exports = module.exports = __webpack_require__(3)(undefined);
 // imports
 
 
@@ -15640,19 +16264,19 @@ exports.push([module.i, "/*\n  Simple Grid\n  Project Page - http://thisisdallas
 
 
 /***/ }),
-/* 40 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__.p + "public/fonts/Cantarell-Bold.ttf";
 
 /***/ }),
-/* 41 */
+/* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__.p + "public/fonts/Ubuntu-L.ttf";
 
 /***/ }),
-/* 42 */
+/* 52 */
 /***/ (function(module, exports) {
 
 exports.read = function (buffer, offset, isLE, mLen, nBytes) {
@@ -15742,7 +16366,7 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
 
 
 /***/ }),
-/* 43 */
+/* 53 */
 /***/ (function(module, exports) {
 
 var toString = {}.toString;
@@ -15753,7 +16377,7 @@ module.exports = Array.isArray || function (arr) {
 
 
 /***/ }),
-/* 44 */
+/* 54 */
 /***/ (function(module, exports) {
 
 
@@ -15848,13 +16472,13 @@ module.exports = function (css) {
 
 
 /***/ }),
-/* 45 */
+/* 55 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(35);
+var content = __webpack_require__(45);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(4)(content, {});
@@ -15874,13 +16498,13 @@ if(false) {
 }
 
 /***/ }),
-/* 46 */
+/* 56 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(36);
+var content = __webpack_require__(46);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(4)(content, {});
@@ -15900,13 +16524,13 @@ if(false) {
 }
 
 /***/ }),
-/* 47 */
+/* 57 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(37);
+var content = __webpack_require__(47);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(4)(content, {});
@@ -15926,13 +16550,13 @@ if(false) {
 }
 
 /***/ }),
-/* 48 */
+/* 58 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(38);
+var content = __webpack_require__(48);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(4)(content, {});
@@ -15952,13 +16576,13 @@ if(false) {
 }
 
 /***/ }),
-/* 49 */
+/* 59 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(39);
+var content = __webpack_require__(49);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(4)(content, {});
