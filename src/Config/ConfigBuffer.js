@@ -42,6 +42,10 @@ class ConfigBuffer{
     this.text += this.offset + text + "\n"
   }
 
+  writeLine(text){
+    this.addLine(text)
+  }
+
   addCsLine(text){
     this.text += this.offset + text + ",\n"
   }

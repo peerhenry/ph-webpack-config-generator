@@ -3,6 +3,15 @@ import styled from 'styled-components'
 import CheckBox from '../../../Components/CheckBox'
 import ToolTipLabel from '../../../Components/ToolTipLabel'
 
+const ToolTipLink = ({store, name, url, children}) => (
+  <ToolTipLabel label={(()=>{
+      if(store.showLinks) return <a href={url}>{name}</a>
+      return <span>{name}</span>
+    })()}>
+    {children}
+  </ToolTipLabel>
+)
+
 // <a href="https://babeljs.io/docs/plugins/preset-react/">
 const BabelOptions = ({}) => (
   <div>
@@ -38,11 +47,15 @@ const BabelOptions = ({}) => (
     <ul>
 
       <CheckBox store={store} storeKey={'useBabelDecoratorsLegacy'}>
-        <a href="https://github.com/loganfsmyth/babel-plugin-transform-decorators-legacy">
-          <ToolTipLabel label={'Legacy decorators'}>
+          <ToolTipLink {...{store: store, name: 'Legacy decorators', url: 'https://github.com/loganfsmyth/babel-plugin-transform-decorators-legacy'}}>
             A plugin for Babel 6 that replicates the old decorator behavior from Babel 5.
-          </ToolTipLabel>
-        </a>
+          </ToolTipLink>
+      </CheckBox>
+
+      <CheckBox store={store} storeKey={'useBabelReactHtmlAttrs'}>
+        <ToolTipLink {...{store: store, name: 'React html attributes', url: 'https://github.com/insin/babel-plugin-react-html-attrs'}}>
+          Transforms JSX class attributes into classname and for into htmlFor.
+        </ToolTipLink>
       </CheckBox>
       
     </ul>

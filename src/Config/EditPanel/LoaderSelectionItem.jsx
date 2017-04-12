@@ -46,21 +46,18 @@ class LoaderSelector extends React.Component{
     this.handleCheck = this.handleCheck.bind(this)
   }
 
-  getVal(){
-    return this.props.store[this.props.storeKey]
-  }
-
   handleCheck(e){
-    this.props.store.toggle(this.props.storeKey)
+    this.props.loaderStore.toggleActive()
   }
 
   handleSelect(e){
-    this.props.store.selectLoader(this.props.storeKey)
+    this.props.store.loaders.forEach(l => l.unSelect())
+    this.props.loaderStore.select()
   }
 
   render(){
-    const checked = this.getVal()
-    const selected = this.props.store.selectedLoader === this.props.storeKey
+    const checked = this.props.loaderStore.active
+    const selected = this.props.loaderStore.selected
     return (
       <DivMargin className={"clickable" + (selected ? ' selected' : '')} onClick={e => this.handleSelect(e)}>
         <input 

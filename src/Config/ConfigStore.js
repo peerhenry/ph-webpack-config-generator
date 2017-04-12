@@ -1,4 +1,7 @@
 import { autorun, observable } from 'mobx'
+import BabelStore from './LoaderStores/BabelStore'
+import CssStore from './LoaderStores/CssStore'
+import FileStore from './LoaderStores/FileStore'
 
 class Kvp{
   @observable value
@@ -10,11 +13,16 @@ class Kvp{
 }
 
 class ConfigStore{
-  // === 1. webpack config appearance
+  constructor(){
+    BabelStore.select()
+  }
+
+  // === 1. Appearance
   @observable tab = "  "
   @observable quote = "'"
+  @observable showLinks = true
 
-  // === 2. general settings
+  // === 2. General webpack.config settings
   context = new Kvp('context', '__dirname')
   entry = new Kvp('entry', './src/main')
 
@@ -22,19 +30,16 @@ class ConfigStore{
   outputFilename = new Kvp('filename', 'bundle.js')
 
   // === 3. loaders
-  @observable includeBabel = true
-  @observable includeCss = true
-  @observable includeFileLoader = false
-  usesLoaders = () => (this.includeBabel || this.includeCss || this.includeFileLoader)
+  loaders = [BabelStore, CssStore, FileStore]
 
-  @observable selectedLoader = 'includeBabel'
-  selectLoader(loader){
-    this.selectedLoader = loader
-  }
+  usesLoaders = () => (this.loaders.find(l => l.active))
+  getSelectedLoader = () => (this.loaders.find(l => l.selected))
 
   // ====== 3.1.1 babel plugins
   @observable useBabelDecoratorsLegacy = false;
-  usesPlugins = () => (this.useBabelDecoratorsLegacy)
+  @observable useBabelReactHtmlAttrs = false;
+
+  usesPlugins = () => (this.useBabelDecoratorsLegacy || this.useBabelReactHtmlAttrs)
 
   // ====== 3.1.2 babel presets
   @observable useBabelEs2015 = true
@@ -50,7 +55,7 @@ class ConfigStore{
   @observable useExtractTextPlugin = true
 
   usesExtractTextPlugin = () => {
-    return this.includeCss && this.useExtractTextPlugin
+    return CssStore.active && this.useExtractTextPlugin
   }
 
   // === 4. Setter methods
@@ -59,9 +64,7 @@ class ConfigStore{
   }
 
   noLoaders = () => {
-    this.includeBabel = false
-    this.includeCss = false
-    this.includeFileLoader = false
+    this.loaders.forEach(l => l.unSelect())
   }
 
   everythingFalse = () => {

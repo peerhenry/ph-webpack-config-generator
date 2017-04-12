@@ -1,8 +1,7 @@
 import React from 'react'
-import LoaderSelector from '../../Components/LoaderSelector'
+import LoaderSelectionItem from './LoaderSelectionItem'
 
-const LoaderSelection = ({store}) => (
-  <ul>
+{/*
     <LoaderSelector store={store} storeKey={'includeBabel'}>
       <a href="https://babeljs.io/">Babel</a>
     </LoaderSelector>
@@ -10,6 +9,17 @@ const LoaderSelection = ({store}) => (
       <a href="https://github.com/webpack-contrib/css-loader">Css</a>
     </LoaderSelector>
     <LoaderSelector store={store} storeKey={'includeFileLoader'}>File</LoaderSelector>
+*/}
+
+const LoaderSelection = ({store}) => (
+  <ul>
+    {
+      store.loaders.map((loader, index) => (
+        <LoaderSelectionItem key={index} store={store} loaderStore={loader}>
+          {loader.label}
+        </LoaderSelectionItem>
+      ))
+    }
   </ul>
 )
 

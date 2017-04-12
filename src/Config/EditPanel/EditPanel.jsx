@@ -3,8 +3,6 @@ import styled from 'styled-components'
 import {observer} from 'mobx-react'
 
 import PaddedDiv from '../../Components/PaddedDiv'
-import FreeFieldTableRow from '../../Components/FreeFieldTableRow'
-import CheckBox from '../../Components/CheckBox'
 import MiniPanel from '../../Components/MiniPanel'
 import MiniPanelHeader from '../../Components/MiniPanelHeader'
 
@@ -16,12 +14,12 @@ import BabelOptions from './LoaderOptions/BabelOptions'
 import CssOptions from './LoaderOptions/CssOptions'
 
 const LoaderOptionsSwitch = ({store}) => {
-  switch(store.selectedLoader){
-    case 'includeBabel':
+  switch(store.getSelectedLoader().label){
+    case 'Babel':
       return <BabelOptions store={store}/>
-    case 'includeCss':
+    case 'Css':
       return <CssOptions store={store}/>
-    case 'includeFileLoader':
+    case 'File':
       return <span>Use this loader to load font files.</span>
     default:
       return false
@@ -58,6 +56,30 @@ const EditPanel = ({store}) => (
         <LoaderOptionsOberver store={store}/>
       </MiniPanel></div>
 
+    </div>
+
+    <div className="grid grid-pad" style={{overflow: 'visible', visibility: 'hidden'}}>
+      <div className="col-1-1">
+        <MiniPanel>
+          <h2>Required packages</h2>
+          <ul>
+            <li>webpack</li>
+            <li>babel-core</li>
+            <li>babel-loader</li>
+            <li>babel-plugin-transform-decorators-legacy</li>
+            <li>babel-plugin-react-html-attrs</li>
+            <li>babel-preset-es2015</li>
+            <li>babel-preset-stage-0</li>
+            <li>babel-preset-react</li>
+
+            <li>css-loader</li>
+            <li>style-loader</li>
+            <li>postcss</li>
+
+            <li>file-loader</li>
+          </ul>
+        </MiniPanel>
+      </div>
     </div>
 
   </div>

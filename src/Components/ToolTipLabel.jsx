@@ -1,10 +1,10 @@
 import React from 'react'
 import styled from 'styled-components'
 
+// border-bottom: 1px dotted black;
 const ToolTip = styled.div`
   position: relative;
   display: inline-block;
-  border-bottom: 1px dotted black;
 
   &:hover{
     color: white;
@@ -26,7 +26,7 @@ const ToolTipContent = styled.span`
 
   /* Position the tooltip */
   position: absolute;
-  z-in
+  z-index: 1;
 `
 
 const ToolTipLabel = ({label, children}) => (
