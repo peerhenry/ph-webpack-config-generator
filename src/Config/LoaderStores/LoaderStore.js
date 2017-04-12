@@ -1,13 +1,13 @@
 import { observable } from 'mobx'
 
 class LoaderStore{
-  @observable label
+  label
   @observable test
   @observable active = false
   @observable selected = false
 
-  @observable url
-  @observable tooltipText
+  url
+  tooltipText
   packageName
 
   constructor(label, test, writeToBuffer){
@@ -15,7 +15,7 @@ class LoaderStore{
     this.name = name
     this.active
     this.test = test
-    this.writeToBuffer = writeToBuffer // (soter, buffer) => void
+    this.writeToBuffer = writeToBuffer // (store, buffer) => void
   }
 
   toggleActive(){
@@ -28,6 +28,10 @@ class LoaderStore{
 
   unSelect(){
     this.selected = false
+  }
+
+  getTest(){
+    return this.test
   }
 }
 

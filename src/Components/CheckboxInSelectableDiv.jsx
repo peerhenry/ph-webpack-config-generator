@@ -38,7 +38,7 @@ class CheckBoxInSelectableDiv extends React.Component{
         <input 
           type="checkbox" 
           checked={checked}
-          style={{marginRight: '10px', marginLeft: '5px'}} 
+          style={{marginRight: '10px', marginLeft: '5px'}}
           onChange={this.handleCheck}/>
         { this.props.children }
         <br/>

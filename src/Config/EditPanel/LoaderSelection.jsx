@@ -2,7 +2,7 @@ import React from 'react'
 import LoaderSelectionItem from './LoaderSelectionItem'
 
 const LoaderSelection = ({store}) => (
-  <ul>
+  <div>
     {
       store.loaders.map((loader, index) => (
         <LoaderSelectionItem key={index} store={store} loaderStore={loader}>
@@ -16,7 +16,7 @@ const LoaderSelection = ({store}) => (
         </LoaderSelectionItem>
       ))
     }
-  </ul>
+  </div>
 )
 
 export default LoaderSelection

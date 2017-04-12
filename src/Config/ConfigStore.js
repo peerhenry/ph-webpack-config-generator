@@ -1,7 +1,8 @@
 import { autorun, observable } from 'mobx'
 import BabelStore from './LoaderStores/BabelStore'
 import CssStore from './LoaderStores/CssStore'
-import FileStore from './LoaderStores/FileStore'
+import FileLoader from './LoaderStores/FileLoader'
+import TypeScriptLoader from './LoaderStores/TypeScriptLoader'
 
 class Kvp{
   @observable value
@@ -49,7 +50,7 @@ class ConfigStore{
   outputFilename = new Kvp('filename', 'bundle.js')
 
   // === 3. loaders
-  loaders = [BabelStore, CssStore, FileStore]
+  loaders = [BabelStore, CssStore, FileLoader, TypeScriptLoader]
 
   usesLoaders = () => (this.loaders.find(l => l.active))
   getSelectedLoader = () => (this.loaders.find(l => l.selected))
@@ -102,11 +103,31 @@ class ConfigStore{
   @observable usePostCss = false
   @observable useExtractTextPlugin = true
 
-  usesExtractTextPlugin = () => {
+  usesExtractTextPlugin(){
     return CssStore.active && this.useExtractTextPlugin
   }
 
-  // === 4. Setter methods
+  // ====== 3.3 File loader options
+
+  @observable loadFonts = true
+  @observable loadImages = false
+  @observable loadText = false
+  @observable loadHtml = false
+
+  // ====== 3.4 TypeScript options
+
+  @observable useCheckerPlugin = false
+
+  usesCheckerPlugin(){
+    return TypeScriptLoader.active && this.useCheckerPlugin
+  }
+
+  // === 4. Other class methods
+
+  anyPlugins(){
+    return this.usesExtractTextPlugin() || this.usesCheckerPlugin()
+  }
+
   toggle(name){
     this[name] = !this[name]
   }

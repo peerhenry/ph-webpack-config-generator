@@ -34,8 +34,7 @@ const BabelOptionCheckbox = ({store, babelOption}) => {
   <CheckBoxInSelectableDiv {...props}>
     {
       store.showLinks ? <WithLink babelOption={babelOption}/>
-      :
-      <WithoutLink babelOption={babelOption}/>
+      : <WithoutLink babelOption={babelOption}/>
     }
   </CheckBoxInSelectableDiv>)
 }

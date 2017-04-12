@@ -22,21 +22,25 @@ const insertLoaders = (store, buffer) => {
   let activeLoaders = store.loaders.filter(l => l.active)
   activeLoaders.forEach((loader, index) => {
     buffer.openAnonymousObject()
-    buffer.addCsLine('test: ' + loader.test)
+    buffer.addCsLine('test: ' + loader.getTest(store))
     loader.writeToBuffer(store, buffer)
     let withComma = index !== (activeLoaders.length - 1)
     buffer.closeObject(withComma)
   })
 
   buffer.closeArray()
-  let withComma = store.usesExtractTextPlugin()
+  let withComma = store.anyPlugins()
   buffer.closeObject(withComma)
 }
 
 const generateConfig = /*window.generateConfig = */(store) => {
   let buffer = new ConfigBuffer(store, "var webpack = require({0}webpack{0});\n")
 
-  if(store.usesExtractTextPlugin()) buffer.addLine('var ExtractTextPlugin = require({0}extract-text-webpack-plugin{0});')
+  const extractText = store.usesExtractTextPlugin()
+  const checker = store.usesCheckerPlugin()
+
+  if(extractText) buffer.addLine('var ExtractTextPlugin = require({0}extract-text-webpack-plugin{0});')
+  if(checker) buffer.addLine('const { CheckerPlugin } = require({0}awesome-typescript-loader{0});')
   buffer.addLine('\nmodule.exports = {\n')
 
   buffer.dTab(1)
@@ -52,13 +56,17 @@ const generateConfig = /*window.generateConfig = */(store) => {
 
   if( store.usesLoaders() ) insertLoaders(store, buffer)
 
-  if( store.usesExtractTextPlugin() ){
+  if(store.anyPlugins()){
     buffer.nextLine()
     buffer.openArray('plugins')
-    buffer.addLine('new ExtractTextPlugin({0}public/styleBundle.css{0})')
+    if(extractText){
+      buffer.addWithOffset('new ExtractTextPlugin({0}public/styleBundle.css{0})')
+      if(checker) buffer.add(',\n')
+    }
+    if(checker) buffer.addWithOffset('new CheckerPlugin()')
+    buffer.nextLine()
     buffer.closeArray()
   }
-
   buffer.add("}")
   return buffer.toString().format(store.quote)
 }

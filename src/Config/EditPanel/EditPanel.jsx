@@ -9,23 +9,7 @@ import MiniPanelHeader from '../../Components/MiniPanelHeader'
 import EntryOutputFields from './EntryOutputFields'
 import PresetSelection from './PresetSelection'
 import LoaderSelection from './LoaderSelection'
-import BabelOptions from './LoaderOptions/BabelOptions'
-import CssOptions from './LoaderOptions/CssOptions'
-
-const LoaderOptionsSwitch = ({store}) => {
-  switch(store.getSelectedLoader().label){
-    case 'Babel':
-      return <BabelOptions store={store}/>
-    case 'Css':
-      return <CssOptions store={store}/>
-    case 'File':
-      return <span>Use this loader to load font files.</span>
-    default:
-      return false
-  }
-}
-
-const LoaderOptionsOberver = observer(LoaderOptionsSwitch)
+import LoaderOptions from './LoaderOptions'
 
 const EditPanel = ({store}) => (
   <div style={{margin: '0', height: '100%'}}>
@@ -52,7 +36,7 @@ const EditPanel = ({store}) => (
 
       <div className="col-1-3"><MiniPanel>
         <MiniPanelHeader><h2>Loader options</h2></MiniPanelHeader>
-        <LoaderOptionsOberver store={store}/>
+        <LoaderOptions store={store}/>
       </MiniPanel></div>
 
     </div>

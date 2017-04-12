@@ -1,4 +1,5 @@
 import React from 'react'
+import { observer } from 'mobx-react'
 import styled from 'styled-components'
 
 const capitalizeFirstLetter = (string) => string.charAt(0).toUpperCase() + string.slice(1)
@@ -10,13 +11,13 @@ const StyledInput = styled.input`
   font-weight: bold;
 `
 
+@observer
 class FreeField extends React.Component{
 
   constructor(props){
     super(props)
     let storeKey = props.storeKey || props.label.split('.').reduce( (agr, next) => agr += capitalizeFirstLetter(next) )
     this.state = { 
-      value: props.store[storeKey].value, 
       storeKey: storeKey 
     }
     this.handleInput = this.handleInput.bind(this)
@@ -24,11 +25,11 @@ class FreeField extends React.Component{
 
   handleInput(event){
     let newValue = event.target.value
-    this.setState({value: newValue})
-    store[this.state.storeKey].value = newValue
+    this.props.store[this.state.storeKey].value = newValue
   }
 
   render(){
+    const value = this.props.store[this.state.storeKey].value
     return(
       <div style={{fontSize: '18px', display: 'table'}}>
 
@@ -41,7 +42,7 @@ class FreeField extends React.Component{
           <div className="col-2-3">
             <StyledInput 
               type="text" 
-              value={ this.state.value }
+              value={ value }
               onChange={e => this.handleInput(e) }
               />
           </div>

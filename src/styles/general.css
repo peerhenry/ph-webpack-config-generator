@@ -8,3 +8,7 @@ button{
   cursor: pointer;
   background: transparent;
 }
+
+input{
+  box-sizing: border-box;
+}
