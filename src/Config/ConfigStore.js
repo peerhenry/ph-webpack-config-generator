@@ -64,7 +64,7 @@ class ConfigStore{
   }
 
   noLoaders = () => {
-    this.loaders.forEach(l => l.unSelect())
+    this.loaders.forEach(l => l.active = false)
   }
 
   everythingFalse = () => {

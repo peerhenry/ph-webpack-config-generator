@@ -9,7 +9,6 @@ import MiniPanelHeader from '../../Components/MiniPanelHeader'
 import EntryOutputFields from './EntryOutputFields'
 import PresetSelection from './PresetSelection'
 import LoaderSelection from './LoaderSelection'
-
 import BabelOptions from './LoaderOptions/BabelOptions'
 import CssOptions from './LoaderOptions/CssOptions'
 

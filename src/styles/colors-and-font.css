@@ -60,6 +60,7 @@ svg:hover{
 
 a{
   color: orange;
+  color: #8DD6F9;
 }
 
 a:hover{
@@ -75,6 +76,7 @@ a:hover{
   margin-bottom: 5px;
   color: #d0dce1;
   color: orange;
+  color: #8DD6F9;
 }
 
 .clickable{

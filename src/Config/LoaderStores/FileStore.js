@@ -5,4 +5,7 @@ const writeFileLoader = (store, buffer) => {
 }
 
 // label, active, test, writeToBuffer
-export default new LoaderStore('File', '/\\.(eot|svg|ttf|woff|woff2)$/', writeFileLoader)
+const FileStore = new LoaderStore('File', '/\\.(eot|svg|ttf|woff|woff2)$/', writeFileLoader)
+FileStore.url = 'https://github.com/webpack-contrib/file-loader'
+FileStore.tooltipText = 'Loads files - what a shocking surprise!'
+export default FileStore

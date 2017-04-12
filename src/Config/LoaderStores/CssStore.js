@@ -18,5 +18,7 @@ const writeCssLoader = (store, buffer) => {
   }
 }
 
-// label, active, test, writeToBuffer
-export default new LoaderStore('Css', '/\\.css?$/', writeCssLoader)
+const CssLoader = new LoaderStore('Css', '/\\.css?$/', writeCssLoader)
+CssLoader.url = 'https://github.com/webpack-contrib/css-loader'
+CssLoader.tooltipText = 'The css-loader interprets @import and url() like requires.'
+export default CssLoader
