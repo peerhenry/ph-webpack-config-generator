@@ -29,10 +29,10 @@ const ToolTipContent = styled.span`
   z-index: 1;
 `
 
-const ToolTipLabel = ({label, children}) => (
+const ToolTipLabel = ({label, tooltip}) => (
   <ToolTip>{label}
     <ToolTipContent>
-      {children}
+      {tooltip}
     </ToolTipContent>
   </ToolTip>
 )

@@ -12,6 +12,25 @@ class Kvp{
   }
 }
 
+class BabelOption{
+  label
+  webpackValue
+  url
+  @observable active = false
+  tooltipText
+
+  constructor(label, webpackValue, url, tooltipText){
+    this.label = label
+    this.webpackValue = webpackValue
+    this.url = url
+    this.tooltipText = tooltipText
+  }
+
+  toggleActive(){
+    this.active = !this.active
+  }
+}
+
 class ConfigStore{
   constructor(){
     BabelStore.select()
@@ -35,19 +54,48 @@ class ConfigStore{
   usesLoaders = () => (this.loaders.find(l => l.active))
   getSelectedLoader = () => (this.loaders.find(l => l.selected))
 
-  // ====== 3.1.1 babel plugins
-  @observable useBabelDecoratorsLegacy = false;
-  @observable useBabelReactHtmlAttrs = false;
+  // ====== 3.1 babel options
 
-  usesPlugins = () => (this.useBabelDecoratorsLegacy || this.useBabelReactHtmlAttrs)
+  babelPresets = [
+    new BabelOption(
+      'ES2015', // label
+      'es2015', // webpack.config value  
+      'https://babeljs.io/docs/plugins/preset-es2015/', // url
+      'Use this preset to have access to modern ES2015 features for javascript.' // tooltip
+    ),
+    new BabelOption(
+      'Stage-0', // label
+      'stage-0', // webpack.config value
+      'https://babeljs.io/docs/plugins/preset-stage-0/', // url
+      'Use this if you absolutely must have access to bleeding edge javascript features. Beware: may contain features that will not end up in ECMAScript.' // tooltip
+    ),
+    new BabelOption(
+      'React',  // label
+      'react',  // webpack.config value
+      '',       // url
+      'Turns JSX syntax into React components'  // tooltip
+      )
+    // tooltip: Use the <a href="https://babeljs.io/docs/plugins/preset-react/">Babel React preset</a> to turn JSX syntax into <a href="https://facebook.github.io/react/">React</a> components.
+  ]
 
-  // ====== 3.1.2 babel presets
-  @observable useBabelEs2015 = true
-  @observable useBabelStage0 = true
-  @observable useBabelReact = true
-  usesPresets = () => (this.useBabelEs2015 || this.useBabelStage0 || this.useBabelReact)
+  babelPlugins = [
+    new BabelOption(
+      'Legacy decorators',            // label
+      'transform-decorators-legacy',  // webpack.config value
+      'https://github.com/loganfsmyth/babel-plugin-transform-decorators-legacy',
+      'A plugin for Babel 6 that replicates the old decorator behavior from Babel 5.' // tooltip
+    ),
+    new BabelOption(
+      'React html attributes',  // label
+      'react-html-attrs',       // webpack.config value
+      'https://github.com/insin/babel-plugin-react-html-attrs',
+      'Transforms JSX class attributes into classname and for into htmlFor.'  // tooltip
+    )
+  ]
 
-  babelHasOptions = () => ( this.usesPresets() || this.usesPlugins() )
+  anyActiveBabelPresets = () => (this.babelPresets.find(o => o.active))
+  anyActiveBabelPlugins = () => (this.babelPlugins.find(o => o.active))
+  anyActiveBabelOptions = () => (this.anyActiveBabelPresets() || this.anyActiveBabelPlugins())
 
   // ====== 3.2 css options
 
@@ -63,40 +111,32 @@ class ConfigStore{
     this[name] = !this[name]
   }
 
-  noLoaders = () => {
-    this.loaders.forEach(l => l.active = false)
-  }
-
   everythingFalse = () => {
-    this.noLoaders()
+    this.loaders.forEach(l => l.active = false)
     // babel
-    this.useBabelDecoratorsLegacy = false
-    this.useBabelReactHtmlAttrs = false
-    this.useBabelEs2015 = false
-    this.useBabelStage0 = false
-    this.useBabelReact = false
+    this.babelPresets.concat(this.babelPlugins).forEach(l => l.active = false)
     // css
     this.usePostCss = false
     this.useExtractTextPlugin = false
   }
 
+  enableBabelPreset(name){
+    this.babelPresets.find(p => p.label === name).active = true
+  }
+
   setSimpleEs2015 = () => {
     this.everythingFalse()
     BabelStore.active = true
-    this.useBabelEs2015 = true
+    this.enableBabelPreset('ES2015')
   }
 
   setSimpleReact = () => {
     this.setSimpleEs2015()
-    this.useBabelStage0 = true
-    this.useBabelReact = true
+    this.enableBabelPreset('Stage-0')
+    this.enableBabelPreset('React')
   }
 }
 
-var store = window.store = new ConfigStore() // setting window.store is purely for debugging
+var store = /*window.store = */new ConfigStore() // setting window.store is purely for debugging
 
 export default store
-
-/*autorun(() => {
-  console.log('store: ' + JSON.stringify(store))
-})//*/

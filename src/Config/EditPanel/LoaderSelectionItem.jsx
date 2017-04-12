@@ -1,19 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import {observer} from 'mobx-react'
-
-const DivMargin = styled.div`
-  padding: 10px 0;
-  cursor: pointer;
-  font-size: 16px;
-  position: relative;
-  border-color: #365363
-
-  &:hover {
-    background-color: #263036;
-    border-color: #263036;
-  }
-`
+import CheckBoxInSelectableDiv from '../../Components/CheckBoxInSelectableDiv'
 
 const Trianlge = styled.div`
   width: 0; 
@@ -38,39 +26,23 @@ const ShadowTrianlge = styled.div`
   z-index: -1;
 `
 
-@observer
-class LoaderSelector extends React.Component{
-
-  constructor(props){
-    super(props)
-    this.handleCheck = this.handleCheck.bind(this)
+const LoaderSelectionItem = ({store, loaderStore, children}) => {
+  const props = {
+    checked: loaderStore.active,
+    selected: loaderStore.selected,
+    handleCheck: e => {
+      loaderStore.toggleActive()
+    },
+    handleSelect: e => {
+      store.loaders.forEach(l => l.unSelect())
+      loaderStore.select()
+    }
   }
-
-  handleCheck(e){
-    this.props.loaderStore.toggleActive()
-  }
-
-  handleSelect(e){
-    this.props.store.loaders.forEach(l => l.unSelect())
-    this.props.loaderStore.select()
-  }
-
-  render(){
-    const checked = this.props.loaderStore.active
-    const selected = this.props.loaderStore.selected
-    return (
-      <DivMargin className={"clickable" + (selected ? ' selected' : '')} onClick={e => this.handleSelect(e)}>
-        <input 
-          type="checkbox" 
-          checked={checked}
-          style={{marginRight: '10px', marginLeft: '5px'}} 
-          onChange={this.handleCheck}/>
-        <span>{ this.props.children }</span>
-        { selected ? ([<ShadowTrianlge key={1}/>, <Trianlge key={2}/>]) : '' }
-        <br/>
-      </DivMargin>
-    )
-  }
+  return (
+    <CheckBoxInSelectableDiv {...props}>
+      <span>{ children }</span>
+      { loaderStore.selected ? ([<ShadowTrianlge key={1}/>, <Trianlge key={2}/>]) : '' }
+    </CheckBoxInSelectableDiv>)
 }
 
-export default LoaderSelector
+export default observer(LoaderSelectionItem)

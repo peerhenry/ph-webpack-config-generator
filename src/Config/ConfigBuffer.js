@@ -85,12 +85,12 @@ class ConfigBuffer{
     this.addLine("]")
   }
 
-  addKvp(storeKey){
+  addKvp(store, storeKey){
     let key = store[storeKey].key.split('.').pop()
     this.addCsLine(key + ": " + store[storeKey].value)
   }
 
-  addKvpS(storeKey){
+  addKvpS(store, storeKey){
     let key = store[storeKey].key.split('.').pop()
     this.addCsLine(key + ": {0}" + store[storeKey].value + "{0}")
   }

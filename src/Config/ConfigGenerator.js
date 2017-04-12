@@ -33,20 +33,20 @@ const insertLoaders = (store, buffer) => {
   buffer.closeObject(withComma)
 }
 
-const generateConfig = window.generateConfig = (store) => {
+const generateConfig = /*window.generateConfig = */(store) => {
   let buffer = new ConfigBuffer(store, "var webpack = require({0}webpack{0});\n")
 
   if(store.usesExtractTextPlugin()) buffer.addLine('var ExtractTextPlugin = require({0}extract-text-webpack-plugin{0});')
   buffer.addLine('\nmodule.exports = {\n')
 
   buffer.dTab(1)
-  buffer.addKvp('context')
-  buffer.addKvpS('entry')
+  buffer.addKvp(store, 'context')
+  buffer.addKvpS(store, 'entry')
   buffer.nextLine()
 
   buffer.openObject("output")
-  buffer.addKvpS('outputPath')
-  buffer.addKvpS('outputFilename')
+  buffer.addKvpS(store, 'outputPath')
+  buffer.addKvpS(store, 'outputFilename')
   let withComma = store.usesLoaders()
   buffer.closeObject(withComma)
 

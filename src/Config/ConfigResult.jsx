@@ -39,7 +39,6 @@ function download(filename, text) {
 }
 
 const ConfigResult = ({store}) => {
-
   const config = generateConfig(store)
 
   return (
