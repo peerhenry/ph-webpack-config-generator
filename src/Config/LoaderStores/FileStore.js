@@ -5,4 +5,4 @@ const writeFileLoader = (store, buffer) => {
 }
 
 // label, active, test, writeToBuffer
-export default new LoaderStore('File', true, '/\\.(eot|svg|ttf|woff|woff2)$/', writeFileLoader)
+export default new LoaderStore('File', '/\\.(eot|svg|ttf|woff|woff2)$/', writeFileLoader)

@@ -2,18 +2,18 @@ import { observable } from 'mobx'
 
 class LoaderStore{
   @observable label
-  @observable active
   @observable test
+  @observable active = false
   @observable selected = false
 
   @observable url
   @observable tooltipText
   packageName
 
-  constructor(label, active, test, writeToBuffer){
+  constructor(label, test, writeToBuffer){
     this.label = label
     this.name = name
-    this.active = active
+    this.active
     this.test = test
     this.writeToBuffer = writeToBuffer // (soter, buffer) => void
   }

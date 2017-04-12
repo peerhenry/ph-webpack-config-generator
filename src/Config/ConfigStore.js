@@ -20,7 +20,7 @@ class ConfigStore{
   // === 1. Appearance
   @observable tab = "  "
   @observable quote = "'"
-  @observable showLinks = true
+  @observable showLinks = false
 
   // === 2. General webpack.config settings
   context = new Kvp('context', '__dirname')
@@ -71,6 +71,7 @@ class ConfigStore{
     this.noLoaders()
     // babel
     this.useBabelDecoratorsLegacy = false
+    this.useBabelReactHtmlAttrs = false
     this.useBabelEs2015 = false
     this.useBabelStage0 = false
     this.useBabelReact = false
@@ -81,7 +82,7 @@ class ConfigStore{
 
   setSimpleEs2015 = () => {
     this.everythingFalse()
-    this.includeBabel = true
+    BabelStore.active = true
     this.useBabelEs2015 = true
   }
 

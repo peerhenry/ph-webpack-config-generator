@@ -32,5 +32,7 @@ const writeBabel = (store, buffer) => {
   }
 }
 
-// label, active, test, writeToBuffer
-export default new LoaderStore('Babel', true, '/\\.jsx?$/', writeBabel)
+const BabelStore = new LoaderStore('Babel', '/\\.jsx?$/', writeBabel)
+BabelStore.url = 'https://babeljs.io/'
+BabelStore.tooltipText = 'Babel is a compiler that transforms modern javascript to browser compatible javascript.'
+export default BabelStore

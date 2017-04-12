@@ -19,4 +19,4 @@ const writeCssLoader = (store, buffer) => {
 }
 
 // label, active, test, writeToBuffer
-export default new LoaderStore('Css', false, '/\\.css?$/', writeCssLoader)
+export default new LoaderStore('Css', '/\\.css?$/', writeCssLoader)

@@ -16,7 +16,13 @@ const LoaderSelection = ({store}) => (
     {
       store.loaders.map((loader, index) => (
         <LoaderSelectionItem key={index} store={store} loaderStore={loader}>
-          {loader.label}
+          {
+            store.showLinks ? 
+            <a href={loader.url}>{loader.label}</a>
+            :
+            <span>{loader.label}</span>
+          }
+          
         </LoaderSelectionItem>
       ))
     }
