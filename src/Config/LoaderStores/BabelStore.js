@@ -14,6 +14,7 @@ const insertBabelPresets = (store, buffer) => {
 
 const insertBabelPlugins = (store, buffer) => {
   insertOptions(buffer, store.babelPlugins, 'plugins')
+  buffer.nextLine()
 }
 
 const writeBabel = (store, buffer) => {

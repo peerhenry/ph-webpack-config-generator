@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import {observer} from 'mobx-react'
 
 const ClickableDiv = styled.div`
-  padding: 10px 0;
+  padding: 10px;
   cursor: pointer;
   font-size: 16px;
   position: relative;
@@ -33,13 +33,16 @@ class CheckBoxInSelectableDiv extends React.Component{
   render(){
     const checked = this.props.checked
     const selected = this.props.selected
+    const randId = Math.random();
     return (
       <ClickableDiv className="clickable" onClick={e => this.handleSelect(e)}>
         <input 
+          id={randId}
           type="checkbox" 
           checked={checked}
           style={{marginRight: '10px', marginLeft: '5px'}}
           onChange={this.handleCheck}/>
+        <label htmlFor={randId}></label>
         { this.props.children }
         <br/>
       </ClickableDiv>

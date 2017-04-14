@@ -5,12 +5,14 @@ import {observer} from 'mobx-react'
 import PaddedDiv from '../../Components/PaddedDiv'
 import MiniPanel from '../../Components/MiniPanel'
 import MiniPanelHeader from '../../Components/MiniPanelHeader'
+import ThreeDots from '../../Components/ThreeDots'
+import ThreeLines from '../../Components/ThreeLines'
 
 import EntryOutputFields from './EntryOutputFields'
 import PresetSelection from './PresetSelection'
 import LoaderSelection from './LoaderSelection'
 import LoaderOptions from './LoaderOptions'
-
+// <ThreeDots onClick={e=>console.log('hi')}/>
 const EditPanel = ({store}) => (
   <div style={{margin: '0', height: '100%'}}>
 

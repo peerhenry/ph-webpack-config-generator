@@ -1,6 +1,6 @@
 import React from 'react'
-import PaddedDiv from './Components/PaddedDiv'
 import styled from 'styled-components'
+import PaddedDiv from './Components/PaddedDiv'
 import WebpackSvg from './WebpackSvg'
 
 const StyledH1 = styled.h1`
@@ -9,7 +9,7 @@ const StyledH1 = styled.h1`
 `
 
 const Header = ({}) => (
-  <header>
+  <header style={{height: '110px'}}>
     <PaddedDiv>
 
       <div style={{display: 'inline-block', marginRight: '20px'}}>

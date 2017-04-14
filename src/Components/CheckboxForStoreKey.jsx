@@ -7,8 +7,8 @@ const CheckBoxForStoreKey = ({store, storeKey, children}) => {
   let props = {
     checked: store[storeKey],
     selected: false,
-    handleCheck: e => {},
-    handleSelect: e => {store.toggle(storeKey)}
+    handleCheck: e => {store.toggle(storeKey)},
+    handleSelect: e => {}
   }
   return (
     <CheckBoxInSelectableDiv {...props}>

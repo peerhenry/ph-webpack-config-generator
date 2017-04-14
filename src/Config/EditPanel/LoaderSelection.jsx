@@ -1,5 +1,6 @@
 import React from 'react'
 import LoaderSelectionItem from './LoaderSelectionItem'
+import ToolTipLabel from '../../Components/ToolTipLabel'
 
 const LoaderSelection = ({store}) => (
   <div>
@@ -10,7 +11,9 @@ const LoaderSelection = ({store}) => (
             store.showLinks ? 
             <a href={loader.url}>{loader.label}</a>
             :
-            <span>{loader.label}</span>
+            <ToolTipLabel 
+              label={loader.label} 
+              tooltip={loader.tooltipText}/>
           }
           
         </LoaderSelectionItem>

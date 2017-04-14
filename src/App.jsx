@@ -5,13 +5,13 @@ import styled from 'styled-components'
 require('./styles/all')
 import store from './Config/ConfigStore'
 import Header from './Header'
-import ConfigPage from './Config/ConfigPage'
+import Content from './Content'
 import Footer from './Footer'
 
 const App = ({}) => (
   <div id="wrapper">
     <Header/>
-    <Provider store={store}><ConfigPage/></Provider>
+    <Provider store={store}><Content/></Provider>
     <Footer/>
   </div> 
 )
