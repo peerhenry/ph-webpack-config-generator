@@ -1,9 +1,8 @@
-var webpack = require('webpack');
-var autoprefixer = require('autoprefixer');
-var debug = process.env.NODE_ENV !== 'production';
+const webpack = require('webpack');
+const autoprefixer = require('autoprefixer');
+const merge = require("webpack-merge");
 
-module.exports = {
-
+const config = {
   context: __dirname,
   entry: './src/main',
 
@@ -40,6 +39,11 @@ module.exports = {
       {
         test: /\.(eot|svg|ttf|woff|woff2)$/,
         loader: 'file-loader?name=public/fonts/[name].[ext]'
+      },
+
+      {
+        test: /\.test.js$/,
+        loader: 'mocha-loader'
       }
     ]
   },
@@ -51,5 +55,18 @@ module.exports = {
 
   devServer: {
     contentBase: './public'
+  }
+}
+
+module.exports = env => {
+  console.log("Running webpack in mode: " + env);
+  switch(env)
+  {
+    case "production": return merge(config, { mode: env });
+    case "development": return merge(config, { mode: env });
+    case "test":
+      config.entry = "./src/tests"
+      return merge(config, { mode: "development" });
+    default: return config;
   }
 }
