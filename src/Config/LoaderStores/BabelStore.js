@@ -28,6 +28,7 @@ const writeBabel = (store, buffer) => {
     if(store.anyActiveBabelPlugins()) insertBabelPlugins(store, buffer)
     buffer.closeObject()
   }
+  buffer.closeObject()
 }
 
 const BabelStore = new LoaderStore('Babel', '/\\.jsx?$/', writeBabel)

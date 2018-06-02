@@ -1,7 +1,7 @@
 const assert = require("assert");
 
 describe("dummy", ()=>{
-  it("should be true", ()=>{
+  it("Tests are running", ()=>{
     assert.ok(true, "thing is not truthy");
   })
 })

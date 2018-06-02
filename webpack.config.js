@@ -1,8 +1,8 @@
-const webpack = require('webpack');
 const autoprefixer = require('autoprefixer');
 const merge = require("webpack-merge");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
 
-const config = {
+const baseConfig = {
   context: __dirname,
   entry: './src/main',
 
@@ -51,22 +51,59 @@ const config = {
   externals: {
     'react': 'React',
     'react-dom': 'ReactDOM'
-  },
-
-  devServer: {
-    contentBase: './public'
   }
 }
 
+const devServer = {
+  devServer: {
+    port: 8080,
+    contentBase: './public',
+    open: true,
+    overlay: true,
+  }
+}
+
+const testDevServer = {
+  devServer: {
+    port: 8081,
+    open: true,
+    overlay: true,
+    watchOptions: {
+      aggregateTimeout: 300 // delay rebuild because otherwise somehow only the changed test is shown on browser refresh
+    }
+  }
+}
+
+const htmlPlugin = {
+  plugins: [
+    new HtmlWebpackPlugin()
+  ]
+}
+
 module.exports = env => {
-  console.log("Running webpack in mode: " + env);
+  console.log("Running webpack with env: " + env);
   switch(env)
   {
-    case "production": return merge(config, { mode: env });
-    case "development": return merge(config, { mode: env });
+    case "production": return merge(
+      baseConfig, 
+      { mode: env }
+    );
+
+    case "development": return merge(
+      baseConfig,
+      devServer, 
+      { mode: env }
+    );
+
     case "test":
-      config.entry = "./src/tests"
-      return merge(config, { mode: "development" });
-    default: return config;
+      baseConfig.entry = "./tests.js"
+      return merge(
+        baseConfig,
+        testDevServer, 
+        htmlPlugin, // generate standard html page where mocha-loader can put the test report
+        { mode: "development" }
+      );
+
+    default: return baseConfig;
   }
 }

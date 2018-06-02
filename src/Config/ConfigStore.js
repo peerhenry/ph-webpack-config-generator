@@ -158,6 +158,6 @@ class ConfigStore{
   }
 }
 
-var store = /*window.store = */new ConfigStore() // setting window.store is purely for debugging
+var store = new ConfigStore() // setting window.store is purely for debugging
 
 export default store

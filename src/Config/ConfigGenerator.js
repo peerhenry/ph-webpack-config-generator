@@ -33,7 +33,10 @@ const insertLoaders = (store, buffer) => {
   buffer.closeObject(withComma)
 }
 
-const generateConfig = /*window.generateConfig = */(store) => {
+// this stuff needs to be refactored so it can be properly tested:
+// - the method is way too big
+// - tightly coupled to ConfigBuffer
+const generateConfig = (store) => {
   let buffer = new ConfigBuffer(store, "var webpack = require({0}webpack{0});\n")
 
   const extractText = store.usesExtractTextPlugin()
