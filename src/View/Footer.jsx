@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import PaddedDiv from './Components/PaddedDiv'
+import PaddedDiv from 'Components/PaddedDiv'
 
 const GitHub = styled.span`
   font-weight: bold;

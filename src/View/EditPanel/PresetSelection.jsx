@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import ExpandedDiv from '../../Components/ExpandedDiv'
+import ExpandedDiv from 'Components/ExpandedDiv'
 
 const StyledButton = styled.button`
   border: none;

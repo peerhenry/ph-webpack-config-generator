@@ -1,6 +1,6 @@
 import React from 'react'
 import LoaderSelectionItem from './LoaderSelectionItem'
-import ToolTipLabel from '../../Components/ToolTipLabel'
+import ToolTipLabel from 'Components/ToolTipLabel'
 
 const LoaderSelection = ({store}) => (
   <div>

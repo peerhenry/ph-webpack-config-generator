@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
-import FreeField from '../../Components/FreeField'
-import ExpandedDiv from '../../Components/ExpandedDiv'
+import FreeField from 'Components/FreeField'
+import ExpandedDiv from 'Components/ExpandedDiv'
 
 const EntryOutputFields = ({store}) => (
   <ExpandedDiv>

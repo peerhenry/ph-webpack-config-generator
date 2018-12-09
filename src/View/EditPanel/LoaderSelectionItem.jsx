@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import {observer} from 'mobx-react'
-import CheckBoxInSelectableDiv from '../../Components/CheckBoxInSelectableDiv'
+import CheckBoxInSelectableDiv from 'Components/CheckBoxInSelectableDiv'
 
 const Trianlge = styled.div`
   width: 0; 
@@ -35,6 +35,7 @@ const LoaderSelectionItem = ({store, loaderStore, children}) => {
     },
     handleSelect: e => {
       store.loaders.forEach(l => l.unSelect())
+      store.plugins.forEach(p => p.unSelect())
       loaderStore.select()
     }
   }

@@ -3,6 +3,7 @@ import BabelStore from './LoaderStores/BabelStore'
 import CssStore from './LoaderStores/CssStore'
 import FileLoader from './LoaderStores/FileLoader'
 import TypeScriptLoader from './LoaderStores/TypeScriptLoader'
+import PluginStore from './PluginStores/PluginStore'
 
 class Kvp{
   @observable value
@@ -122,7 +123,21 @@ class ConfigStore{
     return TypeScriptLoader.active && this.useCheckerPlugin
   }
 
-  // === 4. Other class methods
+  // === 4. Plugins
+  getHtmlPlugin = function(){
+    let htmlPlugin = new PluginStore("html-webpack-plugin", (store, buffer) => {});
+    htmlPlugin.url = "" // todo: link to html-webpack-plugin
+    htmlPlugin.tooltipText = "Generates a standard html page next to the bundle."
+    htmlPlugin.packageName = "html-webpack-plugin";
+    return htmlPlugin;
+  }
+
+  plugins = [ this.getHtmlPlugin() ]
+
+  usesPlugins = () => (this.plugins.find(l => l.active))
+  getSelectedPlugin = () => (this.plugins.find(l => l.selected))
+
+  // === 5. Other class methods
 
   anyPlugins(){
     return this.usesExtractTextPlugin() || this.usesCheckerPlugin()

@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
-import PaddedDiv from '../Components/PaddedDiv'
-import generateConfig from './ConfigGenerator'
+import PaddedDiv from 'Components/PaddedDiv'
+import generateConfig from '../Logic/Config/ConfigGenerator'
 
 const StyledDiv = styled.div`
   background-color: white;

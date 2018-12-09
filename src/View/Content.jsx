@@ -2,8 +2,8 @@ import React from 'react'
 import { inject, observer } from 'mobx-react'
 import styled from 'styled-components'
 
-import EditPanel from './Config/EditPanel/EditPanel'
-import ConfigResult from './Config/ConfigResult'
+import EditPanel from './EditPanel/EditPanel'
+import ConfigResult from './ConfigResult'
 
 const ConfigEditPanel = inject("store")(EditPanel)
 const Result = inject("store")(observer(ConfigResult))

@@ -1,5 +1,5 @@
 import React from 'react'
-import CheckBoxForStoreKey from '../../../Components/CheckBoxForStoreKey'
+import CheckBoxForStoreKey from 'Components/CheckBoxForStoreKey'
 
 const FileLoaderOptions = ({store}) => (
   <div>

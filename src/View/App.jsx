@@ -3,12 +3,13 @@ import { Provider } from 'mobx-react'
 import styled from 'styled-components'
 
 require('./styles/all')
-import store from './Config/ConfigStore'
 import Header from './Header'
 import Content from './Content'
-import Footer from './Footer'
+//import Footer from './Footer'
+import container from '../Logic/ComponentRegistration'
+const Footer = container.resolve('Footer');
 
-const App = ({}) => (
+const App = ({store}) => (
   <div id="wrapper">
     <Header/>
     <Provider store={store}><Content/></Provider>

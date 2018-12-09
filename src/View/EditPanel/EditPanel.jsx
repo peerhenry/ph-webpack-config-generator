@@ -2,15 +2,16 @@ import React from 'react'
 import styled from 'styled-components'
 import {observer} from 'mobx-react'
 
-import PaddedDiv from '../../Components/PaddedDiv'
-import MiniPanel from '../../Components/MiniPanel'
-import MiniPanelHeader from '../../Components/MiniPanelHeader'
-import ThreeDots from '../../Components/ThreeDots'
-import ThreeLines from '../../Components/ThreeLines'
+import PaddedDiv from 'Components/PaddedDiv'
+import MiniPanel from 'Components/MiniPanel'
+import MiniPanelHeader from 'Components/MiniPanelHeader'
+import ThreeDots from 'Components/ThreeDots'
+import ThreeLines from 'Components/ThreeLines'
 
 import EntryOutputFields from './EntryOutputFields'
 import PresetSelection from './PresetSelection'
 import LoaderSelection from './LoaderSelection'
+import PluginSelection from './PluginSelection'
 import LoaderOptions from './LoaderOptions'
 // <ThreeDots onClick={e=>console.log('hi')}/>
 const EditPanel = ({store}) => (
@@ -26,20 +27,35 @@ const EditPanel = ({store}) => (
 
     <div className="grid grid-pad" style={{maxWidth: 'none', overflow: 'visible', marginBottom: '20px'}}>
 
-      <div className="col-1-3"><MiniPanel>
-        <MiniPanelHeader><h2>Presets</h2></MiniPanelHeader>
-        <PresetSelection store={store}/>
-      </MiniPanel></div>
+      <div className="col-1-3">
+        <MiniPanel>
+          <MiniPanelHeader><h2>Presets</h2></MiniPanelHeader>
+          <PresetSelection store={store}/>
+        </MiniPanel>
+      </div>
 
-      <div className="col-1-3"><MiniPanel>
-        <MiniPanelHeader><h2>Loaders</h2></MiniPanelHeader>
-        <LoaderSelection store={store}/>
-      </MiniPanel></div>
+      <div className="col-1-3">
 
-      <div className="col-1-3"><MiniPanel>
-        <MiniPanelHeader><h2>Loader options</h2></MiniPanelHeader>
-        <LoaderOptions store={store}/>
-      </MiniPanel></div>
+        <MiniPanel>
+          <MiniPanelHeader><h2>Loaders</h2></MiniPanelHeader>
+          <LoaderSelection store={store}/>
+        </MiniPanel>
+
+        <br/>
+
+        <MiniPanel>
+          <MiniPanelHeader><h2>Plugins</h2></MiniPanelHeader>
+          <PluginSelection store={store}/>
+        </MiniPanel>
+
+      </div>
+
+      <div className="col-1-3">
+        <MiniPanel>
+          <MiniPanelHeader><h2>Loader options</h2></MiniPanelHeader>
+          <LoaderOptions store={store}/>
+        </MiniPanel>
+      </div>
 
     </div>
 

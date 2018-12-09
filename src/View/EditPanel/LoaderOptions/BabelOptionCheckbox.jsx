@@ -1,7 +1,7 @@
 import React from 'react'
 import {observer} from 'mobx-react'
-import CheckBoxInSelectableDiv from '../../../Components/CheckBoxInSelectableDiv'
-import ToolTipLabel from '../../../Components/ToolTipLabel'
+import CheckBoxInSelectableDiv from 'Components/CheckBoxInSelectableDiv'
+import ToolTipLabel from 'Components/ToolTipLabel'
 
 const WithLink = ({babelOption}) => {
   let props = {

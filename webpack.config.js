@@ -1,3 +1,4 @@
+const path = require('path');
 const autoprefixer = require('autoprefixer');
 const merge = require("webpack-merge");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
@@ -13,7 +14,9 @@ const baseConfig = {
 
   resolve: {
     extensions: ['.webpack.js', '.web.js', '.js', '.jsx'],
-    alias: {}
+    alias: {
+      Components: path.resolve(__dirname, 'src/View/Components')
+    }
   },
 
   module: {

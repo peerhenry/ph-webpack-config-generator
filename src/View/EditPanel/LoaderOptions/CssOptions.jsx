@@ -1,7 +1,7 @@
 import React from 'react'
-import CheckBoxForStoreKey from '../../../Components/CheckBoxForStoreKey'
-import ToolTipLabel from '../../../Components/ToolTipLabel'
-import ThreeDots from '../../../Components/ThreeDots'
+import CheckBoxForStoreKey from 'Components/CheckBoxForStoreKey'
+import ToolTipLabel from 'Components/ToolTipLabel'
+import ThreeDots from 'Components/ThreeDots'
 
 // <ThreeDots/>
 const CssOptions = ({store}) => (

@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import PaddedDiv from './Components/PaddedDiv'
+import PaddedDiv from 'Components/PaddedDiv'
 import WebpackSvg from './WebpackSvg'
 
 const StyledH1 = styled.h1`
